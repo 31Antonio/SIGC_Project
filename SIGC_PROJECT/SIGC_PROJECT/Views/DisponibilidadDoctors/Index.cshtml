@@ -1,0 +1,53 @@
+﻿@model IEnumerable<SIGC_PROJECT.Models.DisponibilidadDoctor>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Horarios doctores</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Dia)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HoraInicio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HoraFin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Doctor)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Dia)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HoraInicio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HoraFin)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Doctor.DoctorId)
+            </td>
+            <td>
+                    <a asp-action="Edit" class=" btn btn-warning" asp-route-id="@item.DisponibilidadDoctorId">Edit</a> |
+                    <a asp-action="Details" class=" btn btn-primary" asp-route-id="@item.DisponibilidadDoctorId">Details</a> |
+                    <a asp-action="Delete" class=" btn btn-danger" asp-route-id="@item.DisponibilidadDoctorId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
