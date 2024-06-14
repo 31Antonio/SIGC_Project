@@ -1,0 +1,59 @@
+﻿@model IEnumerable<SIGC_PROJECT.Models.Cita>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Citas</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Comentario)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Doctor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Paciente)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Secretaria)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Estado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Comentario)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Doctor.DoctorId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Paciente.PacienteId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Secretaria.SecretariaId)
+            </td>
+            <td>
+                    <a asp-action="Edit" class=" btn btn-warning" asp-route-id="@item.CitaId">Edit</a> |
+                    <a asp-action="Details" class=" btn btn-primary" asp-route-id="@item.CitaId">Details</a> |
+                    <a asp-action="Delete" class=" btn btn-danger" asp-route-id="@item.CitaId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

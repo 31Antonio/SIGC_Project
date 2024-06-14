@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\SIGC_PROJECT.props" />
+</Project>
