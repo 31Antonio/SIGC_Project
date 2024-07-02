@@ -1,0 +1,132 @@
+﻿@model SIGC_PROJECT.Models.ViewModel.UsuarioVM
+
+@{
+    Layout = null;
+}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta content="Policlínico" name="keywords">
+    <meta content="Página de Inicio de Sesión" name="description">
+    <title>Iniciar Sesión</title>
+
+    <!--Enlaces a los estilos-->
+    <link href="~/userlib/login/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/userlib/login/assets/css/fontawsom-all.min.css" rel="stylesheet" />
+    <link href="~/userlib/login/assets/css/style.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="container-fluid ">
+        <div class="container ">
+            <div class="row ">
+                <div class="col-sm-10 login-box">
+                    <div class="row">
+                        <div class="col-lg-8 col-md-7 log-det">
+                            <div class="small-logo">
+                                <i class=" fa-asymmetrik"></i>Centro Policlínico Nacional
+                            </div>
+
+                            <h2>Inicio de Sesión</h2>
+
+                            <br/>
+                            <br/>
+
+                            <form id="IniciarSesion" asp-controller="Login" asp-action="InicioSesion">
+
+                                <div class="text-box-cont">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1"><i class="fas fa-user"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" asp-for="nombre" placeholder="Usuario" aria-label="Usuario" aria-describedby="basic-addon1" required>
+                                    </div>
+
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1"><i class="fas fa-lock"></i></span>
+                                        </div>
+                                        <input type="password" class="form-control" asp-for="contrasena" placeholder="Contraseña" aria-label="Contraseña" aria-describedby="basic-addon1" required>
+                                    </div>
+
+                                    <br />
+
+                                    <div id="mensajeError" class="alert alert-danger text-center" style="display: none; font-weight: bold"></div>
+
+                                    @* <div class="row">
+                                    <p class="forget-p">¿Olvidó su contraseña?</p>
+                                    </div> *@
+
+                                    <div class="input-group center mb-3">
+                                        <button type="submit" class="btn btn-success btn-round">Acceder</button>
+                                    </div>
+                                </div>
+
+                            </form>
+
+
+                        </div>
+                        <div class="col-lg-4 col-md-5 box-de">
+                            <div class="ditk-inf">
+                                <h2 class="w-100">¿No tiene una cuenta ? </h2>
+                                <p>Cree su cuenta haciendo clic en el botón <strong>Registrarse</strong></p>
+                                
+                                <a asp-controller="RegistrosUsuario" asp-action="Registrarse" class="btn btn-outline-light">
+                                    Registrarse
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+@*Enlaces a las librerias JS*@
+<script src="~/userlib/login/assets/js/jquery-3.2.1.min.js"></script>
+<script src="~/userlib/login/assets/js/popper.min.js"></script>
+<script src="~/userlib/login/assets/js/bootstrap.min.js"></script>
+<script src="~/userlib/login/assets/js/script.js"></script>
+
+</html>
+
+<script>
+
+    //Enviar Informacion al metodo de Iniciar Sesion
+    document.getElementById("IniciarSesion").addEventListener("submit", function (e) {
+
+        e.preventDefault();
+
+        $.ajax({
+            beforeSend: function () {
+                $("#IniciarSesion button[type=submit]").prop("disabled", true);
+            },
+            type: this.method,
+            url: this.action,
+            data: $(this).serialize(),
+            success: function (response) {
+                if (response.message != null) {
+                    document.getElementById("mensajeError").textContent = response.message;
+                    document.getElementById("mensajeError").style.display = "block";
+                }
+                else if(response.message == null) 
+                {
+                    window.location = '/Home';
+                }
+                
+            },
+            error: function (xhr, status, error) {
+                console.error("Ha ocurrido un error: ", error);
+            },
+            complete: function () {
+                $("#IniciarSesion button[type=submit]").prop("disabled", false);
+            }
+        });
+    });
+
+</script>

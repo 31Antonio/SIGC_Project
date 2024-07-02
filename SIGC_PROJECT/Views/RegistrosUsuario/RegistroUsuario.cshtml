@@ -1,0 +1,45 @@
+﻿@model SIGC_PROJECT.Models.Usuario
+
+@{
+    ViewData["Title"] = "Registro Usuario";
+}
+
+<h2>Registro de Usuario</h2>
+
+<form asp-action="Registrar" method="POST" asp-controller="RegistrosUsuario" id="Registrar">
+
+    <div class="row">
+        <div class="form-group col-md-3">
+            <label>Usuario</label>
+            <input type="text" asp-for="NombreUsuario" id="nombre" class="form-control" />
+            <span asp-validation-for="NombreUsuario"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-3">
+            <label>Contraseña</label>
+            <input type="password" asp-for="Contrasena" id="contrasena" class="form-control" />
+            <span asp-validation-for="Contrasena"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-3">
+            <label>Rol del Usuario:</label>
+            <select id="roles">
+                @foreach (var rol in ViewBag.Roles)
+                {
+                    <option value="@rol.IdRol">@rol.Nombre</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="row">
+        <button type="submit" class="btn btn-primary">CREAR USUARIO</button>
+    </div>
+
+</form>
+
+<script src="~/userlib/js/registrousuario.js"></script>

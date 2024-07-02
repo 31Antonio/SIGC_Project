@@ -1,0 +1,29 @@
+﻿@model List<SolicitudesRegistro>;
+
+@{
+    ViewData["Title"] = "Registros Pendientes";
+}
+
+<table class="table table-bordered w-100">
+    <thead>
+        <tr>Nombre Usuario</tr>
+        <tr>Fecha Solicitud</tr>
+        <tr>Acciones</tr>
+    </thead>
+    <tbody>
+
+        @foreach (var solicitud in Model)
+        {
+            <tr>
+                <td>@solicitud.Nombre</td>
+                <td>@solicitud.FechaSolicitud</td>
+                <td>
+                    <form method="post" asp-action="AprobarRegistro" asp-route-id="@solicitud.IdSolicitud">
+                        <button type="submit" class="btn btn-primary">Aprobar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
