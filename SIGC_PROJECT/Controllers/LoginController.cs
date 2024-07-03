@@ -54,7 +54,7 @@ namespace SIGC_PROJECT.Controllers
                     //    { "Message", "Usuario o contraseña no valida." }
                     //});
 
-                    return Json(new { success = false, message = "Usuario o Contraseña inconrrectos" });
+                    return Json(new { success = false, message = "Usuario no encontrado" });
 
                 }
                 else
@@ -85,7 +85,7 @@ namespace SIGC_PROJECT.Controllers
                     }
                     else
                     {
-                        return Json(new { success = false, message = "Usuario no encontrado" });
+                        return Json(new { success = false, message = "La contraseña es incorrecta" });
                     }
                 }
 

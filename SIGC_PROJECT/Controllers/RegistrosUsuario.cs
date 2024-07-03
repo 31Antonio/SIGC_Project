@@ -105,12 +105,13 @@ namespace SIGC_PROJECT.Controllers
             {
                 return Json(new { success = false, message = "La contraseña debe tener más de 5 caracteres." });
             }
-
+            
             var result = await _context.Usuarios.Where(u => u.NombreUsuario == pacienteVM.nombre).SingleOrDefaultAsync();
+            var result2 = await _context.SolicitudesRegistros.Where(s => s.Nombre == pacienteVM.nombre).SingleOrDefaultAsync();
 
-            if (result != null)
+            if (result != null || result2 != null)
             {
-                return Json(new { success = false, message = "El Nombre de Usuario ya existe." });
+                return Json(new { success = false, message = "El Nombre de Usuario ya existe o ha sido solicitado." });
             }
             else
             {

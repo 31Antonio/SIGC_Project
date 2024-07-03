@@ -83,7 +83,7 @@
                                         @if (User.IsInRole("Secretaria"))
                                         {
                                             <li class="nav-item">
-                                                <a asp-controller="Secretariums" asp-action="RegistrosPendientes">Registros Pendientes <span class="badge bg-green" id="solicitud_conteo"></span></a>
+                                                <a asp-controller="Secretariums" asp-action="RegistrosPendientes">Registros Pendientes <span class="badge bg-danger" id="solicitud_conteo"></span></a>
                                             </li>
                                         }
                                         <li><a asp-controller="DisponibilidadDoctors" asp-action="Index">Horarios Doctores</a></li>
