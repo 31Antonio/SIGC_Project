@@ -39,7 +39,7 @@
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
                     <div class="navbar nav_title" style="border: 0;">
-                        <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Hospital De Villa Mella</span></a>
+                        <a asp-controller="Home" asp-action="Index" class="site_title"><i class="fa fa-paw"></i> <span>Centro Policlínico Nacional</span></a>
                     </div>
 
                     <div class="clearfix"></div>
@@ -74,18 +74,43 @@
                                 <li>
                                     <a><i class="fa fa-edit"></i> Formularios <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a asp-controller="Doctors" asp-action="Index">Dotores</a></li>
-                                        <li><a asp-controller="Recetas" asp-action="Index">Recetas</a></li>
-                                        <li><a asp-controller="Pacientes" asp-action="Index">Pacientes</a></li>
+                                        <li><a asp-controller="Doctors" asp-action="Index">Doctores</a></li>
+
+                                        @if (User.IsInRole("Administrador"))
+                                        {
+                                            <li><a asp-controller="Recetas" asp-action="Index">Recetas</a></li>
+                                        }
+
+                                        @if (User.IsInRole("Administrador"))
+                                        {
+                                            <li><a asp-controller="Pacientes" asp-action="Index">Pacientes</a></li>
+                                        }
+                                        
                                         <li><a asp-controller="Citas" asp-action="Index">Citas</a></li>
                                         <li><a asp-controller="Consultas" asp-action="Index">Consulta</a></li>
-                                        <li><a asp-controller="Secretariums" asp-action="Index">Secretarias</a></li>
+
+                                        @if(User.IsInRole("Administrador") || User.IsInRole("Doctor"))
+                                        {
+                                            <li><a asp-controller="Secretariums" asp-action="Index">Secretarias</a></li>
+                                        }
+
+                                        @if (User.IsInRole("Administrador"))
+                                        {
+                                            <li><a asp-controller="RegistrosUsuario" asp-action="RegistroUsuario">Registrar Usuarios</a></li>
+                                        }
+
+                                        @if (User.IsInRole("Doctor"))
+                                        {
+                                            <li><a asp-controller="RegistrosUsuario" asp-action="RegistroUsuario">Registrar Usuarios Secretaria</a></li>
+                                        }
+                                        
                                         @if (User.IsInRole("Secretaria"))
                                         {
                                             <li class="nav-item">
                                                 <a asp-controller="Secretariums" asp-action="RegistrosPendientes">Registros Pendientes <span class="badge bg-danger" id="solicitud_conteo"></span></a>
                                             </li>
                                         }
+
                                         <li><a asp-controller="DisponibilidadDoctors" asp-action="Index">Horarios Doctores</a></li>
                                     </ul>
                                 </li>
@@ -105,7 +130,7 @@
                                         <li><a href="profile.html">Profile</a></li>
                                     </ul>
                                 </li>
-                                <li>
+@*                                 <li>
                                     <a><i class="fa fa-windows"></i> Extras <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="page_403.html">403 Error</a></li>
@@ -115,26 +140,20 @@
                                         <li><a href="login.html">Login Page</a></li>
                                         <li><a href="pricing_tables.html">Pricing Tables</a></li>
                                     </ul>
-                                </li>
+                                </li> *@
                                 
-                                <li><a href="javascript:void(0)"><i class="fa fa-laptop"></i> Landing Page <span class="label label-success pull-right">Coming Soon</span></a></li>
+                                @* <li><a href="javascript:void(0)"><i class="fa fa-laptop"></i> Landing Page <span class="label label-success pull-right">Coming Soon</span></a></li> *@
                             </ul>
                         </div>
 
                     </div>
                     <!-- /sidebar menu -->
                     <!-- /menu footer buttons -->
-                    <div class="sidebar-footer hidden-small">
+                    <div class="sidebar-footer hidden-small" style="background-color: #172D44 !important;">
                         <a data-toggle="tooltip" data-placement="top" title="Settings">
                             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                         </a>
-                        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
-                            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-                        </a>
-                        <a data-toggle="tooltip" data-placement="top" title="Lock">
-                            <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-                        </a>
-                        <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                        <a data-toggle="tooltip" data-placement="top" title="Cerrar Sesión" asp-controller="Login" asp-action="Logout">
                             <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
                         </a>
                     </div>
@@ -152,83 +171,21 @@
                         <ul class=" navbar-right">
                             <li class="nav-item dropdown open" style="padding-left: 15px;">
                                 <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
-                                    <img src="images/img.jpg" alt="">John Doe
+                                    <i class="fa fa-user" style="padding-right: 9px;"></i>@SessionHelper.GetName(User)
                                 </a>
                                 <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="javascript:;"> Profile</a>
-                                    <a class="dropdown-item" href="javascript:;">
-                                        <span class="badge bg-red pull-right">50%</span>
-                                        <span>Settings</span>
-                                    </a>
-                                    <a class="dropdown-item" href="javascript:;">Help</a>
-                                    <a class="dropdown-item" asp-controller="Login" asp-action="Logout"><i class="fa fa-sign-out pull-right"></i>Log Out</a>
+                                    @if (User.IsInRole("Paciente"))
+                                    {
+                                        <a class="dropdown-item" asp-action="Configuracion" asp-controller="Pacientes">Perfil</a>
+                                    }
+
+                                    @if(!User.IsInRole("Paciente")){
+                                        <a class="dropdown-item" href="javascript:;">Perfil</a>
+                                    }
+                                    <a class="dropdown-item" asp-controller="Login" asp-action="Logout"><i class="fa fa-sign-out pull-right"></i>Cerrar Sesión</a>
                                 </div>
                             </li>
 
-                            <li role="presentation" class="nav-item dropdown open">
-                                <a href="javascript:;" class="dropdown-toggle info-number" id="navbarDropdown1" data-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa fa-envelope-o"></i>
-                                    <span class="badge bg-green">6</span>
-                                </a>
-                                <ul class="dropdown-menu list-unstyled msg_list" role="menu" aria-labelledby="navbarDropdown1">
-                                    <li class="nav-item">
-                                        <a class="dropdown-item">
-                                            <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                                            <span>
-                                                <span>John Smith</span>
-                                                <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were where...
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="dropdown-item">
-                                            <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                                            <span>
-                                                <span>John Smith</span>
-                                                <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were where...
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="dropdown-item">
-                                            <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                                            <span>
-                                                <span>John Smith</span>
-                                                <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were where...
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="dropdown-item">
-                                            <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                                            <span>
-                                                <span>John Smith</span>
-                                                <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were where...
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <div class="text-center">
-                                            <a class="dropdown-item">
-                                                <strong>See All Alerts</strong>
-                                                <i class="fa fa-angle-right"></i>
-                                            </a>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </li>
                         </ul>
                     </nav>
                 </div>

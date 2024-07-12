@@ -28,10 +28,43 @@ namespace SIGC_PROJECT.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Administrador,Doctor,Secretaria")]
         public async Task<IActionResult> RegistroUsuario()
         {
-            var roles = _context.Rols.ToList();
+            //Obtener el id del usuario
+            var idUser = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (idUser == null)
+            {
+                return Unauthorized();
+            }
+
+            //Obtener el rol del usuario 
+            var rolActual = _context.UsuarioRols.Where(r => r.IdUsuario == int.Parse(idUser))
+                                                .Select(r => r.Rol.Nombre).FirstOrDefault();
+
+            if (rolActual == null)
+            {
+                return Forbid();
+            }
+
+            //Filtrar los datos basados en el Rol actual
+            List<Rol> roles;
+            if (rolActual == "Secretaria")
+            {
+                roles = _context.Rols.Where(r => r.Nombre == "Paciente").ToList();
+            }
+            else if (rolActual == "Doctor")
+            {
+                roles = _context.Rols.Where(r => r.Nombre == "Secretaria").ToList();
+            }
+            else
+            {
+                roles = _context.Rols.ToList();
+            }
+
             ViewBag.Roles = roles;
+
             return View();
         }
 
@@ -60,20 +93,18 @@ namespace SIGC_PROJECT.Controllers
                 }
                 else
                 {
-                    var hash = HashHelper.Hash(contrasena);
+                    var hash = HashHelper.Hash(contrasena, nombre);
 
                     var nuevoUsuario = new Usuario()
                     {
                         NombreUsuario = nombre,
-                        Contrasena = hash.Password,
-                        Salt = hash.Salt
+                        Contrasena = hash.Password
                     };
 
                     _context.Usuarios.Add(nuevoUsuario);
                     await _context.SaveChangesAsync();
 
                     Usuarios.Contrasena = "";
-                    Usuarios.Salt = "";
 
                     var userRole = new UsuarioRol()
                     {
@@ -118,7 +149,7 @@ namespace SIGC_PROJECT.Controllers
                 if (!ModelState.IsValid)
                 {
                     //Generar el Hash y el Salt de la clave
-                    HashedPassword hashedPassword = HashHelper.Hash(pacienteVM.contrasena);
+                    HashedPassword hashedPassword = HashHelper.Hash(pacienteVM.contrasena, pacienteVM.nombre);
 
                     //Obtener id de la secretaria
                     var secretariaId = ObtenerSecretaria();
@@ -128,7 +159,6 @@ namespace SIGC_PROJECT.Controllers
                     {
                         Nombre = pacienteVM.nombre,
                         Clave = hashedPassword.Password,
-                        Sal = hashedPassword.Salt,
                         FechaSolicitud = DateTime.Now,
                         IdSecretaria = secretariaId
                     };

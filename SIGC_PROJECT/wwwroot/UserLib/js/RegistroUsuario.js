@@ -28,8 +28,3 @@ document.getElementById("Registrar").addEventListener("submit", function (e) {
         }
     });
 });
-
-
-
-
-

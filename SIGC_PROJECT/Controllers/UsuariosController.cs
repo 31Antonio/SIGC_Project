@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SIGC_PROJECT.Helper;
 using SIGC_PROJECT.Models;
 
 namespace SIGC_PROJECT.Controllers
@@ -161,5 +162,38 @@ namespace SIGC_PROJECT.Controllers
         {
             return _context.Usuarios.Any(e => e.IdUsuario == id);
         }
+
+        // METODO PARA ACTUALIZAR LA CONTRASEÑA
+        [HttpPost]
+        public IActionResult ActualizarPassword(string currentPass, string nuevaPass, string userName)
+        {
+            var user = _context.Usuarios.SingleOrDefault(u => u.NombreUsuario == userName);
+
+            if(user != null)
+            {
+                //Verificar la contraseña actual
+                if(HashHelper.VerifyPass(currentPass, user.Contrasena, userName))
+                {
+                    //Generar el hash y salt para la nueva contraseña
+                    HashedPassword newHashedPassword = HashHelper.Hash(nuevaPass, userName);
+
+                    user.Contrasena = newHashedPassword.Password;
+
+                    _context.SaveChanges();
+
+                    return Json(new { success = true, mensaje = "Contraseña actualizada correctamente." });
+                }
+                else
+                {
+                    return Json(new { success = false, mensaje = "La contraseña actual es incorrecta" });
+                }
+            }
+            else
+            {
+                return Json(new { success = false, mensaje = "Usuario no encontrado" });
+            }
+        }
+
+
     }
 }

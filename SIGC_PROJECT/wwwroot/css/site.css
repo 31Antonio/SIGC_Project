@@ -20,3 +20,8 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+#pacienteEdad::-webkit-inner-spin-button, #pacienteEdad::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

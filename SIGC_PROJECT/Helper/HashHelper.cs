@@ -6,17 +6,20 @@ namespace SIGC_PROJECT.Helper
 {
     public class HashHelper
     {
-        //METODO PARA GENERAR UN HASH Y SALT PARA UNA CONTRASEÑA
-        public static HashedPassword Hash(string password)
+        //METODO PARA CREAR UN SALT DERIVADO DEL NOMBRE DE USUARIO
+        private static byte[] SaltDerivada(string username)
         {
-            //Crear un array de bytes para el salt (especificamente 16)
-            byte[] salt = new byte[128 / 8];
-
-            //Genera números aleatorios para llenar el salt
-            using (var rng = RandomNumberGenerator.Create())
+            using (var sha256 = SHA256.Create())
             {
-                rng.GetBytes(salt); //Aquí se llena el salt con los numero generados
+                return sha256.ComputeHash(Encoding.UTF8.GetBytes(username));
             }
+        }
+
+        //METODO PARA GENERAR UN HASH Y SALT PARA UNA CONTRASEÑA
+        public static HashedPassword Hash(string password, string username)
+        {
+            //Crear un array de bytes para el salt (sacado del nombre de usuario)
+            byte[] salt = SaltDerivada(username);
 
             //Generar el hash de la contraseña usando PBKDF2 con HMACSHA256
             string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
@@ -26,17 +29,19 @@ namespace SIGC_PROJECT.Helper
                 iterationCount: 10000,
                 numBytesRequested: 256 / 8)); // Longitud del hash en bytes (32 bytes)
 
-                return new HashedPassword() { Password = hashed,  Salt = Convert.ToBase64String(salt) };
+                return new HashedPassword() { Password = hashed};
 
         }
 
         //METODO PARA VERIFICAR QUE LA CONTRASEÑA COINCIDA CON SU HASH 
-        public static bool CheckHash(string attemptedPassword, string hash, string salt)
+        public static bool CheckHash(string attemptedPassword, string hash, string username)
         {
-            //Generar el hash de la contraseña usando el salt que proporciona la base de datos
+            //Generar el hash de la contraseña usando el salt que proporciona el metodo
+            byte[] salt = SaltDerivada(username);
+
             string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                 password: attemptedPassword,
-                salt: Convert.FromBase64String(salt),
+                salt: salt,
                 prf: KeyDerivationPrf.HMACSHA256,
                 iterationCount: 10000,
                 numBytesRequested: 256 / 8 ));
@@ -45,11 +50,11 @@ namespace SIGC_PROJECT.Helper
             return hash == hashed;
         }
 
-        // Método para obtener un hash SHA256 de una contraseña y un salt
-        public static byte[] GetHash(string password, string salt)
+        // METODO PARA OBTENER UN HASH SHA256 DE UNA CONTRASEÑA Y EL NOMBRE DE USUARIO
+        public static byte[] GetHash(string password, string username)
         {
             // Combinar el salt y la contraseña en un solo string y convertirlo a bytes
-            byte[] unhashedBytes = Encoding.Unicode.GetBytes(string.Concat(salt, password));
+            byte[] unhashedBytes = Encoding.Unicode.GetBytes(string.Concat(username, password));
 
             //Crear una instancia de SHA256Managed para generar el hash
             SHA256Managed sha256 = new SHA256Managed();
@@ -58,11 +63,17 @@ namespace SIGC_PROJECT.Helper
             byte[] hashedBytes = sha256.ComputeHash(unhashedBytes);
             return hashedBytes;
         }
+
+        // METODO PARA VERIFICAR LA CONTRASEÑA ANTES DE ACTUALIZAR
+        public static bool VerifyPass (string currentPassword, string dbPassword, string userName)
+        {
+            var hashedPassword = Hash(currentPassword, userName);
+            return hashedPassword.Password == dbPassword;
+        }
     }
 
     public class HashedPassword
     {
         public string Password { get; set; }
-        public string Salt { get; set; }
     }
 }

@@ -4,11 +4,15 @@
     ViewData["Title"] = "Registros Pendientes";
 }
 
-<table class="table table-bordered w-100">
+<h1 class="mt-5 mb-5" style="font-size: 2.3em;">Registros Pendientes</h1>
+
+<table class="table w-100">
     <thead>
-        <tr>Nombre Usuario</tr>
-        <tr>Fecha Solicitud</tr>
-        <tr>Acciones</tr>
+        <tr>
+            <th>Nombre Usuario</th>
+            <th>Fecha Solicitud</th>
+            <th></th>
+        </tr>
     </thead>
     <tbody>
 
@@ -17,7 +21,7 @@
             <tr>
                 <td>@solicitud.Nombre</td>
                 <td>@solicitud.FechaSolicitud</td>
-                <td>
+                <td class="text-center">
                     <form method="post" asp-action="AprobarRegistro" asp-route-id="@solicitud.IdSolicitud">
                         <button type="submit" class="btn btn-primary">Aprobar</button>
                     </form>

@@ -21,9 +21,13 @@ public partial class Secretarium
 
     public int? IdUsuario { get; set; }
 
+    public int? IdDoctor { get; set; }
+
     public virtual ICollection<Cita> Cita { get; set; } = new List<Cita>();
 
-    public virtual ICollection<Doctor> Doctors { get; set; } = new List<Doctor>();
+    //public virtual ICollection<Doctor> Doctors { get; set; } = new List<Doctor>();
+
+    public virtual Doctor? IdDoctorNavegation { get; set; }
 
     public virtual Usuario? IdUsuarioNavigation { get; set; }
 }

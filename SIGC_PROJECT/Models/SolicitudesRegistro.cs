@@ -11,8 +11,6 @@ public partial class SolicitudesRegistro
 
     public string? Clave { get; set; }
 
-    public string? Sal { get; set; }
-
     public DateTime? FechaSolicitud { get; set; }
 
     public int? IdSecretaria { get; set; }

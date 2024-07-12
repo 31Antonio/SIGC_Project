@@ -11,8 +11,6 @@ public partial class Usuario
 
     public string? Contrasena { get; set; }
 
-    public string? Salt { get; set; }
-
     public DateTime? FechaUltimoAcceso { get; set; }
 
     public virtual ICollection<Doctor> Doctors { get; set; } = new List<Doctor>();

@@ -64,7 +64,7 @@ namespace SIGC_PROJECT.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SecretariaId"] = new SelectList(_context.Secretaria, "SecretariaId", "Nombre", doctor.SecretariaId);
+            //ViewData["SecretariaId"] = new SelectList(_context.Secretaria, "SecretariaId", "Nombre", doctor.SecretariaId);
             return View(doctor);
         }
 
@@ -81,7 +81,7 @@ namespace SIGC_PROJECT.Controllers
             {
                 return NotFound();
             }
-            ViewData["SecretariaId"] = new SelectList(_context.Secretaria, "SecretariaId", "Nombre", doctor.SecretariaId);
+            //ViewData["SecretariaId"] = new SelectList(_context.Secretaria, "SecretariaId", "Nombre", doctor.SecretariaId);
             return View(doctor);
         }
 
@@ -117,7 +117,7 @@ namespace SIGC_PROJECT.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SecretariaId"] = new SelectList(_context.Secretaria, "SecretariaId", "Nombre", doctor.SecretariaId);
+            //ViewData["SecretariaId"] = new SelectList(_context.Secretaria, "SecretariaId", "Nombre", doctor.SecretariaId);
             return View(doctor);
         }
 

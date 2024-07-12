@@ -17,8 +17,6 @@ public partial class Doctor
 
     public string NumeroExequatur { get; set; } = null!;
 
-    public int? SecretariaId { get; set; }
-
     public string? Telefono { get; set; }
 
     public string? CorreoElectronico { get; set; }
@@ -37,5 +35,6 @@ public partial class Doctor
 
     public virtual ICollection<Receta> Receta { get; set; } = new List<Receta>();
 
-    public virtual Secretarium? Secretaria { get; set; }
+    public virtual ICollection<Secretarium> Secretaria { get; set; }
+    //public virtual Secretarium? Secretaria { get; set; }
 }

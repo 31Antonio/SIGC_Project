@@ -59,7 +59,7 @@ namespace SIGC_PROJECT.Controllers
                 }
                 else
                 {
-                    if (HashHelper.CheckHash(UsuarioVM.contrasena, result.Contrasena, result.Salt))
+                    if (HashHelper.CheckHash(UsuarioVM.contrasena, result.Contrasena, result.NombreUsuario))
                     {
 
                         if (result.UsuarioRoles.Count == 0)
@@ -80,6 +80,10 @@ namespace SIGC_PROJECT.Controllers
                         var principal = new ClaimsPrincipal(identity);
                         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal,
                             new AuthenticationProperties { ExpiresUtc = DateTime.Now.AddDays(1), IsPersistent = true });
+
+                        //Guardar la fecha de último acceso del usuario
+                        result.FechaUltimoAcceso = DateTime.Now;
+                        _context.SaveChanges();
 
                         return Ok();
                     }

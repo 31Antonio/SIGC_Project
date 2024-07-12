@@ -73,8 +73,7 @@ namespace SIGC_PROJECT.Controllers
                 var nuevoUsuario = new Usuario
                 {
                     NombreUsuario = solicitud.Nombre,
-                    Contrasena = solicitud.Clave,
-                    Salt = solicitud.Sal
+                    Contrasena = solicitud.Clave
                 };
 
                 _context.Usuarios.Add(nuevoUsuario);

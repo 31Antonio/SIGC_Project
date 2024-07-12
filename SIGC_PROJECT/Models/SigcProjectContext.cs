@@ -212,7 +212,6 @@ public partial class SigcProjectContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("numero_exequatur");
-            entity.Property(e => e.SecretariaId).HasColumnName("secretaria_id");
             entity.Property(e => e.Telefono)
                 .HasMaxLength(15)
                 .IsUnicode(false)
@@ -222,9 +221,9 @@ public partial class SigcProjectContext : DbContext
                 .HasForeignKey(d => d.IdUsuario)
                 .HasConstraintName("FK__Doctor__id_usuar__09A971A2");
 
-            entity.HasOne(d => d.Secretaria).WithMany(p => p.Doctors)
-                .HasForeignKey(d => d.SecretariaId)
-                .HasConstraintName("FK__Doctor__secretar__60A75C0F");
+            //entity.HasOne(d => d.Secretaria).WithMany(p => p.Doctors)
+            //    .HasForeignKey(d => d.SecretariaId)
+            //    .HasConstraintName("FK__Doctor__secretar__60A75C0F");
         });
 
         modelBuilder.Entity<Paciente>(entity =>
@@ -254,7 +253,7 @@ public partial class SigcProjectContext : DbContext
                 .HasColumnName("direccion");
             entity.Property(e => e.Edad).HasColumnName("edad");
             entity.Property(e => e.FechaNacimiento)
-                .HasColumnType("datetime")
+                .HasColumnType("date")
                 .HasColumnName("fecha_nacimiento");
             entity.Property(e => e.Genero)
                 .HasMaxLength(15)
@@ -346,6 +345,7 @@ public partial class SigcProjectContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("horario_trabajo");
             entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
+            entity.Property(e => e.IdDoctor).HasColumnName("id_doctor");
             entity.Property(e => e.Nombre)
                 .HasMaxLength(100)
                 .IsUnicode(false)
@@ -358,6 +358,10 @@ public partial class SigcProjectContext : DbContext
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Secretaria)
                 .HasForeignKey(d => d.IdUsuario)
                 .HasConstraintName("FK__Secretari__id_us__08B54D69");
+
+            entity.HasOne(d => d.IdDoctorNavegation).WithMany(p => p.Secretaria)
+                  .HasForeignKey(d => d.IdDoctor)
+                  .HasConstraintName("FK__Secretari__id_do__3B40CD36");
         });
 
         modelBuilder.Entity<SolicitudesRegistro>(entity =>
@@ -378,10 +382,6 @@ public partial class SigcProjectContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("nombre");
-            entity.Property(e => e.Sal)
-                .HasMaxLength(250)
-                .IsUnicode(false)
-                .HasColumnName("sal");
         });
 
         modelBuilder.Entity<Usuario>(entity =>
@@ -402,10 +402,6 @@ public partial class SigcProjectContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("nombre_usuario");
-            entity.Property(e => e.Salt)
-                .HasMaxLength(250)
-                .IsUnicode(false)
-                .HasColumnName("salt");
 
             //entity.HasMany(d => d.IdRols).WithMany(p => p.IdUsuarios)
             //    .UsingEntity<Dictionary<string, object>>(

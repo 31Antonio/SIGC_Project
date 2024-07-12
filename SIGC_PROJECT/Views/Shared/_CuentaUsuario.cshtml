@@ -1,0 +1,36 @@
+﻿@using SIGC_PROJECT.Helper;
+
+<h1>Cuenta</h1>
+
+<form method="post" asp-action="Usuario">
+
+    <input id="nombreUsu" value="@SessionHelper.GetName(User)" hidden />
+
+    <div class="row">
+        <div class="form-group col-md-3">
+            <label>Contraseña Actual</label>
+            <input type="password" id="currentPassword" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-3">
+            <label>Contraseña</label>
+            <input type="password" id="newPassword" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-3">
+            <label>Confirmar Contraseña</label>
+            <input type="password" id="confirmPass" class="form-control" />
+        </div>
+    </div>
+
+    <div class="alert alert-danger" id="alertPass" style="display: none;"></div>
+
+    <div class="row">
+        <button type="button" class="btn btn-primary" id="btnCambiar">Cambiar Contraseña</button>
+    </div>
+
+</form>
