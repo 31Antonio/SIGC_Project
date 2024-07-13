@@ -34,7 +34,7 @@
 
     <!-- Custom Theme Style -->
     <link href="~/css/custom.min.css" rel="stylesheet">
-    
+
 </head>
 
 <body class="nav-md">
@@ -43,11 +43,11 @@
         <div class="main_container">
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
-                    
+
                     <div class="navbar nav_title" style="border: 0;">
                         <a asp-controller="Home" asp-action="Index" class="site_title"><i class="fa fa-cog"></i> <span>Configuración</span></a>
                     </div>
-               
+
                     <br />
                     <br />
                     <br />
@@ -56,19 +56,18 @@
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                         <div class="menu_section">
                             <ul class="nav side-menu">
-                                
+
                                 <li class="opcionesMenu" style="border-top:3px solid #0A1F36;">
-                                    <a href="#" id="infoPaciente">Informacion General</a>
+                                    <a href="#" id="infoSecretaria">Informacion General</a>
                                 </li>
 
                                 <li class="opcionesMenu">
-                                    <a href="#" id="passwordPaciente">Contraseña</a>
+                                    <a href="#" id="passwordSecretaria">Contraseña</a>
                                 </li>
                             </ul>
                         </div>
                     </div>
                     <!-------------------------->
-
                     <!-----Footer del Menu----->
                     <div class="sidebar-footer hidden-small" style="background-color: #172D44 !important;">
                         <a data-toggle="tooltip" data-placement="top" title="Cerrar Sesión" asp-controller="Login" asp-action="Logout">
@@ -93,7 +92,7 @@
                                     <i class="fa fa-user" style="padding-right: 9px;"></i>@SessionHelper.GetName(User)
                                 </a>
                                 <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" asp-action="Configuracion" asp-controller="Pacientes">Perfil</a>
+                                    <a class="dropdown-item" asp-action="Configuracion" asp-controller="Secretariums">Perfil</a>
                                     <a class="dropdown-item" asp-controller="Login" asp-action="Logout"><i class="fa fa-sign-out pull-right"></i>Cerrar Sesión</a>
                                 </div>
                             </li>
@@ -103,12 +102,10 @@
                 </div>
             </div>
             <!------------------------->
-
             <!-- Contenido de la pagina -->
             <div class="right_col" role="main" id="content_configPaciente">
             </div>
             <!---------------------------->
-
             <!-- Contenido del Footer -->
             <footer>
             </footer>
@@ -166,11 +163,11 @@
 
 <style>
     .opcionesMenu {
-        border-bottom:3px solid #0A1F36;
+        border-bottom: 3px solid #0A1F36;
         transition: background-color 0.3s linear;
     }
 
-    .opcionesMenu:hover{
-        background-color: #0A1F36;
-    }
+        .opcionesMenu:hover {
+            background-color: #0A1F36;
+        }
 </style>

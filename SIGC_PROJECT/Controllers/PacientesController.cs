@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SIGC_PROJECT.Helper;
 using SIGC_PROJECT.Models;
 
 namespace SIGC_PROJECT.Controllers
@@ -27,12 +28,16 @@ namespace SIGC_PROJECT.Controllers
             return View(await _context.Pacientes.ToListAsync());
         }
 
+        #region ===== Vistas de Configuracion =====
+
         [Authorize(Roles = "Paciente")]
+        [FiltroRegistro]
         public async Task<IActionResult> Configuracion()
         {
             return View();
         }
 
+        [Authorize(Roles = "Paciente")]
         public async Task<IActionResult> FormEdit()
         {
             //Obtener el id del usuario
@@ -50,10 +55,13 @@ namespace SIGC_PROJECT.Controllers
             return PartialView("_FormEditPartialPaciente", model);
         }
 
+        [Authorize(Roles = "Paciente")]
         public IActionResult FormPassword()
         {
             return PartialView("_CuentaUsuario");
         }
+
+        #endregion
 
         // GET: Pacientes/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -107,8 +115,6 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // POST: Pacientes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PacienteId,Cedula,Nombre,Apellido,FechaNacimiento,Edad,Genero,Direccion,Telefono,CorreoElectronico,HistorialMedico,IdUsuario")] Paciente paciente)
@@ -139,8 +145,6 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // POST: Pacientes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("PacienteId,Cedula,Nombre,Apellido,FechaNacimiento,Edad,Genero,Direccion,Telefono,CorreoElectronico,HistorialMedico,IdUsuario")] Paciente paciente)

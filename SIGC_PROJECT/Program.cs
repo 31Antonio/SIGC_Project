@@ -70,19 +70,6 @@ app.Use(async (context, next) =>
         }
     }
 
-    //if(!user.Identity.IsAuthenticated && !context.Request.Path.StartsWithSegments("/Login") 
-    //   && !context.Request.Path.StartsWithSegments("/RegistrosUsuario") 
-    //   && !context.Request.Path.StartsWithSegments("/PrincipalPage"))
-    //{
-    //    context.Response.Redirect("/PrincipalPage/Index");
-    //    return;
-    //}
-    //else if(user.Identity.IsAuthenticated && context.Request.Path.StartsWithSegments("/PrincipalPage"))
-    //{
-    //    context.Response.Redirect("/Home/Index");
-    //    return;
-    //}
-
     await next();
 });
 

@@ -20,43 +20,10 @@ namespace SIGC_PROJECT.Controllers
             _logger = logger;
         }
 
+        [FiltroRegistro]
         public async Task<IActionResult> Index()
         {
-            //Obtener el id del usuario
-            var idUser = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (idUser == null)
-            {
-                return Unauthorized();
-            }
-
-            //Obtener el rol del usuario 
-            var rolActual = _context.UsuarioRols.Where(r => r.IdUsuario == int.Parse(idUser))
-                                                .Select(r => r.Rol.Nombre).FirstOrDefault();
-
-            if (rolActual == null)
-            {
-                return Forbid();
-            }
-
-            if (rolActual == "Paciente")
-            {
-                var paciente = await _context.Pacientes.FirstOrDefaultAsync(p => p.IdUsuario == int.Parse(idUser));
-
-                if (paciente == null)
-                {
-                    return RedirectToAction("Create", "Pacientes");
-                }
-                else
-                {
-                    return View();
-                }
-            }
-            else
-            {
-                //Redirigir a la vista de index
-                return View();
-            }
+            return View();
         }
 
 

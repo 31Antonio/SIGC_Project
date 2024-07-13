@@ -21,28 +21,14 @@ namespace SIGC_PROJECT.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Administrador,Doctor")]
         // GET: Secretariums
         public async Task<IActionResult> Index()
         {
             return View(await _context.Secretaria.ToListAsync());
         }
 
-        [Authorize(Roles = "Secretaria")]
-        [HttpGet]
-        public async Task<IActionResult> RegistrosPendientes()
-        {
-            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (userId == null)
-            {
-                return Unauthorized();
-            }
-
-            var solicitudes = _context.SolicitudesRegistros.Where(s => s.IdSecretaria == int.Parse(userId)).ToList();
-
-            return View(solicitudes);
-        }
-
+        [Authorize(Roles = "Administrador,Doctor")]
         // GET: Secretariums/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -61,6 +47,29 @@ namespace SIGC_PROJECT.Controllers
             return View(secretarium);
         }
 
+        [Authorize(Roles = "Secretaria")]
+        public async Task<IActionResult> Configuracion()
+        {
+            return View();
+        }
+
+        #region ===== APROBAR SOLICITUDES DE REGISTRO =====
+
+        [Authorize(Roles = "Secretaria")]
+        [HttpGet]
+        public async Task<IActionResult> RegistrosPendientes()
+        {
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var solicitudes = _context.SolicitudesRegistros.Where(s => s.IdSecretaria == int.Parse(userId)).ToList();
+
+            return View(solicitudes);
+        }
 
         [HttpPost]
         public async Task<IActionResult> AprobarRegistro(int id)
@@ -118,15 +127,16 @@ namespace SIGC_PROJECT.Controllers
             return rolNombre != null ? rolNombre.IdRol : -1;
         }
 
+        #endregion
+
         // GET: Secretariums/Create
+        [Authorize(Roles = "Administrador,Doctor")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Secretariums/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("SecretariaId,Cedula,Nombre,Apellido,Telefono,CorreoElectronico,HorarioTrabajo")] Secretarium secretarium)
@@ -157,8 +167,6 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // POST: Secretariums/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("SecretariaId,Cedula,Nombre,Apellido,Telefono,CorreoElectronico,HorarioTrabajo")] Secretarium secretarium)
@@ -192,6 +200,7 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Secretariums/Delete/5
+        [Authorize(Roles = "Administrador,Doctor")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
