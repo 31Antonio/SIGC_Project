@@ -98,11 +98,6 @@
                                         {
                                             <li><a asp-controller="RegistrosUsuario" asp-action="RegistroUsuario">Registrar Usuarios</a></li>
                                         }
-
-                                        @if (User.IsInRole("Doctor"))
-                                        {
-                                            <li><a asp-controller="RegistrosUsuario" asp-action="RegistroUsuario">Registrar Usuarios Secretaria</a></li>
-                                        }
                                         
                                         @if (User.IsInRole("Secretaria"))
                                         {

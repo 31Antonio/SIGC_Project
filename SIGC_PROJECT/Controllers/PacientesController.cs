@@ -23,6 +23,7 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Pacientes
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Pacientes.ToListAsync());
@@ -129,6 +130,7 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Pacientes/Edit/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -187,6 +189,7 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Pacientes/Delete/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

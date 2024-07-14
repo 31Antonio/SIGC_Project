@@ -46,7 +46,7 @@
 
                             <div class="col-md-1 mb-3">
                                 <label asp-for="Edad" class="control-label"></label>
-                                <input asp-for="Edad" id="pacienteEdad" class="form-control" />
+                                <input asp-for="Edad" id="pacienteEdad" class="form-control" readonly />
                                 <span asp-validation-for="Edad" class="text-danger"></span>
                             </div>
 
@@ -100,5 +100,6 @@
 
 @section Scripts {
     <link href="~/css/site.css" rel="stylesheet" />
+    <script src="~/userlib/js/pacientescripts.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
