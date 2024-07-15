@@ -60,7 +60,7 @@ namespace SIGC_PROJECT.Controllers
             }
             else
             {
-                roles = _context.Rols.ToList();
+                roles = _context.Rols.Where(r => r.Nombre == "Paciente" || r.Nombre == "Doctor").ToList();
             }
 
             ViewBag.Roles = roles;
@@ -69,21 +69,22 @@ namespace SIGC_PROJECT.Controllers
         }
 
         //METODO PARA REGISTRAR USUARIOS GENERALES
-        [BindProperty]
-        public Usuario Usuarios { get; set; }
 
         [HttpPost]
-        public async Task<IActionResult> Registrar(string nombre, string contrasena, int rol) 
+        public async Task<IActionResult> Registrar(AdminRegistro model) 
         {
-            var result = await _context.Usuarios.Where(u => u.NombreUsuario == Usuarios.NombreUsuario).SingleOrDefaultAsync();
+            var Usuario = model.Usuario;
+            var Doctor = model.Doctor;
+            var Paciente = model.Paciente;
+            var rol = model.Rol;
+
+            var result = await _context.Usuarios.Where(u => u.NombreUsuario == Usuario.NombreUsuario).SingleOrDefaultAsync();
 
             if (result != null)
             {
-                return BadRequest(new JObject()
-                {
-                    { "StatusCode", 400 },
-                    { "Mensaje", "El Usuario ya existe, por favor, seleccione otro." }
-                });
+
+                TempData["MensajeError"] = "El nombre de usuario ya existe, ingrese otro.";
+                return RedirectToAction("RegistroUsuario");
             }
             else
             {
@@ -93,32 +94,112 @@ namespace SIGC_PROJECT.Controllers
                 }
                 else
                 {
-                    var hash = HashHelper.Hash(contrasena, nombre);
-
-                    var nuevoUsuario = new Usuario()
+                    if(rol == 2)
                     {
-                        NombreUsuario = nombre,
-                        Contrasena = hash.Password
-                    };
+                        var cedula = await _context.Doctors.Where(d => d.Cedula == Doctor.Cedula).SingleOrDefaultAsync();
 
-                    _context.Usuarios.Add(nuevoUsuario);
-                    await _context.SaveChangesAsync();
+                        if (cedula != null)
+                        {
+                            TempData["MensajeError"] = "Ya hay un doctor registrado con este número de cédula";
+                            return RedirectToAction("RegistroUsuario");
+                        }
+                        else if(cedula == null)
+                        {
+                            var hash = HashHelper.Hash(Usuario.Contrasena, Usuario.NombreUsuario);
 
-                    Usuarios.Contrasena = "";
+                            var nuevoUsuario = new Usuario()
+                            {
+                                NombreUsuario = Usuario.NombreUsuario,
+                                Contrasena = hash.Password
+                            };
 
-                    var userRole = new UsuarioRol()
+                            _context.Usuarios.Add(nuevoUsuario);
+                            await _context.SaveChangesAsync();
+
+                            var userRole = new UsuarioRol()
+                            {
+                                IdUsuario = nuevoUsuario.IdUsuario,
+                                IdRol = rol
+                            };
+
+                            _context.UsuarioRols.Add(userRole);
+                            await _context.SaveChangesAsync();
+
+                            var nuevoDoctor = new Doctor()
+                            {
+                                Cedula = Doctor.Cedula,
+                                Nombre = Doctor.Nombre,
+                                Apellido = Doctor.Apellido,
+                                Especialidad = Doctor.Especialidad,
+                                NumeroExequatur = Doctor.NumeroExequatur,
+                                Telefono = Doctor.Telefono,
+                                CorreoElectronico = Doctor.CorreoElectronico,
+                                IdUsuario = nuevoUsuario.IdUsuario
+                            };
+
+                            _context.Doctors.Add(nuevoDoctor);
+                            await _context.SaveChangesAsync();
+
+                            return RedirectToAction("Index", "Doctors");
+                        }
+                    } 
+                    else if (rol == 4)
                     {
-                        IdUsuario = nuevoUsuario.IdUsuario,
-                        IdRol = rol
-                    };
+                        var cedulaP = await _context.Pacientes.Where(p => p.Cedula == Paciente.Cedula).SingleOrDefaultAsync();
+                        
+                        if(cedulaP != null)
+                        {
+                            TempData["MensajeError"] = "Ya hay un paciente registrado con este número de cédula";
+                            return RedirectToAction("RegistroUsuario");
+                        }
+                        else
+                        {
+                            var hash = HashHelper.Hash(Usuario.Contrasena, Usuario.NombreUsuario);
 
-                    _context.UsuarioRols.Add(userRole);
-                    await _context.SaveChangesAsync();
+                            var nuevoUsuario = new Usuario()
+                            {
+                                NombreUsuario = Usuario.NombreUsuario,
+                                Contrasena = hash.Password
+                            };
 
-                    return Created($"/Usuarios/{Usuarios.IdUsuario}", Usuarios);
+                            _context.Usuarios.Add(nuevoUsuario);
+                            await _context.SaveChangesAsync();
+
+                            var userRole = new UsuarioRol()
+                            {
+                                IdUsuario = nuevoUsuario.IdUsuario,
+                                IdRol = rol
+                            };
+
+                            _context.UsuarioRols.Add(userRole);
+                            await _context.SaveChangesAsync();
+
+                            var nuevoPaciente = new Paciente()
+                            {
+                                Cedula = Paciente.Cedula,
+                                Nombre = Paciente.Nombre,
+                                Apellido = Paciente.Apellido,
+                                FechaNacimiento = Paciente.FechaNacimiento,
+                                Edad = Paciente.Edad,
+                                Genero = Paciente.Genero,
+                                Direccion = Paciente.Direccion,
+                                Telefono = Paciente.Telefono,
+                                CorreoElectronico = Paciente.CorreoElectronico,
+                                IdUsuario = nuevoUsuario.IdUsuario
+                            };
+
+                            _context.Pacientes.Add(nuevoPaciente);
+                            await _context.SaveChangesAsync();
+
+                            return RedirectToAction("Index", "Pacientes");
+                        }
+
+                    }
+
                 }
             }
 
+            return Json(new { Mensaje = "Ha ocurrido un error" });
         }
 
 
