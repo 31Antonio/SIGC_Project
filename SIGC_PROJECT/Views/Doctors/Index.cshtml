@@ -33,9 +33,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.CorreoElectronico)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Secretaria)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -63,9 +60,6 @@
             <td>
                 @Html.DisplayFor(modelItem => item.CorreoElectronico)
             </td>
-            @* <td>
-                @Html.DisplayFor(modelItem => item.Secretaria.SecretariaId)
-            </td> *@
             <td>
                 <a asp-action="Edit" class=" btn btn-warning" asp-route-id="@item.DoctorId">Edit</a> |
                     <a asp-action="Details" class=" btn btn-primary" asp-route-id="@item.DoctorId">Details</a> |

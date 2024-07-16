@@ -1,5 +1,4 @@
-﻿
-document.addEventListener("DOMContentLoaded", function () {
+﻿document.addEventListener("DOMContentLoaded", function () {
 
     //Funcion para cargar el contenido en el div del mainContent
     function cargarContenido(url, contenedorId) {
@@ -16,20 +15,21 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => console.log('Ha ocurrido un error', error))
     }
 
-    // ========== CONFIGURACION PACIENTE ========== //
-    // #region ----- Mostrar el contenido para la configuracion del paciente -----//
+    // ========== CONFIGURACION DOCTOR ========== //
 
-    //Cargar el formulario por defecto al cargar la pagina
-    cargarContenido("/Pacientes/FormEdit", "content_configPaciente");
+    // #region
 
-    //Al dar click en Informacion General
-    document.getElementById("infoPaciente").addEventListener('click', function () {
-        cargarContenido("/Pacientes/FormEdit", "content_configPaciente");
+    //Para cuando cargue la vista
+    cargarContenido("/Doctors/FormEdit", "content_configDoctor")
+
+    //Click en Informacion General
+    document.getElementById("infoDoctor").addEventListener('click', function () {
+        cargarContenido("/Doctors/FormEdit", "content_configDoctor");
     });
 
-    // ------------------- Al dar click en Cuenta --------------------//
-    document.getElementById("passwordPaciente").addEventListener('click', function () {
-        cargarContenido("/Pacientes/FormPassword", "content_configPaciente");
+    //Click en Contraseña
+    document.getElementById("passwordDoctor").addEventListener('click', function () {
+        cargarContenido("/Doctors/FormPassword", "content_configDoctor");
 
         setTimeout(function () {
             //EVENTO PARA EL BOTON DE ACTUALIZAR CONTRASEÑA
@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         modalMensaje.classList.remove('alert-success');
                                         modalMensaje.innerText = '';
                                     }, 3000);
-                                    
+
                                 }
                                 else {
 
@@ -97,6 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         $('#ModalAlert').modal('hide');
                                     }, 3000);
                                 }
+
                             },
                             error: function (error) {
                                 console.error("Ha ocurrido un error: ", error);
@@ -107,9 +108,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }, 1000);
     });
-    //----------------------------------------------------------------//
 
     // #endregion
-    //=============================================//
+
+    //================================================//
 
 });

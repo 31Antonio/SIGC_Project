@@ -35,6 +35,6 @@ public partial class Doctor
 
     public virtual ICollection<Receta> Receta { get; set; } = new List<Receta>();
 
-    public virtual ICollection<Secretarium> Secretaria { get; set; }
+    public virtual ICollection<Secretarium> Secretaria { get; set; } = new List<Secretarium>();
     //public virtual Secretarium? Secretaria { get; set; }
 }

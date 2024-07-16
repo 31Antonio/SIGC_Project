@@ -74,22 +74,19 @@
                                 <li>
                                     <a><i class="fa fa-edit"></i> Formularios <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a asp-controller="Doctors" asp-action="Index">Doctores</a></li>
+                                        
 
                                         @if (User.IsInRole("Administrador"))
                                         {
+                                            <li><a asp-controller="Doctors" asp-action="Index">Doctores</a></li>
                                             <li><a asp-controller="Recetas" asp-action="Index">Recetas</a></li>
-                                        }
-
-                                        @if (User.IsInRole("Administrador"))
-                                        {
                                             <li><a asp-controller="Pacientes" asp-action="Index">Pacientes</a></li>
                                         }
                                         
                                         <li><a asp-controller="Citas" asp-action="Index">Citas</a></li>
                                         <li><a asp-controller="Consultas" asp-action="Index">Consulta</a></li>
 
-                                        @if(User.IsInRole("Administrador") || User.IsInRole("Doctor"))
+                                        @if(User.IsInRole("Doctor"))
                                         {
                                             <li><a asp-controller="Secretariums" asp-action="Index">Secretarias</a></li>
                                         }
@@ -106,7 +103,11 @@
                                             </li>
                                         }
 
-                                        <li><a asp-controller="DisponibilidadDoctors" asp-action="Index">Horarios Doctores</a></li>
+                                        @if (User.IsInRole("Administrador") || User.IsInRole("Doctor"))
+                                        {
+                                            <li><a asp-controller="DisponibilidadDoctors" asp-action="Index">Horarios Doctores</a></li>
+                                        }
+                                        
                                     </ul>
                                 </li>
                                 
@@ -179,8 +180,9 @@
                                         <a class="dropdown-item" asp-action="Configuracion" asp-controller="Secretariums">Perfil</a>
                                     }
 
-                                    @if(User.IsInRole("Administrador")){
-                                        <a class="dropdown-item" href="javascript:;">Perfil</a>
+                                    @if (User.IsInRole("Doctor"))
+                                    {
+                                        <a class="dropdown-item" asp-action="Configuracion" asp-controller="Doctors">Perfil</a>
                                     }
                                     <a class="dropdown-item" asp-controller="Login" asp-action="Logout"><i class="fa fa-sign-out pull-right"></i>Cerrar Sesión</a>
                                 </div>

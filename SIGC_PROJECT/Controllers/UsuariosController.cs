@@ -171,21 +171,28 @@ namespace SIGC_PROJECT.Controllers
 
             if(user != null)
             {
-                //Verificar la contraseña actual
-                if(HashHelper.VerifyPass(currentPass, user.Contrasena, userName))
+                if (nuevaPass.Length < 5)
                 {
-                    //Generar el hash y salt para la nueva contraseña
-                    HashedPassword newHashedPassword = HashHelper.Hash(nuevaPass, userName);
-
-                    user.Contrasena = newHashedPassword.Password;
-
-                    _context.SaveChanges();
-
-                    return Json(new { success = true, mensaje = "Contraseña actualizada correctamente." });
+                    return Json(new { success = false, mensaje = "La contraseña debe tener más de 5 caracteres." });
                 }
                 else
                 {
-                    return Json(new { success = false, mensaje = "La contraseña actual es incorrecta" });
+                    //Verificar la contraseña actual
+                    if (HashHelper.VerifyPass(currentPass, user.Contrasena, userName))
+                    {
+                        //Generar el hash y salt para la nueva contraseña
+                        HashedPassword newHashedPassword = HashHelper.Hash(nuevaPass, userName);
+
+                        user.Contrasena = newHashedPassword.Password;
+
+                        _context.SaveChanges();
+
+                        return Json(new { success = true, mensaje = "Contraseña actualizada correctamente." });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, mensaje = "La contraseña actual es incorrecta" });
+                    }
                 }
             }
             else

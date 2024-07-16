@@ -28,7 +28,7 @@ namespace SIGC_PROJECT.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Administrador,Doctor,Secretaria")]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> RegistroUsuario()
         {
             //Obtener el id del usuario
@@ -50,20 +50,12 @@ namespace SIGC_PROJECT.Controllers
 
             //Filtrar los datos basados en el Rol actual
             List<Rol> roles;
-            if (rolActual == "Secretaria")
-            {
-                roles = _context.Rols.Where(r => r.Nombre == "Paciente").ToList();
-            }
-            else if (rolActual == "Doctor")
-            {
-                roles = _context.Rols.Where(r => r.Nombre == "Secretaria").ToList();
-            }
-            else
-            {
-                roles = _context.Rols.Where(r => r.Nombre == "Paciente" || r.Nombre == "Doctor").ToList();
-            }
 
-            ViewBag.Roles = roles;
+            if (rolActual == "Administrador") 
+            { 
+                roles = _context.Rols.Where(r => r.Nombre == "Paciente" || r.Nombre == "Doctor").ToList();
+                ViewBag.Roles = roles;
+            }
 
             return View();
         }

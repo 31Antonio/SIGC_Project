@@ -1,1 +1,183 @@
-﻿
+﻿@using SIGC_PROJECT.Helper;
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="images/favicon.ico" type="image/ico" />
+
+    <title>Configurar</title>
+
+    <!-- Bootstrap -->
+    <link href="~/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="~/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="~/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="~/iCheck/skins/flat/green.css" rel="stylesheet">
+
+    <!-- bootstrap-progressbar -->
+    <link href="~/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <!-- JQVMap -->
+    <link href="~/jqvmap/dist/jqvmap.min.css" rel="stylesheet" />
+    <!-- bootstrap-daterangepicker -->
+    <link href="~/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="~/css/custom.min.css" rel="stylesheet">
+
+</head>
+
+<body class="nav-md">
+
+    <div class="container body">
+        <div class="main_container">
+            <div class="col-md-3 left_col">
+                <div class="left_col scroll-view">
+
+                    <div class="navbar nav_title" style="border: 0;">
+                        <a asp-controller="Home" asp-action="Index" class="site_title"><i class="fa fa-cog"></i> <span>Configuración</span></a>
+                    </div>
+
+                    <br />
+                    <br />
+                    <br />
+
+                    <!-- MODAL PARA MENSAJES -->
+                    <div class="modal fade" id="ModalAlert" backdrop="false" tabindex="-1" aria-labelledby="ModalAlertLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div id="alertModalMensaje" class="alert"></div>
+                        </div>
+                    </div>
+                    <!------------------------->
+                    <!-------Menu Lateral------->
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                        <div class="menu_section">
+                            <ul class="nav side-menu">
+
+                                <li class="opcionesMenu" style="border-top:3px solid #0A1F36;">
+                                    <a href="#" id="infoDoctor">Informacion General</a>
+                                </li>
+
+                                <li class="opcionesMenu">
+                                    <a href="#" id="passwordDoctor">Contraseña</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-------------------------->
+                    <!-----Footer del Menu----->
+                    <div class="sidebar-footer hidden-small" style="background-color: #172D44 !important;">
+                    </div>
+                    <!------------------------->
+
+                </div>
+            </div>
+
+            <!-- Barra de Navegacion -->
+            <div class="top_nav">
+                <div class="nav_menu">
+                    <div class="nav toggle">
+                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                    </div>
+                    <nav class="nav navbar-nav">
+                        <ul class=" navbar-right">
+                            <li class="nav-item dropdown open" style="padding-left: 15px;">
+                                <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-user" style="padding-right: 9px;"></i>@SessionHelper.GetName(User)
+                                </a>
+                                <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" asp-action="Configuracion" asp-controller="Doctors">Perfil</a>
+                                    <a class="dropdown-item" asp-controller="Login" asp-action="Logout"><i class="fa fa-sign-out pull-right"></i>Cerrar Sesión</a>
+                                </div>
+                            </li>
+
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <!------------------------->
+            <!-- Contenido de la pagina -->
+            <div class="right_col" role="main" id="content_configDoctor">
+            </div>
+            <!---------------------------->
+            <!-- Contenido del Footer -->
+            <footer>
+            </footer>
+            <!-------------------------->
+
+        </div>
+    </div>
+
+</body>
+
+<!-- jQuery -->
+<script src="~/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="~/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<!-- FastClick -->
+<script src="~/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="~/nprogress/nprogress.js"></script>
+<!-- Chart.js -->
+<script src="~/Chart.js/dist/Chart.min.js"></script>
+<!-- gauge.js -->
+<script src="~/gauge.js/dist/gauge.min.js"></script>
+<!-- bootstrap-progressbar -->
+<script src="~/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+<!-- iCheck -->
+<script src="~/iCheck/icheck.min.js"></script>
+<!-- Skycons -->
+<script src="~/skycons/skycons.js"></script>
+<!-- Flot -->
+<script src="~/Flot/jquery.flot.js"></script>
+<script src="~/Flot/jquery.flot.pie.js"></script>
+<script src="~/Flot/jquery.flot.time.js"></script>
+<script src="~/Flot/jquery.flot.stack.js"></script>
+<script src="~/Flot/jquery.flot.resize.js"></script>
+<!-- Flot plugins -->
+<script src="~/flot.orderbars/js/jquery.flot.orderBars.js"></script>
+<script src="~/flot-spline/js/jquery.flot.spline.min.js"></script>
+<script src="~/flot.curvedlines/curvedLines.js"></script>
+<!-- DateJS -->
+<script src="~/DateJS/build/date.js"></script>
+<!-- JQVMap -->
+<script src="~/jqvmap/dist/jquery.vmap.js"></script>
+<script src="~/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+<script src="~/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
+<!-- bootstrap-daterangepicker -->
+<script src="~/moment/min/moment.min.js"></script>
+<script src="~/bootstrap-daterangepicker/daterangepicker.js"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="~/js/custom.min.js"></script>
+
+<script src="~/userlib/js/configuraciond.js"></script>
+
+</html>
+
+<style>
+    .opcionesMenu {
+        border-bottom: 3px solid #0A1F36;
+        transition: background-color 0.3s linear;
+    }
+
+        .opcionesMenu:hover {
+            background-color: #0A1F36;
+        }
+
+    #ModalAlert {
+        text-align: center;
+        font-weight: bold;
+    }
+
+</style>

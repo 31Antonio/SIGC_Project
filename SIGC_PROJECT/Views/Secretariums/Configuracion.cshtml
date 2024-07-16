@@ -52,6 +52,14 @@
                     <br />
                     <br />
 
+                    <!-- MODAL PARA MENSAJES -->
+                    <div class="modal fade" id="ModalAlert" tabindex="-1" aria-labelledby="ModalAlertLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div id="alertModalMensaje" class="alert"></div>
+                        </div>
+                    </div>
+                    <!------------------------->
+
                     <!-------Menu Lateral------->
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                         <div class="menu_section">
@@ -103,7 +111,7 @@
             </div>
             <!------------------------->
             <!-- Contenido de la pagina -->
-            <div class="right_col" role="main" id="content_configPaciente">
+            <div class="right_col" role="main" id="content_configSecretaria">
             </div>
             <!---------------------------->
             <!-- Contenido del Footer -->
@@ -156,8 +164,7 @@
 
 <!-- Custom Theme Scripts -->
 <script src="~/js/custom.min.js"></script>
-
-<script src="~/userlib/js/configuracion.js"></script>
+<script src="~/userlib/js/configuracions.js"></script>
 
 </html>
 
@@ -167,7 +174,13 @@
         transition: background-color 0.3s linear;
     }
 
-        .opcionesMenu:hover {
-            background-color: #0A1F36;
-        }
+    .opcionesMenu:hover {
+        background-color: #0A1F36;
+    }
+
+    #ModalAlert {
+        text-align: center;
+        font-weight: bold;
+    }
+
 </style>

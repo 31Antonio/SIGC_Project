@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SIGC_PROJECT.Helper;
 using SIGC_PROJECT.Models;
+using SIGC_PROJECT.Models.ViewModel;
 
 namespace SIGC_PROJECT.Controllers
 {
@@ -18,12 +22,46 @@ namespace SIGC_PROJECT.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Administrador")]
         // GET: Doctors
         public async Task<IActionResult> Index()
         {
-            var sigcProjectContext = _context.Doctors.Include(d => d.Secretaria);
-            return View(await sigcProjectContext.ToListAsync());
+            return View(await _context.Doctors.ToListAsync());
         }
+
+        #region ===== VISTAS DE CONFIGURACION =====
+        [Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> Configuracion()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> FormEdit()
+        {
+            //Obtener el id del usuario
+            var idUser = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var doctorId = await _context.Doctors.Where(d => d.IdUsuario == int.Parse(idUser))
+                                           .Select(d => d.DoctorId).FirstOrDefaultAsync();
+
+            var model = await _context.Doctors.FirstOrDefaultAsync(p => p.DoctorId == doctorId);
+
+            if(model == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_FormEditPartialDoctor", model);
+        }
+
+        [Authorize(Roles = "Doctor")]
+        public IActionResult FormPassword()
+        {
+            return PartialView("_CuentaUsuario");
+        }
+
+        #endregion ================================
 
         // GET: Doctors/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -45,27 +83,94 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Doctors/Create
+        [Authorize(Roles = "Administrador")]
         public IActionResult Create()
         {
-            ViewData["SecretariaId"] = new SelectList(_context.Secretaria, "SecretariaId", "Nombre");
             return View();
         }
 
         // POST: Doctors/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DoctorId,Cedula,Nombre,Apellido,Especialidad,NumeroExequatur,SecretariaId,Telefono,CorreoElectronico")] Doctor doctor)
+        public async Task<IActionResult> Create(/*[Bind("DoctorId,Cedula,Nombre,Apellido,Especialidad,NumeroExequatur,Telefono,CorreoElectronico,IdUsuario")] */ DoctorVM jsonData)
         {
-            if (ModelState.IsValid)
+            var Usuario = jsonData.Usuario;
+            var Doctor = jsonData.Doctor;
+            var rol = jsonData.Rol;
+
+            if (string.IsNullOrEmpty(Doctor.Cedula) || string.IsNullOrEmpty(Doctor.Nombre) || string.IsNullOrEmpty(Doctor.Apellido)
+            || string.IsNullOrEmpty(Doctor.Especialidad) || string.IsNullOrEmpty(Doctor.NumeroExequatur))
             {
-                _context.Add(doctor);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                TempData["MensajeError"] = "Debe llenar los datos del doctor antes de crear el registro";
             }
-            //ViewData["SecretariaId"] = new SelectList(_context.Secretaria, "SecretariaId", "Nombre", doctor.SecretariaId);
-            return View(doctor);
+            else
+            {
+                var result = await _context.Usuarios.Where(u => u.NombreUsuario == Usuario.NombreUsuario).SingleOrDefaultAsync();
+
+                if (result != null)
+                {
+                    TempData["MensajeError"] = "El nombre de usuario ya existe, ingrese otro.";
+                }
+                else
+                {
+                    if (ModelState.IsValid)
+                    {
+                        if (Usuario.Contrasena.Length < 5)
+                        {
+                            TempData["MensajeError"] = "La contraseña debe tener 5 o más caracteres.";
+                        }
+                        else
+                        {
+                            var cedula = await _context.Doctors.Where(d => d.Cedula == Doctor.Cedula).SingleOrDefaultAsync();
+
+                            if (cedula != null)
+                            {
+                                TempData["MensajeError"] = "Ya hay un doctor registrado con este número de cédula";
+                            }
+                            else if (cedula == null)
+                            {
+                                var hash = HashHelper.Hash(Usuario.Contrasena, Usuario.NombreUsuario);
+
+                                var nuevoUsuario = new Usuario()
+                                {
+                                    NombreUsuario = Usuario.NombreUsuario,
+                                    Contrasena = hash.Password
+                                };
+
+                                _context.Usuarios.Add(nuevoUsuario);
+                                await _context.SaveChangesAsync();
+
+                                var userRole = new UsuarioRol()
+                                {
+                                    IdUsuario = nuevoUsuario.IdUsuario,
+                                    IdRol = rol
+                                };
+
+                                _context.UsuarioRols.Add(userRole);
+                                await _context.SaveChangesAsync();
+
+                                var nuevoDoctor = new Doctor()
+                                {
+                                    Cedula = Doctor.Cedula,
+                                    Nombre = Doctor.Nombre,
+                                    Apellido = Doctor.Apellido,
+                                    Especialidad = Doctor.Especialidad,
+                                    NumeroExequatur = Doctor.NumeroExequatur,
+                                    Telefono = Doctor.Telefono,
+                                    CorreoElectronico = Doctor.CorreoElectronico,
+                                    IdUsuario = nuevoUsuario.IdUsuario
+                                };
+
+                                _context.Doctors.Add(nuevoDoctor);
+                                await _context.SaveChangesAsync();
+
+                                return RedirectToAction("Details", "Doctors", new { id = nuevoDoctor.DoctorId });
+                            }
+                        }
+                    }
+                }
+            }
+            return View(jsonData);
         }
 
         // GET: Doctors/Edit/5
@@ -86,11 +191,9 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // POST: Doctors/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DoctorId,Cedula,Nombre,Apellido,Especialidad,NumeroExequatur,SecretariaId,Telefono,CorreoElectronico")] Doctor doctor)
+        public async Task<IActionResult> Edit(int id, [Bind("DoctorId,Cedula,Nombre,Apellido,Especialidad,NumeroExequatur,Telefono,CorreoElectronico,IdUsuario")] Doctor doctor)
         {
             if (id != doctor.DoctorId)
             {
@@ -115,7 +218,16 @@ namespace SIGC_PROJECT.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+
+                if (User.IsInRole("Administrador"))
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                else if (User.IsInRole("Doctor"))
+                {
+                    return RedirectToAction("Configuracion");
+                }
+
             }
             //ViewData["SecretariaId"] = new SelectList(_context.Secretaria, "SecretariaId", "Nombre", doctor.SecretariaId);
             return View(doctor);

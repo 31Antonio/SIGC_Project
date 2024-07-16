@@ -47,11 +47,40 @@ namespace SIGC_PROJECT.Controllers
             return View(secretarium);
         }
 
+        #region ===== VISTAS DE CONFIGURACION =====
+
         [Authorize(Roles = "Secretaria")]
         public async Task<IActionResult> Configuracion()
         {
             return View();
         }
+
+        [Authorize(Roles = "Secretaria")]
+        public async Task<IActionResult> FormEdit()
+        {
+            //Obtener el id del usuario
+            var idUser = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var secretariaId = await _context.Secretaria.Where(s => s.IdUsuario == int.Parse(idUser))
+                                                        .Select(s => s.SecretariaId).FirstOrDefaultAsync();
+
+            var model = await _context.Secretaria.FirstOrDefaultAsync(s => s.SecretariaId == secretariaId);
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_FormEditPartialSecretaria", model);
+        }
+
+        [Authorize(Roles = "Secretaria")]
+        public IActionResult FormPassword()
+        {
+            return PartialView("_CuentaUsuario");
+        }
+        #endregion ================================
+
 
         #region ===== APROBAR SOLICITUDES DE REGISTRO =====
 
@@ -130,7 +159,7 @@ namespace SIGC_PROJECT.Controllers
         #endregion
 
         // GET: Secretariums/Create
-        [Authorize(Roles = "Administrador,Doctor")]
+        [Authorize(Roles = "Doctor")]
         public IActionResult Create()
         {
             return View();
@@ -139,7 +168,7 @@ namespace SIGC_PROJECT.Controllers
         // POST: Secretariums/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SecretariaId,Cedula,Nombre,Apellido,Telefono,CorreoElectronico,HorarioTrabajo")] Secretarium secretarium)
+        public async Task<IActionResult> Create([Bind("SecretariaId,Cedula,Nombre,Apellido,Telefono,CorreoElectronico,HorarioTrabajo,IdUsuario,IdDoctor")] Secretarium secretarium)
         {
             if (ModelState.IsValid)
             {
@@ -169,7 +198,7 @@ namespace SIGC_PROJECT.Controllers
         // POST: Secretariums/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SecretariaId,Cedula,Nombre,Apellido,Telefono,CorreoElectronico,HorarioTrabajo")] Secretarium secretarium)
+        public async Task<IActionResult> Edit(int id, [Bind("SecretariaId,Cedula,Nombre,Apellido,Telefono,CorreoElectronico,HorarioTrabajo,IdUsuario,IdDoctor")] Secretarium secretarium)
         {
             if (id != secretarium.SecretariaId)
             {
@@ -194,13 +223,22 @@ namespace SIGC_PROJECT.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+
+                if (User.IsInRole("Administrador"))
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                else if (User.IsInRole("Secretaria"))
+                {
+                    return RedirectToAction("Configuracion");
+                }
+
             }
             return View(secretarium);
         }
 
         // GET: Secretariums/Delete/5
-        [Authorize(Roles = "Administrador,Doctor")]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
