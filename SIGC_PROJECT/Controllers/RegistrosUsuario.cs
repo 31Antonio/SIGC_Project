@@ -219,7 +219,7 @@ namespace SIGC_PROJECT.Controllers
             }
             else
             {
-                if (!ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
                     //Generar el Hash y el Salt de la clave
                     HashedPassword hashedPassword = HashHelper.Hash(pacienteVM.contrasena, pacienteVM.nombre);

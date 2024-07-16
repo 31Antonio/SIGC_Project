@@ -82,6 +82,13 @@
 
                         </div>
 
+                        <div id="mensaje">
+                            @if (TempData["MensajeError"] != null)
+                            {
+                                <div class="alert alert-danger" id="dataMensaje">@TempData["MensajeError"]</div>
+                            }
+                        </div>
+
                         <div class="text-center">
                             <input type="submit" value="Guardar" class="btn btn-primary mt-5" />
                         </div>
@@ -102,4 +109,11 @@
     <link href="~/css/site.css" rel="stylesheet" />
     <script src="~/userlib/js/pacientescripts.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <style>
+        #dataMensaje {
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
 }

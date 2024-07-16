@@ -120,12 +120,24 @@ namespace SIGC_PROJECT.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PacienteId,Cedula,Nombre,Apellido,FechaNacimiento,Edad,Genero,Direccion,Telefono,CorreoElectronico,HistorialMedico,IdUsuario")] Paciente paciente)
         {
+            
             if (ModelState.IsValid)
             {
-                _context.Add(paciente);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var cedula = await _context.Pacientes.Where(p => p.Cedula == paciente.Cedula).FirstOrDefaultAsync();
+
+                if (cedula != null)
+                {
+                    TempData["MensajeError"] = "Ya hay un paciente registrado con este número de cédula";
+                }
+                else if(cedula == null)
+                {
+                    _context.Add(paciente);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index", "Home", null);
+                }
+
             }
+
             return View(paciente);
         }
 
