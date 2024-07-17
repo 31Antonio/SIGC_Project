@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Versioning;
+using SIGC_PROJECT.Helper;
 using SIGC_PROJECT.Models;
 using SIGC_PROJECT.Models.ViewModel;
 
@@ -25,7 +27,27 @@ namespace SIGC_PROJECT.Controllers
         // GET: Secretariums
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Secretaria.ToListAsync());
+            //Obtener el id del Usuario
+            var idUser = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var roles = await _context.UsuarioRols.Where(r => r.IdUsuario == int.Parse(idUser)).Select(r => r.Rol.Nombre).FirstOrDefaultAsync();
+
+            List<Secretarium> secretaria;
+
+            if (roles == "Doctor")
+            {
+                var idDoctor = await _context.Doctors.Where(d => d.IdUsuario == int.Parse(idUser)).Select(d => d.DoctorId).FirstOrDefaultAsync();
+                secretaria = await _context.Secretaria.Where(s => s.IdDoctor == idDoctor).ToListAsync();
+
+                return View(secretaria);
+            }
+            else if(roles == "Administrador")
+            {
+                secretaria = await _context.Secretaria.ToListAsync();
+                return View(secretaria);
+            }
+
+            return View();
         }
 
         [Authorize(Roles = "Administrador,Doctor")]
@@ -168,15 +190,87 @@ namespace SIGC_PROJECT.Controllers
         // POST: Secretariums/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SecretariaId,Cedula,Nombre,Apellido,Telefono,CorreoElectronico,HorarioTrabajo,IdUsuario,IdDoctor")] Secretarium secretarium)
+        public async Task<IActionResult> Create(/*[Bind("SecretariaId,Cedula,Nombre,Apellido,Telefono,CorreoElectronico,HorarioTrabajo,IdUsuario,IdDoctor")]*/ SecretariaVM jsonData)
         {
-            if (ModelState.IsValid)
+            var Usuario = jsonData.Usuario;
+            var rol = jsonData.Rol;
+            var Secretaria = jsonData.Secretaria;
+            var idUser = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var idDoctor = await _context.Doctors.Where(d => d.IdUsuario == int.Parse(idUser)).Select(d => d.DoctorId).FirstOrDefaultAsync();
+
+            if (string.IsNullOrEmpty(Secretaria.Cedula) || string.IsNullOrEmpty(Secretaria.Nombre) || string.IsNullOrEmpty(Secretaria.Apellido))
             {
-                _context.Add(secretarium);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                TempData["MensajeError"] = "Debe llenar los datos de la secretaria antes de crear el registro";
             }
-            return View(secretarium);
+            else
+            {
+                var result = await _context.Usuarios.Where(u => u.NombreUsuario == Usuario.NombreUsuario).SingleOrDefaultAsync();
+
+                if (result != null)
+                {
+                    TempData["MensajeError"] = "El nombre de usuario ya existe, ingrese otro.";
+                }
+                else
+                {
+                    if (ModelState.IsValid)
+                    {
+                        if (Usuario.Contrasena.Length < 5)
+                        {
+                            TempData["MensajeError"] = "La contraseña debe tener 5 o más caracteres.";
+                        }
+                        else
+                        {
+                            var cedula = await _context.Secretaria.Where(d => d.Cedula == Secretaria.Cedula).SingleOrDefaultAsync();
+
+                            if (cedula != null)
+                            {
+                                TempData["MensajeError"] = "Ya hay una secretaria registrada con este número de cédula";
+                            }
+                            else
+                            {
+                                var hash = HashHelper.Hash(Usuario.Contrasena, Usuario.NombreUsuario);
+
+                                var nuevoUsuario = new Usuario()
+                                {
+                                    NombreUsuario = Usuario.NombreUsuario,
+                                    Contrasena = hash.Password
+                                };
+
+                                _context.Usuarios.Add(nuevoUsuario);
+                                await _context.SaveChangesAsync();
+
+                                var userRole = new UsuarioRol()
+                                {
+                                    IdUsuario = nuevoUsuario.IdUsuario,
+                                    IdRol = rol
+                                };
+
+                                _context.UsuarioRols.Add(userRole);
+                                await _context.SaveChangesAsync();
+
+                                var nuevaSecretaria = new Secretarium()
+                                {
+                                    Cedula = Secretaria.Cedula,
+                                    Nombre = Secretaria.Nombre,
+                                    Apellido = Secretaria.Apellido,
+                                    Telefono = Secretaria.Telefono,
+                                    CorreoElectronico = Secretaria.CorreoElectronico,
+                                    HorarioTrabajo = Secretaria.HorarioTrabajo,
+                                    IdUsuario = nuevoUsuario.IdUsuario,
+                                    IdDoctor = idDoctor
+                                };
+
+                                _context.Secretaria.Add(nuevaSecretaria);
+                                await _context.SaveChangesAsync();
+
+                                return RedirectToAction("Details", "Secretariums", new { id = nuevaSecretaria.SecretariaId });
+                            }
+                        }
+                    }
+                }
+            }
+            return View(jsonData);
         }
 
         // GET: Secretariums/Edit/5

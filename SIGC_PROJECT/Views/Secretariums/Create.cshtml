@@ -10,7 +10,7 @@
             <div class="card mt-5">
                 <div class="card-body">
 
-                    <form asp-action="Create">
+                    <form id="formCrearS" asp-action="Create" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                         <!-- Tabs -->
@@ -51,45 +51,80 @@
                             </div>
                             <!---------------------------->
 
+                            <!-- Contenido Form Secretaria -->
                             <div class="tab-pane fade" id="secretariaForm" role="tabpanel" aria-labelledby="secretaria-tab">
-                                <div class="form-group">
-                                    <label asp-for="Secretaria.Cedula" class="control-label"></label>
-                                    <input asp-for="Secretaria.Cedula" class="form-control" />
-                                    <span asp-validation-for="Secretaria.Cedula" class="text-danger"></span>
+                                
+                                <div class="mt-4"></div>
+
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <label asp-for="Secretaria.Cedula" class="control-label">Cédula</label>
+                                        <input asp-for="Secretaria.Cedula" class="form-control" />
+                                        <span asp-validation-for="Secretaria.Cedula" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-9"></div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <label asp-for="Secretaria.Nombre" class="control-label"></label>
+                                        <input asp-for="Secretaria.Nombre" class="form-control" />
+                                        <span asp-validation-for="Secretaria.Nombre" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <label asp-for="Secretaria.Apellido" class="control-label"></label>
+                                        <input asp-for="Secretaria.Apellido" class="form-control" />
+                                        <span asp-validation-for="Secretaria.Apellido" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label asp-for="Secretaria.HorarioTrabajo" class="control-label" hidden>Horario de Trabajo</label>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="Desde" class="control-label">Hora de entrada: </label>
+                                                <input id="Desde" type="time" class="form-control" />
+                                            </div>
+
+                                            <div class="col-md-6 mb-3">
+                                                <label for="Hasta" class="control-label">Hora de Salida: </label>
+                                                <input id="Hasta" type="time" class="form-control" />
+                                            </div>
+                                        </div>
+
+                                        <input asp-for="Secretaria.HorarioTrabajo" class="form-control" hidden />
+                                        <span asp-validation-for="Secretaria.HorarioTrabajo" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Secretaria.CorreoElectronico" class="control-label">Correo Electrónico</label>
+                                        <input asp-for="Secretaria.CorreoElectronico" class="form-control" />
+                                        <span asp-validation-for="Secretaria.CorreoElectronico" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <label asp-for="Secretaria.Telefono" class="control-label">Teléfono</label>
+                                        <input asp-for="Secretaria.Telefono" class="form-control" />
+                                        <span asp-validation-for="Secretaria.Telefono" class="text-danger"></span>
+                                    </div>
+
                                 </div>
-                                <div class="form-group">
-                                    <label asp-for="Secretaria.Nombre" class="control-label"></label>
-                                    <input asp-for="Secretaria.Nombre" class="form-control" />
-                                    <span asp-validation-for="Secretaria.Nombre" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="Secretaria.Apellido" class="control-label"></label>
-                                    <input asp-for="Secretaria.Apellido" class="form-control" />
-                                    <span asp-validation-for="Secretaria.Apellido" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="Secretaria.Telefono" class="control-label"></label>
-                                    <input asp-for="Secretaria.Telefono" class="form-control" />
-                                    <span asp-validation-for="Secretaria.Telefono" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="Secretaria.CorreoElectronico" class="control-label"></label>
-                                    <input asp-for="Secretaria.CorreoElectronico" class="form-control" />
-                                    <span asp-validation-for="Secretaria.CorreoElectronico" class="text-danger"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label asp-for="Secretaria.HorarioTrabajo" class="control-label"></label>
-                                    <input id="Desde" type="time" class="form-control" />
-                                    <input id="Hasta" type="time" class="form-control" />
-                                    <input asp-for="Secretaria.HorarioTrabajo" class="form-control" hidden />
-                                    <span asp-validation-for="Secretaria.HorarioTrabajo" class="text-danger"></span>
-                                </div>
+
                             </div>
+                            <!------------------------------->
 
                         </div>
 
-                        <div class="form-group">
-                            <input type="submit" value="Create" class="btn btn-primary" />
+                        <div id="mensaje">
+                            @if (TempData["MensajeError"] != null)
+                            {
+                                <div class="alert alert-danger" id="dataMensaje">@TempData["MensajeError"]</div>
+                            }
+                        </div>
+
+                        <div class="text-center mt-5">
+                            <button type="submit" id="btnCrear" class="btn btn-estilo">Crear</button>
+                            <a asp-action="Index" class="btn btn-danger">Volver</a>
                         </div>
                     </form>
 
@@ -100,11 +135,32 @@
      </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="~/userlib/js/secretariascript.js"></script>
+
+    <style>
+
+        .btn {
+            width: 25%;
+            font-weight: bold;
+        }
+
+        .btn-estilo {
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+            transition: background-color 0.5s linear;
+        }
+
+        .btn-estilo:hover {
+            background-color: rgba(42, 62, 84, 0.8);
+            color: #FFFFFF;
+        }
+
+        #dataMensaje {
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+
 }
