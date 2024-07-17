@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using SIGC_PROJECT.Helper;
 using SIGC_PROJECT.Models;
 using SIGC_PROJECT.Models.ViewModel;
+using X.PagedList.Extensions;
 
 namespace SIGC_PROJECT.Controllers
 {
@@ -24,9 +25,12 @@ namespace SIGC_PROJECT.Controllers
 
         [Authorize(Roles = "Administrador")]
         // GET: Doctors
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pagina, int cantidadP = 10)
         {
-            return View(await _context.Doctors.ToListAsync());
+            int numeroP = (pagina ?? 1);
+            var doctores = _context.Doctors.OrderBy(e => e.DoctorId).ToPagedList(numeroP, cantidadP);
+            return View(doctores);
+            //return View(await _context.Doctors.ToListAsync());
         }
 
         #region ===== VISTAS DE CONFIGURACION =====
