@@ -1,4 +1,4 @@
-﻿@model SIGC_PROJECT.Models.DisponibilidadDoctor
+﻿@model SIGC_PROJECT.Models.ViewModel.DisponibilidadDocVM
 
 @{
     ViewData["Title"] = "Edit";
@@ -8,37 +8,37 @@
 
 <h4>DisponibilidadDoctor</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="DisponibilidadDoctorId" />
-            <div class="form-group">
-                <label asp-for="DoctorId" class="control-label"></label>
-                <select asp-for="DoctorId" class="form-control" asp-items="ViewBag.DoctorId"></select>
-                <span asp-validation-for="DoctorId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Dia" class="control-label"></label>
-                <input asp-for="Dia" class="form-control" />
-                <span asp-validation-for="Dia" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="HoraInicio" class="control-label"></label>
-                <input asp-for="HoraInicio" class="form-control" />
-                <span asp-validation-for="HoraInicio" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="HoraFin" class="control-label"></label>
-                <input asp-for="HoraFin" class="form-control" />
-                <span asp-validation-for="HoraFin" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<form asp-action="Edit" id="disponibilidadForm">
+    <input type="hidden" asp-for="DoctorId" />
+
+    <div class="form-group">
+        <input type="checkbox" id="selectAll" /> Seleccionar todo
     </div>
-</div>
+
+    @foreach (var dia in Model.Dias.Keys)
+    {
+        <div class="form-group row mb-2">
+            <div class="col-auto form-check">
+                <input type="checkbox" class="form-check-input day-checkbox" name="Dias[@dia]" value="true" id="@dia" @(Model.Dias[dia] ? "checked" : "") />
+                <label class="form-check-label" for="@dia">@dia</label>
+            </div>
+
+            <div class="col-auto time-fields" style="display:@(Model.Dias[dia] ? "block" : "none");">
+                <label for="HoraInicio_@dia" class="form-label">Hora Inicio</label>
+                <input type="time" id="HoraInicio_@dia" name="HorasInicio[@dia]" class="form-control" value="@(Model.HorasInicio.ContainsKey(dia) ? Model.HorasInicio[dia] : "")" />
+            </div>
+
+            <div class="col-auto time-fields" style="display:@(Model.Dias[dia] ? "block" : "none");">
+                <label for="HoraFin_@dia" class="form-label">Hora Fin</label>
+                <input type="time" id="HoraFin_@dia" name="HorasFin[@dia]" class="form-control" value="@(Model.HorasFin.ContainsKey(dia) ? Model.HorasFin[dia] : "")" />
+            </div>
+        </div>
+    }
+
+    <div class="form-group">
+        <input type="submit" value="Guardar" class="btn btn-primary" />
+    </div>
+</form>
 
 <div>
     <a asp-action="Index">Back to List</a>
@@ -46,4 +46,39 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const dayCheckboxes = document.querySelectorAll('.day-checkbox');
+            const form = document.getElementById('disponibilidadForm');
+
+            selectAllCheckbox.addEventListener('change', function () {
+                dayCheckboxes.forEach(function (checkbox) {
+                    checkbox.checked = selectAllCheckbox.checked;
+                    toggleTimeFields(checkbox);
+                });
+            });
+
+            dayCheckboxes.forEach(function (checkbox) {
+                checkbox.addEventListener('change', function () {
+                    toggleTimeFields(checkbox);
+                });
+            });
+
+            function toggleTimeFields(checkbox) {
+                const timeFields = checkbox.closest('.form-group').querySelectorAll('.time-fields');
+                if (checkbox.checked) {
+                    timeFields.forEach(function (field) {
+                        field.style.display = 'block';
+                    });
+                } else {
+                    timeFields.forEach(function (field) {
+                        field.style.display = 'none';
+                    });
+                }
+            }
+        });
+    </script>
+
 }

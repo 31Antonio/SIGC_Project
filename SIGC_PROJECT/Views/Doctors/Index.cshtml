@@ -7,16 +7,16 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Doctores</h1>
+<h2 style="font-weight: bold; font-size: 1.7em;" class="mt-5 mb-3">Listado de Doctores</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-estilo mt-5" asp-action="Create">Crear nuevo registro</a>
 </p>
-<table class="table">
+<table class="table table-striped">
     <thead>
-        <tr>
+        <tr class="th_bg">
             <th>
-                @Html.DisplayNameFor(model => model.First().Cedula)
+                Cédula
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.First().Nombre)
@@ -28,13 +28,13 @@
                 @Html.DisplayNameFor(model => model.First().Especialidad)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().NumeroExequatur)
+                Exequatur
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().Telefono)
+                Télefono
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().CorreoElectronico)
+                Correo Electrónico
             </th>
             <th></th>
         </tr>
@@ -63,10 +63,10 @@
             <td>
                 @Html.DisplayFor(modelItem => item.CorreoElectronico)
             </td>
-            <td>
-                <a asp-action="Edit" class=" btn btn-warning" asp-route-id="@item.DoctorId">Edit</a> |
-                    <a asp-action="Details" class=" btn btn-primary" asp-route-id="@item.DoctorId">Details</a> |
-                    <a asp-action="Delete" class=" btn btn-danger" asp-route-id="@item.DoctorId">Delete</a>
+            <td class="d-flex">
+                    <a asp-action="Edit" data-toggle="tooltip" title="Editar" class=" btn btn-warning" asp-route-id="@item.DoctorId"><i class="fa fa-edit"></i></a>
+                    <a asp-action="Details" data-toggle="tooltip" title="Detalles" class=" btn btn-primary" asp-route-id="@item.DoctorId"><i class="fa fa-info-circle"></i></a>
+                    <a asp-action="Delete" data-toggle="tooltip" title="Eliminar" class=" btn btn-danger" asp-route-id="@item.DoctorId"><i class="fa fa-trash"></i></a>
             </td>
         </tr>
 }
@@ -106,5 +106,28 @@
 
     .contenedor-paginacion {
         text-align: center;
+    }
+
+    .th_bg {
+        background-color: rgba(42, 62, 84, 1);
+        color: #FFFFFF;
+    }
+
+    th { 
+        border: 1px solid #FFFFFF;
+    }
+
+    .btn-estilo {
+        background-color: rgba(42, 62, 84, 1);
+        color: #FFFFFF;
+        transition: background-color 0.5s linear;
+        width: 20%;
+        font-weight: bold;
+        font-size: 1.1em;
+    }
+
+    .btn-estilo:hover {
+        background-color: rgba(42, 62, 84, 0.8);
+        color: #FFFFFF;
     }
 </style>

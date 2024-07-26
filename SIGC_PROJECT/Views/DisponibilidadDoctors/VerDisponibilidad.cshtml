@@ -1,0 +1,56 @@
+﻿@model IEnumerable<SIGC_PROJECT.Models.ViewModel.Doctor_DisponibilidadVM>
+
+@{
+    ViewData["Title"] = "Horario Doctores";
+    var rol = ViewBag.Rol; 
+}
+
+@if(rol == "Paciente")
+{
+    <div class="form-group">
+        <label for="especialidad">Filtrar por especialidad: </label>
+        <input type="text" name="especialidad" id="especialidad" class="form-control" oninput="filtrarDoctor()"/>
+    </div>
+}
+
+
+<div id="doctor-container" class="row">
+    @foreach(var doctorDisponibilidad in Model)
+    {
+        <div class="col-md-4 doctor-card">
+            <div class="card mb-4 d-flex flex-column">
+                <div class="card-body">
+                    <h5 class="card-title">@doctorDisponibilidad.Nombre @doctorDisponibilidad.Apellido</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">@doctorDisponibilidad.Especialidad</h6>
+                    <ul class="list-group list-group-flush">
+                        @foreach(var disponibilidad in doctorDisponibilidad.Disponibilidades)
+                        {
+                            <li class="list-group-item">
+                                <strong>@disponibilidad.Dia:</strong> @disponibilidad.HoraInicio - @disponibilidad.HoraFin
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="card-footer text-center">
+                    <button class="btn btn-primary">Button 1</button>
+                    <button class="btn btn-secondary">Button 2</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts{
+    <script src="~/userlib/js/disponibilidad.js"></script>
+
+    @*ESTILOS CSS*@
+    <style>
+        .card { 
+            min-height: 350px;
+        }
+
+        .card-footer {
+            margin-top: auto;
+        }
+    </style>
+}

@@ -1,4 +1,5 @@
-﻿@model SIGC_PROJECT.Models.DisponibilidadDoctor
+﻿@model SIGC_PROJECT.Models.ViewModel.DisponibilidadDocVM
+@using SIGC_PROJECT.Helper;
 
 @{
     ViewData["Title"] = "Create";
@@ -12,27 +13,39 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input asp-for="DoctorId" hidden />
+
             <div class="form-group">
-                <label asp-for="DoctorId" class="control-label"></label>
-                <select asp-for="DoctorId" class ="form-control" asp-items="ViewBag.DoctorId"></select>
+                <input type="checkbox" id="seleccionarTodo" /> Seleccionar todos los días
             </div>
+
+            @foreach (var dia in Model.Dias.Keys)
+            {
+                <div class="form-group row mb-2 day-group">
+                    <div class="col-auto form-check">
+                        <input type="checkbox" class="form-check-input day-checkbox" name="selectedDays" value="@dia" id="@dia" />
+                        <label class="form-check-label" for="@dia">@dia</label>
+                    </div>
+
+                    <div class="col-auto time-fields ml-5" style="display: none;">
+
+                        <div class="col-md-6">
+                            <label for="HorarioInicio_@dia">Hora Inicio</label>
+                            <input type="time" id="HoraInicio_@dia" name="HoraInicio_@dia" class="form-control" />
+                        </div>
+                       
+                        <div class="col-md-6">
+                            <label for="HorarioFin_@dia">Hora Fin</label>
+                            <input type="time" id="HoraFin_@dia" name="HoraFin_@dia" class="form-control" />
+                        </div>
+                        
+                    </div>
+                </div>
+            }
+
             <div class="form-group">
-                <label asp-for="Dia" class="control-label"></label>
-                <input asp-for="Dia" class="form-control" />
-                <span asp-validation-for="Dia" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="HoraInicio" class="control-label"></label>
-                <input asp-for="HoraInicio" class="form-control" />
-                <span asp-validation-for="HoraInicio" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="HoraFin" class="control-label"></label>
-                <input asp-for="HoraFin" class="form-control" />
-                <span asp-validation-for="HoraFin" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Crear" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -44,4 +57,38 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectAll_chk = document.getElementById("seleccionarTodo");
+            const chk_dias = document.querySelectorAll('.day-checkbox');
+            const group_dias = document.querySelectorAll(".day-group");
+
+            selectAll_chk.addEventListener('change', function () {
+                chk_dias.forEach(function (checkbox) {
+                    checkbox.checked = selectAll_chk.checked;
+                    toogleCampos(checkbox)
+                });
+            });
+
+            chk_dias.forEach(function (checkbox) {
+                checkbox.addEventListener('change', function () {
+                    toogleCampos(checkbox)
+                });
+            });
+
+            function toogleCampos(checkbox) {
+                const camposHoras = checkbox.closest('.day-group').querySelector('.time-fields');
+
+                if (checkbox.checked) {
+                    camposHoras.style.display = 'block';
+                } else {
+                    camposHoras.style.display = 'none';
+                }
+            }
+
+        });
+
+
+    </script>
 }

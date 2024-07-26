@@ -21,7 +21,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.HoraFin)
             </th>
-            <th>
+            <th hidden>
                 @Html.DisplayNameFor(model => model.Doctor)
             </th>
             <th></th>
@@ -34,12 +34,12 @@
                 @Html.DisplayFor(modelItem => item.Dia)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.HoraInicio)
+                <span class="hora-inicio">@item.HoraInicio</span>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.HoraFin)
+                <span class="hora-fin">@item.HoraFin</span>
             </td>
-            <td>
+            <td hidden>
                 @Html.DisplayFor(modelItem => item.Doctor.DoctorId)
             </td>
             <td>
@@ -51,3 +51,36 @@
 }
     </tbody>
 </table>
+
+@section Scripts{
+    <script>
+        // Función para convertir un valor de 24 horas a formato de 12 horas con AM/PM
+        function convertirFormatoHora(valor) {
+
+            // Se divide el valor en horas y minutos
+            var [horas, minutos] = valor.split(':').map(Number);
+
+            // Determinar si es a.m. o p.m.
+            var periodo = horas >= 12 ? 'p.m.' : 'a.m.';
+
+            // Convierte la hora al formato de 12 horas
+            horas = horas % 12;
+            horas = horas ? horas : 12; // La hora 0 debe ser 12
+
+            // Devuelve la cadena formateada
+            return horas + ':' + (minutos < 10 ? '0' : '') + minutos + ' ' + periodo;
+        }
+
+        //Aplicarlo a la hora inicio
+        document.querySelectorAll('.hora-inicio').forEach(element => {
+            const horaFormateada = convertirFormatoHora(element.innerText);
+            element.innerText = horaFormateada;
+        });
+        
+        //Aplicarlo a la hora fin
+        document.querySelectorAll('.hora-fin').forEach(element => {
+            const horaFormateada = convertirFormatoHora(element.innerText);
+            element.innerText = horaFormateada;
+        });
+    </script>
+}

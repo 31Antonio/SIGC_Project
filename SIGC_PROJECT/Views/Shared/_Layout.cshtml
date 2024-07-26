@@ -108,6 +108,11 @@
                                             <li><a asp-controller="DisponibilidadDoctors" asp-action="Index">Horarios Doctores</a></li>
                                         }
                                         
+                                        @if (User.IsInRole("Secretaria") || User.IsInRole("Paciente"))
+                                        {
+                                            <li><a asp-controller="DisponibilidadDoctors" asp-action="VerDisponibilidad">Disponibilidad Doctor</a></li>
+                                        }
+
                                     </ul>
                                 </li>
                                 
@@ -200,9 +205,9 @@
             <!-- /page content -->
             <!-- footer content -->
             <footer>
-                <div class="pull-right">
+                @* <div class="pull-right">
                     Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-                </div>
+                </div> *@
                 <div class="clearfix"></div>
             </footer>
             <!-- /footer content -->

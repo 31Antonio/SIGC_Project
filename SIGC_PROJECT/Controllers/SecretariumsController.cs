@@ -11,6 +11,7 @@ using NuGet.Versioning;
 using SIGC_PROJECT.Helper;
 using SIGC_PROJECT.Models;
 using SIGC_PROJECT.Models.ViewModel;
+using X.PagedList.Extensions;
 
 namespace SIGC_PROJECT.Controllers
 {
@@ -25,26 +26,28 @@ namespace SIGC_PROJECT.Controllers
 
         [Authorize(Roles = "Administrador,Doctor")]
         // GET: Secretariums
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pagina, int cantidadP = 10)
         {
+            int numeroP = (pagina ?? 1);
+
             //Obtener el id del Usuario
             var idUser = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var roles = await _context.UsuarioRols.Where(r => r.IdUsuario == int.Parse(idUser)).Select(r => r.Rol.Nombre).FirstOrDefaultAsync();
 
-            List<Secretarium> secretaria;
+            IQueryable<Secretarium> secretaria;
 
             if (roles == "Doctor")
             {
                 var idDoctor = await _context.Doctors.Where(d => d.IdUsuario == int.Parse(idUser)).Select(d => d.DoctorId).FirstOrDefaultAsync();
-                secretaria = await _context.Secretaria.Where(s => s.IdDoctor == idDoctor).ToListAsync();
+                secretaria = _context.Secretaria.Where(s => s.IdDoctor == idDoctor);
 
-                return View(secretaria);
+                return View(secretaria.OrderBy(e => e.SecretariaId).ToPagedList(numeroP, cantidadP));
             }
             else if(roles == "Administrador")
             {
-                secretaria = await _context.Secretaria.ToListAsync();
-                return View(secretaria);
+                secretaria = _context.Secretaria;
+                return View(secretaria.OrderBy(e => e.SecretariaId).ToPagedList(numeroP, cantidadP));
             }
 
             return View();
@@ -321,6 +324,10 @@ namespace SIGC_PROJECT.Controllers
                 if (User.IsInRole("Administrador"))
                 {
                     return RedirectToAction(nameof(Index));
+                }
+                else if (User.IsInRole("Doctor"))
+                {
+                    TempData["Mensaje"] = "Datos actualizados correctamente";
                 }
                 else if (User.IsInRole("Secretaria"))
                 {
