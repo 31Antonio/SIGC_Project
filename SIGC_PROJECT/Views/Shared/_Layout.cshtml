@@ -83,7 +83,16 @@
                                             <li><a asp-controller="Pacientes" asp-action="Index">Pacientes</a></li>
                                         }
                                         
-                                        <li><a asp-controller="Citas" asp-action="Index">Citas</a></li>
+                                        @if (User.IsInRole("Administrador"))
+                                        {
+                                            <li><a asp-controller="Citas" asp-action="Index">Citas</a></li>
+                                        }
+
+                                        @if (User.IsInRole("Paciente"))
+                                        {
+                                            <li><a asp-controller="Citas" asp-action="CitaPaciente">Historial de Citas</a></li>
+                                        }
+
                                         <li><a asp-controller="Consultas" asp-action="Index">Consulta</a></li>
 
                                         @if(User.IsInRole("Doctor"))

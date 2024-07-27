@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging.Signing;
 using SIGC_PROJECT.Models;
+using SIGC_PROJECT.Models.ViewModel;
 
 namespace SIGC_PROJECT.Controllers
 {
@@ -47,31 +51,153 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Citas/Create
-        public IActionResult Create()
+        public IActionResult Create(int idDoctor)
         {
-            ViewData["DoctorId"] = new SelectList(_context.Doctors, "DoctorId", "Nombre");
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "PacienteId", "Nombre");
-            ViewData["SecretariaId"] = new SelectList(_context.Secretaria, "SecretariaId", "Nombre");
-            return View();
+            var doctor = _context.Doctors.Include(d => d.DisponibilidadDoctors)
+                                         .FirstOrDefault(d => d.DoctorId == idDoctor);
+            if(doctor == null)
+            {
+                return NotFound();
+            }
+
+            var model = new CrearCitasVM
+            {
+                DoctorId = doctor.DoctorId,
+                NombreDoctor = doctor.Nombre + ' ' + doctor.Apellido,
+                EspecialidadDoctor = doctor.Especialidad,
+                Disponibilidades = doctor.DisponibilidadDoctors.Select( d => new DisponibilidadDoctor
+                {
+                    Dia = d.Dia,
+                    HoraInicio = d.HoraInicio,
+                    HoraFin = d.HoraFin
+                }).ToList()
+            };
+
+            return View(model);
         }
 
         // POST: Citas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CitaId,PacienteId,DoctorId,SecretariaId,Estado,Comentario")] Cita cita)
+        public async Task<IActionResult> Create(CrearCitasVM model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(cita);
+                // Obtener el id del Usuario
+                var idUser = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                //Obtener el rol del Usuario Autenticado
+                var roles = _context.UsuarioRols.Where(r => r.IdUsuario == int.Parse(idUser)).Select(r => r.Rol.Nombre).FirstOrDefault();
+
+                //Obtener el id de la secretaria
+                var idSecretaria = await _context.Secretaria.Where(s => s.IdUsuario == int.Parse(idUser)).Select(s => s.SecretariaId).FirstOrDefaultAsync();
+
+                //Obtener el id del paciente
+                var idPaciente = await _context.Pacientes.Where(p => p.IdUsuario == int.Parse(idUser)).Select(p => p.PacienteId).FirstOrDefaultAsync();
+
+                var cita = new Cita
+                {
+                    DoctorId = model.DoctorId,
+                    NombreDoctor = model.NombreDoctor,
+                    EspecialidadDoctor = model.EspecialidadDoctor,
+                    FechaCita = model.FechaCita,
+                    HoraCita = model.HoraCita,
+                    Comentario = model.Comentario,
+                    Estado = "PENDIENTE"
+                };
+
+                if (roles == "Paciente")
+                {
+                    var nombrePaciente = await _context.Pacientes.Where(p => p.PacienteId == idPaciente).Select(p => p.Nombre).FirstOrDefaultAsync();
+                    var apellidoPaciente = await _context.Pacientes.Where(p => p.PacienteId == idPaciente).Select(p => p.Apellido).FirstOrDefaultAsync();
+                    cita.PacienteId = idPaciente;
+                    cita.NombrePaciente = nombrePaciente + ' ' + apellidoPaciente;
+                    cita.SecretariaId = null;
+                }
+                else if(roles == "Secretaria")
+                {
+                    cita.PacienteId = null;
+                    cita.SecretariaId = idSecretaria;
+                    cita.NombrePaciente = model.NombrePaciente;
+                }
+
+                _context.Citas.Add(cita);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                if(roles == "Paciente")
+                {
+                    return RedirectToAction("CitaPaciente");
+                }
+                else if(roles == "Secretaria")
+                {
+                    return RedirectToAction("Index");
+                }
+                
             }
-            ViewData["DoctorId"] = new SelectList(_context.Doctors, "DoctorId", "Nombre", cita.DoctorId);
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "PacienteId", "Nombre", cita.PacienteId);
-            ViewData["SecretariaId"] = new SelectList(_context.Secretaria, "SecretariaId", "Nombre", cita.SecretariaId);
-            return View(cita);
+
+            return View(model);
+        }
+
+        //Obtener la disponibilidad del doctor
+        [HttpPost]
+        public IActionResult ObtenerDisponibilidadDoctor([FromBody] DisponibilidadRequest disponibilidad)
+        {
+            var disponibilidades = _context.DisponibilidadDoctors.Where(d => d.DoctorId == disponibilidad.DoctorId && d.Dia == disponibilidad.Dia)
+                                                                 .Select(d => new
+                                                                 {
+                                                                     d.HoraInicio,
+                                                                     d.HoraFin
+                                                                 }).FirstOrDefault();
+
+            return Json(disponibilidades);
+        }
+
+        [HttpPost]
+        public IActionResult ObtenerHorasOcupadas([FromBody] HorasOcupadas horas_Ocupadas)
+        {
+            var horasOcupadas = _context.Citas.Where(c => c.DoctorId == horas_Ocupadas.DoctorId && c.FechaCita == horas_Ocupadas.Fecha && (c.Estado == "PENDIENTE" || c.Estado == "COMPLETADO"))
+                                              .Select(c => c.HoraCita).ToList();
+
+            return Json(horasOcupadas);
+        }
+
+        [Authorize(Roles = "Paciente")]
+        public async Task<IActionResult> CitaPaciente()
+        {
+            //Obtener el id del usuario
+            var idUser = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            //Obtener el id del paciente
+            var pacienteId = await _context.Pacientes.Where(p => p.IdUsuario == int.Parse(idUser)).Select(p => p.PacienteId).FirstOrDefaultAsync();
+
+            var citasPendientes = await _context.Citas.Include(d => d.Doctor)
+                                                      .Where(c => c.PacienteId == pacienteId && c.Estado == "PENDIENTE")
+                                                      .ToListAsync();
+
+            var citasCompletadas = await _context.Citas.Include(d => d.Doctor)
+                                                       .Where(c => c.PacienteId == pacienteId && (c.Estado == "COMPLETADO" || c.Estado == "CANCELADO"))
+                                                       .ToListAsync();
+            
+            var model = new CitasPacientesVM
+            {
+                CitasPendientes = citasPendientes,
+                CitasCompletadas = citasCompletadas
+            };
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CancelarCita(int id)
+        {
+            var cita = await _context.Citas.FindAsync(id);
+            if(cita != null && cita.Estado == "PENDIENTE")
+            {
+                cita.Estado = "CANCELADO";
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("CitaPaciente");
         }
 
         // GET: Citas/Edit/5
@@ -94,8 +220,6 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // POST: Citas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("CitaId,PacienteId,DoctorId,SecretariaId,Estado,Comentario")] Cita cita)
@@ -172,4 +296,15 @@ namespace SIGC_PROJECT.Controllers
             return _context.Citas.Any(e => e.CitaId == id);
         }
     }
+}
+
+public class DisponibilidadRequest
+{
+    public int DoctorId { get; set; }
+    public string Dia { get; set; }
+}
+public class HorasOcupadas
+{
+    public int DoctorId { get; set; }
+    public DateTime Fecha { get; set; }
 }

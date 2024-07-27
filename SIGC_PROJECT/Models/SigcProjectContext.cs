@@ -90,6 +90,23 @@ public partial class SigcProjectContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("estado");
+            entity.Property(e => e.FechaCita)
+                .HasColumnType("date");
+            entity.Property(e => e.HoraCita)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.NombrePaciente)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("nombrePaciente");
+            entity.Property(e => e.NombreDoctor)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("nombreDoctor");
+            entity.Property(e => e.EspecialidadDoctor)
+                  .HasMaxLength(150)
+                  .IsUnicode(false)
+                  .HasColumnName("especialidadDoctor");
             entity.Property(e => e.PacienteId).HasColumnName("paciente_id");
             entity.Property(e => e.SecretariaId).HasColumnName("secretaria_id");
 
