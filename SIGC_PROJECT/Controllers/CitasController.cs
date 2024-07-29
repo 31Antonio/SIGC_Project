@@ -338,6 +338,23 @@ namespace SIGC_PROJECT.Controllers
 
             return View(model);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ObtenerCitasPendientes([FromBody] CitasPendientesRequest request)
+        {
+            var fechaActual = DateTime.Now;
+
+            var citasPendientes = await _context.Citas
+                .Where(c => c.DoctorId == request.DoctorId && c.Estado == "PENDIENTE"
+                            && c.FechaCita.HasValue && c.FechaCita.Value >= fechaActual
+                            && c.FechaCita.Value.Month == request.Mes
+                            && c.FechaCita.Value.Year == request.Anio)
+                .GroupBy(c => c.FechaCita.Value.Day)
+                .Select(p => new { Dia = p.Key, CitasPendientes = p.Count() })
+                .ToListAsync();
+
+            return Json(citasPendientes);
+        }
         //======================
 
         // GET: Citas/Edit/5
@@ -438,6 +455,7 @@ namespace SIGC_PROJECT.Controllers
     }
 }
 
+#region Clases para utilizar
 public class DisponibilidadRequest
 {
     public int DoctorId { get; set; }
@@ -454,3 +472,12 @@ public class CalendarioSolicitudes
     public string Date { get; set; }
     public int DoctorId { get; set; }
 }
+
+public class CitasPendientesRequest
+{
+    public int Mes { get; set; }
+    public int Anio { get; set; }
+    public int DoctorId { get; set; }
+}
+
+#endregion

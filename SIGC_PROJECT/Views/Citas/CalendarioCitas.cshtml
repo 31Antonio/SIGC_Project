@@ -53,40 +53,63 @@
                     calendario.appendChild(document.createElement('div'));
                 }
 
-                // Agregar los días del mes
-                for (var i = 1; i <= diasTotales; i++) {
-                    var dia_Celda = document.createElement('div');
-                    dia_Celda.textContent = i;
-                    dia_Celda.classList.add('calendar-day');
+                // Obtener las citas pendientes para el mes actual
+                var doctorId = obtenerDoctorId();
+                fetch('/Citas/ObtenerCitasPendientes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ DoctorId: doctorId, Mes: mes + 1, Anio: anio }) // Meses en JavaScript son 0-11
+                })
+                    .then(response => response.json())
+                    .then(citasPendientes => {
+                        var citasDict = {};
+                        citasPendientes.forEach(cita => {
+                            citasDict[cita.dia] = cita.citasPendientes;
+                        });
 
-                    // Marcar el día actual
-                    if (i === fechaActual && mes === hoy.getMonth() && anio === hoy.getFullYear()) {
-                        dia_Celda.classList.add('current-day');
-                    }
+                        // Agregar los días del mes
+                        for (var i = 1; i <= diasTotales; i++) {
+                            var dia_Celda = document.createElement('div');
+                            dia_Celda.textContent = i;
+                            dia_Celda.classList.add('calendar-day');
 
-                    dia_Celda.addEventListener('click', function () {
-                        var selectedDate = new Date(anio, mes, this.textContent);
-                        var fechaFormateada = selectedDate.toISOString().split('T')[0];
-                        var doctorId = obtenerDoctorId(); // Función para obtener el ID del doctor o secretaria
+                            // Marcar el día actual
+                            if (i === fechaActual && mes === hoy.getMonth() && anio === hoy.getFullYear()) {
+                                dia_Celda.classList.add('current-day');
+                            }
 
-                        // Enviar una solicitud POST con la fecha seleccionada
-                        fetch('/Citas/Dia', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ date: fechaFormateada, doctorId: doctorId })
-                        })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.redirectUrl) {
-                                    window.location.href = data.redirectUrl;
-                                }
+                            // Marcar los días con citas pendientes
+                            if (citasDict[i]) {
+                                dia_Celda.classList.add('citas-pendientes');
+                                dia_Celda.setAttribute('title', `${citasDict[i]} citas pendientes`);
+                            }
+
+                            dia_Celda.addEventListener('click', function () {
+                                var selectedDate = new Date(anio, mes, this.textContent);
+                                var fechaFormateada = selectedDate.toISOString().split('T')[0];
+                                var doctorId = obtenerDoctorId(); // Función para obtener el ID del doctor o secretaria
+
+                                // Enviar una solicitud POST con la fecha seleccionada
+                                fetch('/Citas/Dia', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ date: fechaFormateada, doctorId: doctorId })
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.redirectUrl) {
+                                            window.location.href = data.redirectUrl;
+                                        }
+                                    });
                             });
-                    });
 
-                    calendario.appendChild(dia_Celda);
-                }
+                            calendario.appendChild(dia_Celda);
+                        }
+                    });
 
                 // Actualizar el mes y el año mostrados
                 mesAnioDisplay.textContent = `${Meses[mes]} ${anio}`;
@@ -179,12 +202,16 @@
         .btn-estilo {
             background-color: rgba(42, 62, 84, 1);
             color: #FFFFFF;
-            transition: background-color 0.5s linear;
+            transition: background-color 0.2s linear;
         }
 
         .btn-estilo:hover {
             background-color: rgba(42, 62, 84, 0.8);
             color: #FFFFFF;
+        }
+
+        .citas-pendientes {
+            border-bottom: 7px solid #A40707;
         }
 
     </style>
