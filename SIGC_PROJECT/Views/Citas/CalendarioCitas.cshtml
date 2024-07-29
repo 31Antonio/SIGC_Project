@@ -1,1 +1,192 @@
-﻿
+﻿@{
+    ViewData["Title"] = "Calendario";
+}
+
+<div class="container">
+    <h2 class="mb-4" style="font-weight: bold; font-size: 2.2em; color: #04294F; margin-top: 2em;">Calendario de Citas</h2>
+
+
+    <input id="doctor-id" value="@ViewBag.DoctorId" hidden />
+
+    <div class="calendar-controls">
+        <button id="prev-month" class="btn btn-estilo"><i class="fa fa-angle-double-left" aria-hidden="true"></i></button>
+        <span id="month-year" class="ml-4 mr-4" style="color: #04294F; font-weight: bold; font-size: 1.3em;"></span>
+        <button id="next-month" class="btn btn-estilo"><i class="fa fa-angle-double-right" aria-hidden="true"></i></button>
+    </div>
+
+    <div id="calendar" class="calendar-grid">
+        <!-- Aquí se generarán los días del calendario -->
+    </div>
+</div>
+
+@section Scripts {
+
+    @*====== FUNCIONALIDADES ======*@
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var hoy = new Date(); 
+            var calendario = document.getElementById('calendar');
+            var mesAnioDisplay = document.getElementById('month-year');
+
+            var mesActual = hoy.getMonth();
+            var anioActual = hoy.getFullYear();
+            var fechaActual = hoy.getDate();
+
+            function generarCalendario(mes, anio) {
+                calendario.innerHTML = '';
+
+                // Agregar encabezados de días de la semana
+                var dias_Semana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+                dias_Semana.forEach(dia => {
+                    var dia_Celda = document.createElement('div');
+                    dia_Celda.textContent = dia;
+                    dia_Celda.classList.add('calendar-day-header');
+                    calendario.appendChild(dia_Celda);
+                });
+
+                // Obtener el primer día del mes y el número total de días
+                var primerDia = new Date(anio, mes, 1).getDay();
+                var diasTotales = new Date(anio, mes + 1, 0).getDate();
+
+                // Agregar celdas vacías para el primer día del mes
+                for (var i = 0; i < primerDia; i++) {
+                    calendario.appendChild(document.createElement('div'));
+                }
+
+                // Agregar los días del mes
+                for (var i = 1; i <= diasTotales; i++) {
+                    var dia_Celda = document.createElement('div');
+                    dia_Celda.textContent = i;
+                    dia_Celda.classList.add('calendar-day');
+
+                    // Marcar el día actual
+                    if (i === fechaActual && mes === hoy.getMonth() && anio === hoy.getFullYear()) {
+                        dia_Celda.classList.add('current-day');
+                    }
+
+                    dia_Celda.addEventListener('click', function () {
+                        var selectedDate = new Date(anio, mes, this.textContent);
+                        var fechaFormateada = selectedDate.toISOString().split('T')[0];
+                        var doctorId = obtenerDoctorId(); // Función para obtener el ID del doctor o secretaria
+
+                        // Enviar una solicitud POST con la fecha seleccionada
+                        fetch('/Citas/Dia', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ date: fechaFormateada, doctorId: doctorId })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.redirectUrl) {
+                                    window.location.href = data.redirectUrl;
+                                }
+                            });
+                    });
+
+                    calendario.appendChild(dia_Celda);
+                }
+
+                // Actualizar el mes y el año mostrados
+                mesAnioDisplay.textContent = `${Meses[mes]} ${anio}`;
+            }
+
+            // Nombres de los meses para mostrar
+            var Meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+
+            generarCalendario(mesActual, anioActual);
+
+            document.getElementById('prev-month').addEventListener('click', function () {
+                if (mesActual === 0) {
+                    mesActual = 11;
+                    anioActual--;
+                } else {
+                    mesActual--;
+                }
+                generarCalendario(mesActual, anioActual);
+            });
+
+            document.getElementById('next-month').addEventListener('click', function () {
+                if (mesActual === 11) {
+                    mesActual = 0;
+                    anioActual++;
+                } else {
+                    mesActual++;
+                }
+                generarCalendario(mesActual, anioActual);
+            });
+
+            function obtenerDoctorId() {
+                return document.getElementById('doctor-id').value;
+            }
+        });
+    </script>
+    @*=============================*@
+
+    @*====== ESTILOS ======*@
+    <style>
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            margin-top: 20px;
+        }
+
+        .calendar-day {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            background-color: #f8f9fa;
+            box-sizing: border-box;
+            color: #04294F;
+        }
+        
+        .calendar-day:hover {
+            background-color: rgba(42, 62, 84, 0.1);
+            transition: background-color 0.5s linear;
+        }
+
+        .current-day {
+            background-color: rgba(42, 62, 84, 1);
+            color: white;
+            font-weight: bold;
+            border: 2px solid white;
+        }
+        
+        .current-day:hover {
+            background-color: #04294F; 
+            transition: background-color 0.5s linear;
+            font-weight: bold;
+        }
+
+        .calendar-day-header {
+            padding: 10px;
+            font-weight: bold;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+            background-color: #e9ecef;
+            box-sizing: border-box;
+        }
+
+        .calendar-controls {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .btn-estilo {
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+            transition: background-color 0.5s linear;
+        }
+
+        .btn-estilo:hover {
+            background-color: rgba(42, 62, 84, 0.8);
+            color: #FFFFFF;
+        }
+
+    </style>
+    @*=====================*@
+}

@@ -1,0 +1,71 @@
+﻿@model SIGC_PROJECT.Models.ViewModel.CitasDelDiaVM
+
+@{
+    ViewData["Title"] = "Citas Agendas";
+}
+
+<h2 class="mb-4" style="font-weight: bold; font-size: 2.2em; color: #04294F; margin-top: 2em;">Citas del @Model.Fecha.ToString("dd/MM/yyyy")</h2>
+
+@if (!Model.Citas.Any())
+{
+    <div class="alert alert-danger text-center">
+        <h2 style="font-weight: bold;">No se realizaron citas para este día</h2>
+    </div>
+    
+    <div>
+        <a asp-action="CalendarioCitas" asp-controller="Citas" class="btn btn-estilo">Volver al calendario</a>
+    </div>
+}else{
+    <table class="table table-striped w-100">
+        <thead>
+            <tr class="th_bg">
+                <th>Doctor</th>
+                <th>Especialidad</th>
+                <th>Fecha de la cita</th>
+                <th>Paciente</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var citas in Model.Citas)
+            {
+                <tr class="font-weight-bold">
+                    <td>@citas.NombreDoctor</td>
+                    <td>@citas.EspecialidadDoctor</td>
+                    <td> @(citas.FechaCita.HasValue ? citas.FechaCita.Value.ToString("dd/MM/yyyy") : "No disponible") - @citas.HoraCita</td>
+                    <td>@citas.NombrePaciente</td>
+                    <td>@citas.Estado</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@section Scripts { 
+    @*====== ESTILOS ======*@
+    <style>
+        .th_bg {
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+        }
+
+        th {
+            border: 1px solid #FFFFFF;
+        }
+
+        .btn-estilo {
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+            font-weight: bold;
+            transition: background-color 0.5s linear;
+        }
+
+        .btn-estilo:hover {
+            background-color: rgba(42, 62, 84, 0.8);
+            color: #FFFFFF;
+        }
+
+    </style>
+    @*=====================*@
+
+} 

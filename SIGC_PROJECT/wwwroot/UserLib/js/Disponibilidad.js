@@ -16,45 +16,45 @@ async function filtrarDoctor() {
     const especialidad = document.getElementById("especialidad").value;
     const url = '/DisponibilidadDoctors/BuscarPorEspecialidad';
 
-    fetch(url + "?especialidad=" + encodeURIComponent(especialidad))
-        .then(response => response.json())
-        .then(data => {
-            console.log(data); // Verificar la estructura de datos recibida
-            const container = document.getElementById("doctor-container");
-            container.innerHTML = "";
+    try {
+        const response = await fetch(url + "?especialidad=" + encodeURIComponent(especialidad));
+        const data = await response.json();
+        console.log(data); // Verificar la estructura de datos recibida
+        const container = document.getElementById("doctor-container");
+        container.innerHTML = "";
 
-            if (Array.isArray(data)) {
-                data.forEach(doctor => {
-                    // Verificar que Disponibilidades es un array
-                    const disponibilidadesList = Array.isArray(doctor.disponibilidades) ? doctor.disponibilidades : [];
+        if (Array.isArray(data)) {
+            data.forEach(doctor => {
+                const disponibilidadesList = Array.isArray(doctor.disponibilidades) ? doctor.disponibilidades : [];
 
-                    const card = document.createElement("div");
-                    card.className = "col-md-4 doctor-card";
-                    card.innerHTML = `
-                                <div class="card mb-4 d-flex flex-column">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${doctor.nombre} ${doctor.apellido}</h5>
-                                        <h6 class="card-subtitle mb-2 text-muted">${doctor.especialidad}</h6>
-                                        <ul class="list-group list-group-flush">
-                                            ${disponibilidadesList.map(d => `
-                                                <li class="list-group-item">
-                                                    <strong>${d.dia}:</strong> ${formatearHora(d.horaInicio)}  - ${formatearHora(d.horaFin)}
-                                                </li>`).join('')}
-                                        </ul>
-                                    </div>
-                                    <div class="card-footer text-center">
-                                        <button class="btn btn-primary">Button 1</button>
-                                        <button class="btn btn-secondary">Button 2</button>
-                                    </div>
-                                </div>
-                            `;
-                    container.appendChild(card);
-                });
-            } else {
-                console.error("El formato de datos no es una matriz:", data);
-            }
-        })
-        .catch(error => {
-            console.error("Error al obtener datos:", error);
-        });
+                const card = document.createElement("div");
+                card.className = "col-md-4 doctor-card";
+                card.innerHTML = `
+                    <div class="card mb-4 d-flex flex-column">
+                        <div class="card-body">
+                            <h5 class="card-title text-center" style="font-weight: bold; color: #04294F;">${doctor.nombre} ${doctor.apellido}</h5>
+                            <h6 class="card-title mb-2 text-muted text-center" style="font-weight: bold; color: #04294F;">${doctor.especialidad}</h6>
+                            <ul class="list-group list-group-flush">
+                                ${disponibilidadesList.map(d => `
+                                    <li class="list-group-item" style="font-size: 1.2em; color: #04294F;">
+                                        <strong>${d.dia}:</strong> ${formatearHora(d.horaInicio)} - ${formatearHora(d.horaFin)}
+                                    </li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="card-footer text-center">
+                            <form action="/Citas/Create" method="get">
+                                <input type="hidden" name="idDoctor" value="${doctor.idDoctor}" />
+                                <button type="submit" class="btn btn-estilo">Realizar Cita</button>
+                            </form>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        } else {
+            console.error("El formato de datos no es una matriz:", data);
+        }
+    } catch (error) {
+        console.error("Error al obtener datos:", error);
+    }
 }

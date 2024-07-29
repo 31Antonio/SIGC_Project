@@ -6,49 +6,69 @@
     var disponibilidades = Model.Disponibilidades.Select(d => d.Dia).ToList();
 }
 
-<h1>Create</h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-11">
+            <div class="card mt-2">
+                <div class="card-header text-center">
+                    <h2 style="font-weight: bold; font-size: 1.7em; color: #04294F;">Agendar Cita</h2>
+                </div>
 
-<h4>Cita</h4>
-<hr />
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div class="form-group mt-4">
+                            <label class="control-label">Información del Doctor</label>
+                            <input type="hidden" asp-for="DoctorId" />
+                            <input type="hidden" asp-for="NombreDoctor" />
+                            <input type="hidden" asp-for="EspecialidadDoctor" />
+                            <input type="text" class="form-control" value="@Model.NombreDoctor (@Model.EspecialidadDoctor)" readonly />
+                        </div>
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label>Doctor</label>
-        <input type="hidden" asp-for="DoctorId" />
-        <input type="hidden" asp-for="NombreDoctor"/>
-        <input type="hidden" asp-for="EspecialidadDoctor"/>
-        <input type="text" class="form-control" value="@Model.NombreDoctor (@Model.EspecialidadDoctor)" readonly />
-    </div>
+                        @if (User.IsInRole("Secretaria"))
+                        {
+                            <div class="form-group  mt-3">
+                                <label asp-for="NombrePaciente" class="control-label">Nombre del Paciente</label>
+                                <input asp-for="NombrePaciente" class="form-control" />
+                                <span asp-validation-for="NombrePaciente" class="text-danger"></span>
+                            </div>
+                        }
 
-    @if (User.IsInRole("Secretaria"))
-    {
-        <div class="form-group">
-            <label asp-for="NombrePaciente" class="control-label"></label>
-            <input asp-for="NombrePaciente" class="form-control"/>
-            <span asp-validation-for="NombrePaciente" class="text-danger"></span>
+                        <div class="form-group  mt-4">
+                            <label asp-for="FechaCita" class="control-label">Seleccione una fecha:</label>
+                            <input asp-for="FechaCita" id="fechaCita" class="form-control" type="date" required />
+                            <span asp-validation-for="FechaCita" class="text-danger"></span>
+                        </div>
+
+                        <label class="control-label  mt-4" id="lbHora" style="display: none;">Horas Disponibles</label>
+                        <div id="horaCitasContainer" class="mt-3">
+                            <!-- Aquí se generarán los botones para las horas disponibles -->
+                        </div>
+                        <input type="hidden" asp-for="HoraCita" required />
+
+                        <div class="form-group  mt-4">
+                            <label asp-for="Comentario" class="control-label">Motivo de la Cita</label>
+                            <input asp-for="Comentario" class="form-control" required />
+                            <span asp-validation-for="Comentario" class="text-danger"></span>
+                        </div>
+
+                        <div id="mensajeAlert" class="alert alert-danger text-center font-weight-bold mt-4 mb-4" style="font-size: 1.2em; display:none;">
+                            El doctor no está disponible esta fecha
+                        </div>
+                        
+                        <div id="mensajeAlertHoras" class="alert alert-danger text-center font-weight-bold mt-4 mb-4" style="font-size: 1.2em; display:none;">
+                            Todas las horas se encuentran ocupadas, por favor seleccionar otra fecha. 
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-registro">Agendar cita</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
         </div>
-    }
-
-    <div class="form-group">
-        <label asp-for="FechaCita" class="control-label"></label>
-        <input asp-for="FechaCita" id="fechaCita" class="form-control" type="date" />
-        <span asp-validation-for="FechaCita" class="text-danger"></span>
     </div>
-
-    <label class="form-label" id="lbHora" style="display: none;">Horas Disponibles</label>
-    <div id="horaCitasContainer" class="mt-3">
-    <!-- Aquí se generarán los botones para las horas disponibles -->
-    </div>
-    <input type="hidden" asp-for="HoraCita"/>
-
-    <div class="form-group">
-        <label asp-for="Comentario" class="control-label">Motivo de la Cita</label>
-        <input asp-for="Comentario" class="form-control" />
-        <span asp-validation-for="Comentario" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Crear</button>
-</form>
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
@@ -81,8 +101,13 @@
                 var dias = selecFecha.getUTCDay();
 
                 if (!diasDisponibles.includes(dias)){
-                    alert("El doctor no esta disponible esta fecha");
+                    document.getElementById('mensajeAlert').style.display = 'block';
+                    setInterval(function() {
+                        document.getElementById('mensajeAlert').style.display = 'none';
+                    }, 3000);
                     this.value = '';
+                    document.getElementById('lbHora').style.display = 'none';
+                    document.getElementById('horaCitasContainer').innerHTML = '';
                 }
             });
 
@@ -155,6 +180,17 @@
                                     horaInicio.setMinutes(horaInicio.getMinutes() + intervalo);
                                 }
 
+                                //En caso de que todas las horas se encuentren ocupadas
+                                if(opcionesHora.length == 0){
+                                    document.getElementById('mensajeAlertHoras').style.display = 'block';
+                                    setTimeout(function () {
+                                            document.getElementById('mensajeAlertHoras').style.display = 'none';
+                                    }, 3000);
+                                    document.getElementById('horaCitasContainer').innerHTML = '';
+                                    document.getElementById("lbHora").style.display = "none";
+                                    return;
+                                }
+
                                 // Poblar el contenedor de botones
                                 var horaCitasContainer = document.getElementById('horaCitasContainer');
                                 horaCitasContainer.innerHTML = ''; // Limpiar el contenedor
@@ -162,14 +198,14 @@
                                 opcionesHora.forEach(hora => {
                                     var button = document.createElement('button');
                                     button.type = 'button';
-                                    button.className = 'btn btn-outline-primary m-1';
+                                    button.className = 'btn btn-hora m-1';
                                     button.textContent = hora;
                                     button.dataset.hora = hora;
 
                                     //Manejar el evento click del boton
                                     button.addEventListener('click', function () {
-                                        document.querySelectorAll("#horaCitasContainer button").forEach(btn => btn.classList.remove('btn-primary'));
-                                        button.classList.add('btn-primary');
+                                        document.querySelectorAll("#horaCitasContainer button").forEach(btn => btn.classList.remove('btn-estilo'));
+                                        button.classList.add('btn-estilo');
                                         document.getElementById("HoraCita").value = button.dataset.hora;
                                     });
 
@@ -189,5 +225,46 @@
 
     @*ESTILOS CSS*@
     <style>
-    </style>
+        #horaCitasContainer {
+            background-color: #ECEFF2;
+            display: flex;
+            flex-wrap: wrap; 
+            justify-content: space-around;
+            align-items: center; 
+            gap: 5px;
+            padding: 10px;
+        }
+
+        .control-label { 
+            font-weight: bold;
+            color: #04294F;
+        }
+
+        .btn-hora {
+            flex: 1 1 calc(25% - 20px);
+            border: 2px solid rgba(42, 62, 84, 1);
+            min-width: 20%;
+            box-sizing: border-box;
+        }
+
+        .btn-estilo {
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+            transition: background-color 0.5s linear;
+        }
+
+        .btn-estilo:hover, .btn-registro:hover{
+            background-color: rgba(42, 62, 84, 0.8);
+            color: #FFFFFF;
+        }
+
+        .btn-registro {
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+            transition: background-color 0.5s linear;
+            width: 30%;
+            font-weight: bold;
+        }
+
+        </style>
 }

@@ -4,17 +4,17 @@
     ViewData["Title"] = "Historial de Citas";
 }
 
-<h1>Historial de Citas</h1>
+<h1 style="color: transparent;">Citas</h1>
 
 <ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
     <li class="nav-item">
-        <a class="nav-link active" id="pendientes-tab" data-toggle="tab" href="#pendientes" role="tab" aria-controls="pendientes" aria-selected="true">Citas Agendadas</a>
+        <a class="nav-link estilo-tab active" id="pendientes-tab" data-toggle="tab" href="#pendientes" role="tab" aria-controls="pendientes" aria-selected="true">Citas Agendadas</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" id="completadas-tab" data-toggle="tab" href="#completadas" role="tab" aria-controls="completadas" aria-selected="false">Historico de Citas</a>
+        <a class="nav-link estilo-tab" id="completadas-tab" data-toggle="tab" href="#completadas" role="tab" aria-controls="completadas" aria-selected="false">Historico de Citas</a>
     </li>
 </ul>
-<div class="tab-content" id="myTabContent">
+<div class="tab-content" id="myTabContent" style="background-color: #ECEFF2;">
 
     @*====== CITAS AGENDADAS ======*@
     <div class="tab-pane fade show active" id="pendientes" role="tabpanel" aria-labelledby="pendientes-tab">
@@ -29,18 +29,21 @@
             {
                 @foreach (var cita in Model.CitasPendientes)
                 {
-                    <div class="col-md-6 mb-4">
+                    <div class="col-md-6 mb-4 mt-4">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">@cita.NombreDoctor</h5>
-                                <h6 class="card-subtitle mb-2 text-muted">@cita.EspecialidadDoctor</h6>
-                                <p class="card-text">
-                                    Fecha: @(cita.FechaCita.HasValue ? cita.FechaCita.Value.ToString("dd/MM/yyyy") : "No disponible")
-                                </p>
-                                <p class="card-text">Hora: @cita.HoraCita</p>
+                                <h6 class="card-text"><strong>Doctor: </strong>@cita.NombreDoctor</h6>
+                                <h6 class="card-text mt-1"><strong>Especialidad: </strong>@cita.EspecialidadDoctor</h6>
+                                <h6 class="card-text mt-1">
+                                    <strong>Fecha: </strong> @(cita.FechaCita.HasValue ? cita.FechaCita.Value.ToString("dd/MM/yyyy") : "No disponible")
+                                </h6>
+                                <h6 class="card-text mt-1"><strong>Hora: </strong> @cita.HoraCita</h6> 
+                                <h6 class="card-text mt-1"><strong>Motivo de la cita: </strong> @cita.Comentario</h6>
+                            </div>
 
-                                <button type="button" class="btn btn-danger" data-cita-id="@cita.CitaId">
-                                    Cancelar
+                            <div class="card-footer text-center">
+                                <button type="button" class="btn btn-danger font-weight-bold" data-cita-id="@cita.CitaId">
+                                    Cancelar Cita
                                 </button>
                             </div>
                         </div>
@@ -52,9 +55,9 @@
 
     @*====== CITAS ANTERIORES ======*@
     <div class="tab-pane fade" id="completadas" role="tabpanel" aria-labelledby="completadas-tab">
-        <table class="table">
+        <table class="table table-striped w-100 mt-3">
             <thead>
-                <tr>
+                <tr class="th_bg">
                     <th>Doctor</th>
                     <th>Especialidad</th>
                     <th>Fecha</th>
@@ -82,19 +85,21 @@
 
 @*======== MODAL DE CONFIRMACION ========*@
 <div class="modal fade" id="confirmCancel" tabindex="-1" aria-labelledby="confirmCancelModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmCancelModalLabel">Confirmar Cancelación</h5>
+            <div class="modal-header justify-content-center">
+                <h5 class="modal-title font-weight-bold" id="confirmCancelModalLabel" style="color: #000000;">Confirmar Cancelación</h5>
             </div>
 
-            <div class="modal-body">
-                ¿Está seguro de que desea cancelar esta cita?
+            <div class="modal-body text-center">
+                <h6 style="color: #000000; font-weight: bold;">
+                    ¿Está seguro de que desea cancelar esta cita?
+                </h6>
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="modalCerrar">Cerrar</button>
-                <a id="btnConfirmCancel" class="btn btn-danger" href="#">Cancelar Cita</a>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" id="modalCerrar" style="width: 20%;">No</button>
+                <a id="btnConfirmCancel" class="btn btn-primary" href="#" style="width: 20%;">Sí</a>
             </div>
         </div>
     </div>
@@ -135,6 +140,38 @@
             flex-direction: column;
             justify-content: space-between;
         }
+
+        .estilo-tab {
+            background-color: rgba(42, 62, 84, 0.2);
+            color: rgba(42, 62, 84, 0.4);
+            font-weight: bold;
+        }
+
+        .estilo-tab:hover {
+            background-color: rgba(42, 62, 84, 0.8) !important;
+            color: white;
+            transition: background-color 0.3s linear;
+        }
+
+        .estilo-tab.active {
+            background-color: rgba(42, 62, 84, 1) !important;
+            color: white !important;
+        }
+
+        .card-text { 
+            color: #000000;
+        }
+
+        .th_bg {
+            text-align: center;
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+        }
+
+        th {
+            border: 1px solid #FFFFFF;
+        }
+
     </style>
     @*===================*@
 }

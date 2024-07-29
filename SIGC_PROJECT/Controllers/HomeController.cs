@@ -1,3 +1,4 @@
+using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,27 @@ namespace SIGC_PROJECT.Controllers
         [FiltroRegistro]
         public async Task<IActionResult> Index()
         {
+            // Obtener el id del Usuario
+            var idUser = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            // Crear una variable con la fecha de hoy
+            DateTime fechaActual = DateTime.Now;
+
+            if (User.IsInRole("Secretaria"))
+            {
+                //Obtener el id del Doctor
+                var idDoctor = await _context.Secretaria.Where(s => s.IdUsuario == int.Parse(idUser)).Select(s => s.IdDoctor).FirstOrDefaultAsync();
+                return RedirectToAction("CitasDelDia", "Citas", new { date = fechaActual.ToString("yyyy-MM-dd"), doctorId = idDoctor });
+
+            }
+            else if (User.IsInRole("Doctor"))
+            {
+                //Obtener el id del Doctor
+                var idDoctor = await _context.Doctors.Where(s => s.IdUsuario == int.Parse(idUser)).Select(s => s.DoctorId).FirstOrDefaultAsync();
+                return RedirectToAction("CitasDelDia", "Citas", new { date = fechaActual.ToString("yyyy-MM-dd"), doctorId = idDoctor });
+
+            }
+
             return View();
         }
 

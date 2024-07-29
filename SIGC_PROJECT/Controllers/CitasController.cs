@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging.Signing;
 using SIGC_PROJECT.Models;
 using SIGC_PROJECT.Models.ViewModel;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SIGC_PROJECT.Controllers
 {
@@ -51,6 +52,7 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Citas/Create
+        [Authorize(Roles = "Paciente, Secretaria")]
         public IActionResult Create(int idDoctor)
         {
             var doctor = _context.Doctors.Include(d => d.DisponibilidadDoctors)
@@ -130,7 +132,7 @@ namespace SIGC_PROJECT.Controllers
                 }
                 else if(roles == "Secretaria")
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("CitasDelDia");
                 }
                 
             }
@@ -197,8 +199,146 @@ namespace SIGC_PROJECT.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction("CitaPaciente");
+            if (User.IsInRole("Paciente"))
+            {
+                return RedirectToAction("CitaPaciente");
+            }
+            else if(User.IsInRole("Secretaria") || User.IsInRole("Doctor"))
+            {
+                return RedirectToAction("CalendarioCitas");
+            }
+
+            return View(cita);
+            
         }
+        
+        [HttpGet]
+        public async Task<IActionResult> CompletarCita(int id)
+        {
+            var cita = await _context.Citas.FindAsync(id);
+            if(cita != null && cita.Estado == "PENDIENTE")
+            {
+                cita.Estado = "COMPLETADO";
+                await _context.SaveChangesAsync();
+            }
+
+            if (User.IsInRole("Paciente"))
+            {
+                return RedirectToAction("CitaPaciente");
+            }
+            else if (User.IsInRole("Secretaria") || User.IsInRole("Doctor"))
+            {
+                return RedirectToAction("CalendarioCitas");
+            }
+
+            return View(cita);
+        }
+
+        //==============================================================//
+
+        [Authorize(Roles = "Doctor,Secretaria")]
+        public IActionResult CalendarioCitas()
+        {
+            //Obtener el id del usuario
+            var idUser = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            //Obtener el rol del usuario 
+            var rolActual = _context.UsuarioRols.Where(r => r.IdUsuario == int.Parse(idUser))
+                                                .Select(r => r.Rol.Nombre).FirstOrDefault();
+
+            if(rolActual == "Doctor")
+            {
+                var doctorId = _context.Doctors.Where(d => d.IdUsuario == int.Parse(idUser))
+                                               .Select(d => d.DoctorId).FirstOrDefault();
+
+                ViewBag.DoctorId = doctorId;
+            }
+            else if (rolActual == "Secretaria")
+            {
+                var doctorId = _context.Secretaria.Where(s => s.IdUsuario == int.Parse(idUser))
+                                                  .Select(d => d.IdDoctor).FirstOrDefault();
+
+                ViewBag.DoctorId = doctorId;
+            }
+
+
+            return View();
+        }
+
+        [Authorize(Roles = "Doctor,Secretaria")]
+        public IActionResult CitasDelDia()
+        {
+            return View();
+        }
+        
+        [Authorize(Roles = "Doctor,Secretaria")]
+        public IActionResult CitasAnteriores()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Dia([FromBody] CalendarioSolicitudes request)
+        {
+            DateTime fechaSeleccionada = DateTime.Parse(request.Date);
+            var doctorId = request.DoctorId;
+
+            var citas = _context.Citas.Include(c => c.Doctor)
+                                      .Where(c => c.FechaCita == fechaSeleccionada.Date && c.DoctorId == doctorId)
+                                      .ToList();
+
+            var model = new CitasDelDiaVM
+            {
+                Fecha = fechaSeleccionada,
+                Citas = citas
+            };
+
+            if(fechaSeleccionada < DateTime.Now.Date)
+            {
+                //Redirigir a la vista de tablas
+                var redirectUrl = Url.Action("CitasAnteriores", "Citas", new { date = fechaSeleccionada.ToString("yyyy-MM-dd"), doctorId = request.DoctorId });
+                return Json(new { redirectUrl });
+            }
+            else
+            {
+                //Redirigir a la vista de citas del dia
+                var redirectUrl = Url.Action("CitasDelDia", "Citas", new { date = fechaSeleccionada.ToString("yyyy-MM-dd"), doctorId = request.DoctorId });
+                return Json(new { redirectUrl });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult CitasDelDia(DateTime date, int doctorId)
+        {
+            var citas = _context.Citas.Include(c => c.Doctor)
+                                      .Where(c => c.DoctorId == doctorId && c.FechaCita == date.Date && c.Estado == "PENDIENTE")
+                                      .ToList();
+
+            var model = new CitasDelDiaVM
+            {
+                Fecha = date,
+                Citas = citas
+            };
+
+            return View(model);
+        }
+        
+        [HttpGet]
+        public IActionResult CitasAnteriores(DateTime date, int doctorId)
+        {
+            var citas = _context.Citas.Include(c => c.Doctor)
+                                      .Where(c => c.DoctorId == doctorId && c.FechaCita == date.Date)
+                                      .ToList();
+
+            var model = new CitasDelDiaVM
+            {
+                Fecha = date,
+                Citas = citas
+            };
+
+            return View(model);
+        }
+        //======================
 
         // GET: Citas/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -307,4 +447,10 @@ public class HorasOcupadas
 {
     public int DoctorId { get; set; }
     public DateTime Fecha { get; set; }
+}
+
+public class CalendarioSolicitudes
+{
+    public string Date { get; set; }
+    public int DoctorId { get; set; }
 }
