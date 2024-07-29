@@ -4,42 +4,95 @@
     ViewData["Title"] = "Delete";
 }
 
-<h1>Delete</h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-11 mt-5">
+            <div class="card-header text-center">
+                <h2 style="font-weight: bold; font-size: 1.7em; color: #04294F;">¿Está seguro de que desea eliminar este día?</h2>
+            </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>DisponibilidadDoctor</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Dia)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Dia)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.HoraInicio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.HoraInicio)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.HoraFin)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.HoraFin)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Doctor)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Doctor.DoctorId)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="DisponibilidadDoctorId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+            <div class="card-body">
+                <div class="container d-flex justify-content-center">
+                    <dl class="row" style="width: 60%;">
+                        <dt class="col-sm-4">
+                            Día:
+                        </dt>
+                        <dd class="col-sm-8 text-right">
+                            @Html.DisplayFor(model => model.Dia)
+                        </dd>
+                        <dt class="col-sm-4">
+                            Hora de Inicio:
+                        </dt>
+                        <dd class="col-sm-8 text-right">
+                            <p class="hora-inicio">@Html.DisplayFor(model => model.HoraInicio)</p>
+                        </dd>
+                        <dt class="col-sm-4">
+                            Hora de Salida: 
+                        </dt>
+                        <dd class="col-sm-8 text-right">
+                            <p class="hora-fin">@Html.DisplayFor(model => model.HoraFin)</p>
+                        </dd>
+                        <dt class="col-sm-4" hidden>
+                            @Html.DisplayNameFor(model => model.Doctor)
+                        </dt>
+                        <dd class="col-sm-8" hidden>
+                            @Html.DisplayFor(model => model.Doctor.DoctorId)
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card-footer text-center">
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="DisponibilidadDoctorId" />
+                    <a asp-action="Index" class="btn btn-secondary font-weight-bold" style="width: 20%">No</a>
+                    <input type="submit" value="Sí" class="btn btn-primary font-weight-bold" style="width: 20%" />
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+
+    @*======== FUNCIONALIDADES ========*@
+    <script>
+        // Función para convertir un valor de 24 horas a formato de 12 horas con AM/PM
+        function convertirFormatoHora(valor) {
+
+            // Se divide el valor en horas y minutos
+            var [horas, minutos] = valor.split(':').map(Number);
+
+            // Determinar si es a.m. o p.m.
+            var periodo = horas >= 12 ? 'p.m.' : 'a.m.';
+
+            // Convierte la hora al formato de 12 horas
+            horas = horas % 12;
+            horas = horas ? horas : 12; // La hora 0 debe ser 12
+
+            // Devuelve la cadena formateada
+            return horas + ':' + (minutos < 10 ? '0' : '') + minutos + ' ' + periodo;
+        }
+
+        //Aplicarlo a la hora inicio
+        document.querySelectorAll('.hora-inicio').forEach(element => {
+            const horaFormateada = convertirFormatoHora(element.innerText);
+            element.innerText = horaFormateada;
+        });
+
+        //Aplicarlo a la hora fin
+        document.querySelectorAll('.hora-fin').forEach(element => {
+            const horaFormateada = convertirFormatoHora(element.innerText);
+            element.innerText = horaFormateada;
+        });
+    </script>
+    @*=================================*@
+
+    <style>
+        .col-sm-4, .col-sm-8 {
+            color: black;
+            font-size: 1.4em;
+            margin-top: 1.3em;
+        }
+    </style>
+}

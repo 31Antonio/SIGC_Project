@@ -5,59 +5,62 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>DisponibilidadDoctor</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <input asp-for="DoctorId" hidden />
-
-            <div class="form-group">
-                <input type="checkbox" id="seleccionarTodo" /> Seleccionar todos los días
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-11">
+            <div class="card-header text-center">
+                <h2 style="font-weight: bold; font-size: 1.7em; color: #04294F;">Registro del horario</h2>
             </div>
 
-            @foreach (var dia in Model.Dias.Keys)
-            {
-                <div class="form-group row mb-2 day-group">
-                    <div class="col-auto form-check">
-                        <input type="checkbox" class="form-check-input day-checkbox" name="selectedDays" value="@dia" id="@dia" />
-                        <label class="form-check-label" for="@dia">@dia</label>
+            <div class="card-body">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <input asp-for="DoctorId" hidden />
+
+                    <div class="form-group select_todo">
+                        <input type="checkbox" id="seleccionarTodo" /> Seleccionar todos los días
                     </div>
 
-                    <div class="col-auto time-fields ml-5" style="display: none;">
+                    @foreach (var dia in Model.Dias.Keys)
+                    {
+                        <div class="form-group row mb-3 day-group">
+                            <div class="col-auto form-check">
+                                <input type="checkbox" class="form-check-input day-checkbox" name="selectedDays" value="@dia" id="@dia" />
+                                <label class="form-check-label" for="@dia">@dia</label>
+                            </div>
 
-                        <div class="col-md-6">
-                            <label for="HorarioInicio_@dia">Hora Inicio</label>
-                            <input type="time" id="HoraInicio_@dia" name="HoraInicio_@dia" class="form-control" />
+                            <div class="col-auto time-fields ml-5" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="HoraInicio_@dia">Hora Inicio</label>
+                                        <input type="time" id="HoraInicio_@dia" name="HoraInicio_@dia" class="form-control" />
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="HoraFin_@dia">Hora Fin</label>
+                                        <input type="time" id="HoraFin_@dia" name="HoraFin_@dia" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                       
-                        <div class="col-md-6">
-                            <label for="HorarioFin_@dia">Hora Fin</label>
-                            <input type="time" id="HoraFin_@dia" name="HoraFin_@dia" class="form-control" />
-                        </div>
-                        
+                    }
+
+                    <div class="form-group mt-5 text-center">
+                        <input type="submit" value="Crear" class="btn btn-estilo" />
+                        <a asp-action="Index" class="btn btn-danger font-weight-bold">Cancelar</a>
                     </div>
-                </div>
-            }
-
-            <div class="form-group">
-                <input type="submit" value="Crear" class="btn btn-primary" />
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
+    @*======== FUNCIONALIDADES =======*@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const selectAll_chk = document.getElementById("seleccionarTodo");
@@ -91,4 +94,38 @@
 
 
     </script>
+    @*================================*@
+
+    @*======== ESTILOS ========*@
+    <style>
+        .day-group { 
+            background-color: #ffffff;
+            color: #000000;
+            font-size: 1.3em;
+            font-weight: bold;
+            padding: 10px;
+            margin-left: 2px;
+        }
+
+        .select_todo {
+            color: #000000;
+            font-size: 1.3em;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        .btn-estilo {
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+            font-weight: bold;
+            transition: background-color 0.3s linear;
+        }
+
+        .btn-estilo:hover {
+            background-color: rgba(42, 62, 84, 0.8);
+            color: #FFFFFF;
+        }
+
+    </style>
+    @*=========================*@
 }

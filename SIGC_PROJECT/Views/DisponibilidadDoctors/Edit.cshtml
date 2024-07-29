@@ -4,49 +4,60 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>DisponibilidadDoctor</h4>
-<hr />
-<form asp-action="Edit" id="disponibilidadForm">
-    <input type="hidden" asp-for="DoctorId" />
-
-    <div class="form-group">
-        <input type="checkbox" id="selectAll" /> Seleccionar todo
-    </div>
-
-    @foreach (var dia in Model.Dias.Keys)
-    {
-        <div class="form-group row mb-2">
-            <div class="col-auto form-check">
-                <input type="checkbox" class="form-check-input day-checkbox" name="Dias[@dia]" value="true" id="@dia" @(Model.Dias[dia] ? "checked" : "") />
-                <label class="form-check-label" for="@dia">@dia</label>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-11">
+            <div class="card-header text-center">
+                <h2 style="font-weight: bold; font-size: 1.7em; color: #04294F;">Editar horario</h2>
             </div>
 
-            <div class="col-auto time-fields" style="display:@(Model.Dias[dia] ? "block" : "none");">
-                <label for="HoraInicio_@dia" class="form-label">Hora Inicio</label>
-                <input type="time" id="HoraInicio_@dia" name="HorasInicio[@dia]" class="form-control" value="@(Model.HorasInicio.ContainsKey(dia) ? Model.HorasInicio[dia] : "")" />
-            </div>
+            <div class="card-body">
+                <form asp-action="Edit" id="disponibilidadForm">
+                    <input type="hidden" asp-for="DoctorId" />
 
-            <div class="col-auto time-fields" style="display:@(Model.Dias[dia] ? "block" : "none");">
-                <label for="HoraFin_@dia" class="form-label">Hora Fin</label>
-                <input type="time" id="HoraFin_@dia" name="HorasFin[@dia]" class="form-control" value="@(Model.HorasFin.ContainsKey(dia) ? Model.HorasFin[dia] : "")" />
+                    <div class="form-group select_todo">
+                        <input type="checkbox" id="selectAll" /> Seleccionar todo
+                    </div>
+
+                    @foreach (var dia in Model.Dias.Keys)
+                    {
+                        <div class="form-group row mb-3 dias_grupo">
+                            <div class="col-auto form-check">
+                                <input type="checkbox" class="form-check-input day-checkbox" name="Dias[@dia]" value="true" id="@dia" @(Model.Dias[dia] ? "checked" : "") />
+                                <label class="form-check-label" for="@dia">@dia</label>
+                            </div>
+
+                            <div class="col-auto ml-5">
+                                <div class="row">
+                                    <div class="col-md-6 time-fields" style="display:@(Model.Dias[dia] ? "block" : "none");">
+                                        <label for="HoraInicio_@dia" class="form-label">Hora Inicio</label>
+                                        <input type="time" id="HoraInicio_@dia" name="HorasInicio[@dia]" class="form-control" value="@(Model.HorasInicio.ContainsKey(dia) ? Model.HorasInicio[dia] : "")" />
+                                    </div>
+
+                                    <div class="col-md-6 time-fields" style="display:@(Model.Dias[dia] ? "block" : "none");">
+                                        <label for="HoraFin_@dia" class="form-label">Hora Fin</label>
+                                        <input type="time" id="HoraFin_@dia" name="HorasFin[@dia]" class="form-control" value="@(Model.HorasFin.ContainsKey(dia) ? Model.HorasFin[dia] : "")" />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    }
+
+                    <div class="form-group mt-5 text-center">
+                        <input type="submit" value="Guardar" class="btn btn-estilo" />
+                        <a asp-action="Index" class="btn btn-danger font-weight-bold">Cancelar</a>
+                    </div>
+                </form>
             </div>
         </div>
-    }
-
-    <div class="form-group">
-        <input type="submit" value="Guardar" class="btn btn-primary" />
     </div>
-</form>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
+    @*======== FUNCIONALIDADES ========*@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const selectAllCheckbox = document.getElementById('selectAll');
@@ -80,5 +91,38 @@
             }
         });
     </script>
+    @*=================================*@
+
+    @*======== ESTILOS ========*@
+    <style>
+        .dias_grupo { 
+            background-color: #ffffff;
+            color: #000000;
+            font-size: 1.3em;
+            font-weight: bold;
+            padding: 10px;
+            margin-left: 2px;
+        }
+
+        .select_todo {
+            color: #000000;
+            font-size: 1.3em;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        .btn-estilo {
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+            font-weight: bold;
+            transition: background-color 0.3s linear;
+        }
+
+        .btn-estilo:hover {
+            background-color: rgba(42, 62, 84, 0.8);
+            color: #FFFFFF;
+        }
+    </style>
+    @*=========================*@
 
 }

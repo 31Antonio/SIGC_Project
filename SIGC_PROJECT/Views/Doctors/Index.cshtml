@@ -19,10 +19,7 @@
                 Cédula
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.First().Apellido)
+                Nombre Completo
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.First().Especialidad)
@@ -46,10 +43,7 @@
                 @Html.DisplayFor(modelItem => item.Cedula)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Apellido)
+                @Html.DisplayFor(modelItem => item.Nombre) @Html.DisplayFor(modelItem => item.Apellido)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Especialidad)
@@ -96,6 +90,8 @@
     </div>
 </div>
 
+@section Scripts {
+
 <!-- Agregar estilos CSS -->
 <style>
     .paginacion_dabajo {
@@ -106,6 +102,12 @@
 
     .contenedor-paginacion {
         text-align: center;
+    }
+
+    .active.page-item .page-link { 
+        background-color: rgba(42, 62, 84, 1) !important;
+        font-weight: bold;
+        border: 2px solid rgba(42, 62, 84, 1) !important;
     }
 
     .th_bg {
@@ -131,3 +133,4 @@
         color: #FFFFFF;
     }
 </style>
+}

@@ -129,7 +129,7 @@
 
                                         @if (User.IsInRole("Administrador") || User.IsInRole("Doctor"))
                                         {
-                                            <li><a asp-controller="DisponibilidadDoctors" asp-action="Index">Horarios Doctores</a></li>
+                                            <li><a asp-controller="DisponibilidadDoctors" asp-action="Index">Horario del Doctor</a></li>
                                         }
                                         
                                         @if (User.IsInRole("Secretaria"))

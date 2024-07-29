@@ -4,22 +4,29 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Horarios doctores</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<div style="margin-top: 6em;"></div>
+<div class="container mb-3">
+    @if (!Model.Any())
+    {
+        <a asp-action="Create" class="btn btn-estilo">Agregar Horario</a>
+    }else{
+        <a asp-action="Edit" class=" btn btn-primary font-weight-bold" asp-route-id="@ViewBag.DoctorId">Editar Horario</a>
+    }
+    
+</div>
+
+<table class="table table-striped">
     <thead>
-        <tr>
+        <tr class="th_bg">
             <th>
-                @Html.DisplayNameFor(model => model.Dia)
+                Día
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.HoraInicio)
+                Hora de Inicio
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.HoraFin)
+                Hora de Salida
             </th>
             <th hidden>
                 @Html.DisplayNameFor(model => model.Doctor)
@@ -29,7 +36,7 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+        <tr class="text-center font-weight-bold">
             <td>
                 @Html.DisplayFor(modelItem => item.Dia)
             </td>
@@ -42,10 +49,9 @@
             <td hidden>
                 @Html.DisplayFor(modelItem => item.Doctor.DoctorId)
             </td>
-            <td>
-                    <a asp-action="Edit" class=" btn btn-warning" asp-route-id="@item.DisponibilidadDoctorId">Edit</a> |
-                    <a asp-action="Details" class=" btn btn-primary" asp-route-id="@item.DisponibilidadDoctorId">Details</a> |
-                    <a asp-action="Delete" class=" btn btn-danger" asp-route-id="@item.DisponibilidadDoctorId">Delete</a>
+            <td class="text-center">
+                @*<a asp-action="Details" class=" btn btn-primary" asp-route-id="@item.DisponibilidadDoctorId">Details</a> | *@
+                    <a asp-action="Delete" class=" btn btn-danger font-weight-bold" asp-route-id="@item.DisponibilidadDoctorId">Eliminar Día</a>
             </td>
         </tr>
 }
@@ -53,6 +59,8 @@
 </table>
 
 @section Scripts{
+
+    @*======== FUNCIONALIDADES ========*@
     <script>
         // Función para convertir un valor de 24 horas a formato de 12 horas con AM/PM
         function convertirFormatoHora(valor) {
@@ -83,4 +91,32 @@
             element.innerText = horaFormateada;
         });
     </script>
+    @*=================================*@
+
+    @*======== ESTILOS ========*@
+    <style>
+        .btn-estilo {
+            width: 20%;
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+            transition: background-color 0.5s linear;
+            font-weight: bold;
+        }
+
+        .btn-estilo:hover{
+            background-color: rgba(42, 62, 84, 0.8);
+            color: #FFFFFF;
+        }
+
+        .th_bg {
+            text-align: center;
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+        }
+
+        th {
+            border: 1px solid #FFFFFF;
+        }
+    </style>
+    @*=========================*@
 }

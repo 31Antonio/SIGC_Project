@@ -37,6 +37,7 @@ namespace SIGC_PROJECT.Controllers
             }
 
             var disponibilidad = await _context.DisponibilidadDoctors.Where(d => d.DoctorId == idDoctor).ToListAsync();
+            ViewBag.DoctorId = idDoctor;
 
             return View(disponibilidad);
         }
