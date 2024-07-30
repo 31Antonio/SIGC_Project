@@ -1,10 +1,57 @@
-﻿@model SIGC_PROJECT.Models.Consulta
+﻿@model SIGC_PROJECT.Models.ViewModel.ConsultaVM
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label for="cedula" class="control-label">Cédula del Paciente:</label>
+        <input type="text" id="cedula" class="form-control" autocomplete="off" list="cedulasList" />
+    </div>
+
+    <div class="form-group" id="pact_input1" style="display: none;">
+        <label for="nombrePaciente">Nombre del Paciente</label>
+        <input type="text" id="nombrePaciente" class="form-control" readonly />
+    </div>
+
+    <div class="form-group" id="pact_input2" style="display: none;">
+        <label for="edadPaciente">Edad del Paciente</label>
+        <input type="text" id="edadPaciente" class="form-control" readonly />
+    </div>
+
+    <input asp-for="PacienteId" hidden/>
+    <input asp-for="DoctorId" value="@ViewBag.DoctorId" hidden />
+
+    <div class="form-group">
+        <label asp-for="FechaConsulta">Fecha de la Consulta</label>
+        <input asp-for="FechaConsulta" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="MotivoConsulta">Motivo de la Consulta</label>
+        <input asp-for="MotivoConsulta" class="form-control" />
+    </div>
+    
+    <div class="form-group">
+        <label asp-for="Diagnostico">Diagnostico</label>
+        <input asp-for="Diagnostico" class="form-control" />
+    </div>
+    
+    <div class="form-group">
+        <label asp-for="Tratamiento">Tratamiento</label>
+        <input asp-for="Tratamiento" class="form-control" />
+    </div>
+    
+    <div class="form-group">
+        <label asp-for="Observaciones">Observaciones</label>
+        <input asp-for="Observaciones" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar Consulta</button>
+</form>
+
+@* <h1>Create</h1>
 
 <h4>Consulta</h4>
 <hr />
@@ -58,8 +105,9 @@
 
 <div>
     <a asp-action="Index">Back to List</a>
-</div>
+</div> *@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/userlib/js/consultas.js"></script>
 }

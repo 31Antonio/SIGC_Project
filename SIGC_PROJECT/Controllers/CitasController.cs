@@ -132,7 +132,7 @@ namespace SIGC_PROJECT.Controllers
                 }
                 else if(roles == "Secretaria")
                 {
-                    return RedirectToAction("CitasDelDia");
+                    return RedirectToAction("CalendarioCitas");
                 }
                 
             }

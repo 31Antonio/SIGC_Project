@@ -40,4 +40,73 @@
         return edad;
     }
 
+    //Funcion para formatear el campo de cedula
+    function formatearCedula(valor, cursorPos) {
+        var valorNumerico = valor.replace(/\D/g, '');
+        var valorFormateado = '';
+
+        if (valorNumerico.length > 0) {
+            valorFormateado += valorNumerico.substr(0, 3);
+        }
+        if (valorNumerico.length >= 4) {
+            valorFormateado += '-' + valorNumerico.substr(3, 7);
+        }
+        if (valorNumerico.length >= 11) {
+            valorFormateado += '-' + valorNumerico.substr(10, 1);
+        }
+
+        return valorFormateado;
+    }
+
+    //Evento para el input del campo de cedula
+    document.getElementById('Cedula').addEventListener('input', function () {
+        var valor = this.value;
+        var cursorPos = this.selectionStart; // Obtener la posición del cursor
+        var valorFormateado = formatearCedula(valor, cursorPos);
+
+        // Actualizar el valor del campo
+        this.value = valorFormateado;
+
+        // Restaurar la posición del cursor
+        var newCursorPos = cursorPos;
+        if (valor.length < valorFormateado.length) {
+            newCursorPos++;
+        }
+        this.setSelectionRange(newCursorPos, newCursorPos);
+    });
+
+    //Funcion para formatear el campo de telefono
+    function formatearTelefono(valor, cursorPos) {
+        var valorNumerico = valor.replace(/\D/g, '');
+        var valorFormateado = '';
+
+        if (valorNumerico.length > 0) {
+            valorFormateado += valorNumerico.substr(0, 3);
+        }
+        if (valorNumerico.length >= 4) {
+            valorFormateado += '-' + valorNumerico.substr(3, 3);
+        }
+        if (valorNumerico.length >= 7) {
+            valorFormateado += '-' + valorNumerico.substr(6, 4);
+        }
+
+        return valorFormateado;
+    }
+
+    //Evento para el input del campo de cedula
+    document.getElementById('Telefono').addEventListener('input', function () {
+        var valor = this.value;
+        var cursorPos = this.selectionStart; // Obtener la posición del cursor
+        var valorFormateado = formatearTelefono(valor, cursorPos);
+
+        // Actualizar el valor del campo
+        this.value = valorFormateado;
+
+        // Restaurar la posición del cursor
+        var newCursorPos = cursorPos;
+        if (valor.length < valorFormateado.length) {
+            newCursorPos++;
+        }
+        this.setSelectionRange(newCursorPos, newCursorPos);
+    });
 });

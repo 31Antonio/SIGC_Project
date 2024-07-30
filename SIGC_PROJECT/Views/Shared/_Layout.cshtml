@@ -86,6 +86,21 @@
                                 <li>
                                     <a><i class="fa fa-home"></i> Inicio</a>
                                 </li>
+                                @if (User.IsInRole("Doctor"))
+                                {
+                                    @*CITAS*@
+                                    <li>
+                                        <a><i class="fa fa-calendar"></i>Citas <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li class="nav-item">
+                                                <a asp-controller="Citas" asp-action="CalendarioCitas">Calendario de Citas</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a asp-controller="DisponibilidadDoctors" asp-action="Index">Horario del Doctor</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                }
                                 @if (User.IsInRole("Secretaria"))
                                 {
                                     @*FORMULARIO DE REGISTRO*@
@@ -96,7 +111,7 @@
                                                 <a asp-controller="Secretariums" asp-action="RegistrosPendientes">Solicitudes Pendientes <span class="badge bg-danger" id="solicitud_conteo"></span></a>
                                             </li>
                                             <li class="nav-item">
-                                                <a asp-controller="Pacientes" asp-action="Index">Registrar Paciente</a>
+                                                <a asp-controller="Pacientes" asp-action="Index">Registro de Pacientes</a>
                                             </li>
                                         </ul>
                                     </li>
@@ -137,11 +152,6 @@
                                             <li><a asp-controller="Citas" asp-action="CitaPaciente">Historial de Citas</a></li>
                                         }
                                         
-                                        @if (User.IsInRole("Doctor"))
-                                        {
-                                            <li><a asp-controller="Citas" asp-action="CalendarioCitas">Calendario de Citas</a></li>
-                                        }
-
                                         <li><a asp-controller="Consultas" asp-action="Index">Consulta</a></li>
 
                                         @if(User.IsInRole("Doctor"))
@@ -155,7 +165,7 @@
                                         }
                                         
 
-                                        @if (User.IsInRole("Administrador") || User.IsInRole("Doctor"))
+                                        @if (User.IsInRole("Administrador"))
                                         {
                                             <li><a asp-controller="DisponibilidadDoctors" asp-action="Index">Horario del Doctor</a></li>
                                         }

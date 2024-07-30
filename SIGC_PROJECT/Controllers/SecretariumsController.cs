@@ -181,6 +181,34 @@ namespace SIGC_PROJECT.Controllers
             return rolNombre != null ? rolNombre.IdRol : -1;
         }
 
+        [Authorize(Roles = "Secretaria")]
+        public IActionResult RegistrarPaciente()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> RegistrarPaciente_S([Bind("PacienteId,Cedula,Nombre,Apellido,FechaNacimiento,Edad,Genero,Direccion,Telefono,CorreoElectronico,HistorialMedico,IdUsuario")] Paciente paciente)
+        {
+            if (ModelState.IsValid)
+            {
+                var cedula = await _context.Pacientes.Where(p => p.Cedula == paciente.Cedula).FirstOrDefaultAsync();
+
+                if (cedula != null)
+                {
+                    TempData["MensajeError"] = "Ya hay un paciente registrado con este número de cédula";
+                }
+                else if (cedula == null)
+                {
+                    _context.Add(paciente);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index", "Pacientes", null);
+                }
+
+            }
+
+            return View("RegistrarPaciente", paciente);
+        }
+
         #endregion
 
         // GET: Secretariums/Create

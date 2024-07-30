@@ -2,7 +2,7 @@
 @using SIGC_PROJECT.Helper;
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Registrar Paciente";
 }
 
 <div class="container">
@@ -10,17 +10,17 @@
         <div class="col-md-11">
             <div class="card mt-2">
                 <div class="card-header text-center">
-                    <h2 style="font-weight: bold; font-size: 1.7em;">Registre su Información</h2>
+                    <h2 style="font-weight: bold; font-size: 1.7em; color: #04294F;">Información del Paciente</h2>
                 </div>
 
                 <div class="card-body">
-                    <form asp-action="Create">
+                    <form asp-action="RegistrarPaciente_S">
                         <div class="row">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                             <div class="col-md-3 mb-3">
-                                <label asp-for="Cedula" class="control-label"></label>
-                                <input asp-for="Cedula" class="form-control" />
+                                <label asp-for="Cedula" class="control-label">Cédula</label>
+                                <input asp-for="Cedula" class="form-control" required />
                                 <span asp-validation-for="Cedula" class="text-danger"></span>
                             </div>
 
@@ -28,19 +28,19 @@
 
                             <div class="col-md-4 mb-3">
                                 <label asp-for="Nombre" class="control-label"></label>
-                                <input asp-for="Nombre" class="form-control" />
+                                <input asp-for="Nombre" class="form-control" required />
                                 <span asp-validation-for="Nombre" class="text-danger"></span>
                             </div>
 
                             <div class="col-md-4 mb-3">
                                 <label asp-for="Apellido" class="control-label"></label>
-                                <input asp-for="Apellido" class="form-control" />
+                                <input asp-for="Apellido" class="form-control" required />
                                 <span asp-validation-for="Apellido" class="text-danger"></span>
                             </div>
 
                             <div class="col-md-3 mb-3">
                                 <label asp-for="FechaNacimiento" class="control-label">Fecha de Nacimiento</label>
-                                <input asp-for="FechaNacimiento" class="form-control" type="date"/>
+                                <input asp-for="FechaNacimiento" class="form-control" type="date" required />
                                 <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
                             </div>
 
@@ -61,25 +61,22 @@
                             </div>
 
                             <div class="col-md-2 mb-3">
-                                <label asp-for="Telefono" class="control-label"></label>
+                                <label asp-for="Telefono" class="control-label">Teléfono</label>
                                 <input asp-for="Telefono" class="form-control" />
                                 <span asp-validation-for="Telefono" class="text-danger"></span>
                             </div>
 
                             <div class="col-md-4 mb-3">
-                                <label asp-for="Direccion" class="control-label"></label>
+                                <label asp-for="Direccion" class="control-label">Dirección</label>
                                 <input asp-for="Direccion" class="form-control" />
                                 <span asp-validation-for="Direccion" class="text-danger"></span>
                             </div>
 
                             <div class="col-md-4 mb-3">
-                                <label asp-for="CorreoElectronico" class="control-label"></label>
+                                <label asp-for="CorreoElectronico" class="control-label">Correo Electrónico</label>
                                 <input asp-for="CorreoElectronico" class="form-control" />
                                 <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
                             </div>
-                            
-                            <input asp-for="IdUsuario" value="@SessionHelper.GetNameIdentifier(User)" hidden/>
-
                         </div>
 
                         <div id="mensaje">
@@ -91,6 +88,7 @@
 
                         <div class="text-center">
                             <input type="submit" value="Guardar" class="btn btn-estilo mt-5" />
+                            <a asp-controller="Pacientes" asp-action="Index" class="btn btn-danger font-weight-bold mt-5" style="width: 30%;">Cancelar</a>
                         </div>
 
                         <div class="form-group" hidden>
@@ -108,7 +106,9 @@
 @section Scripts {
     <link href="~/css/site.css" rel="stylesheet" />
     <script src="~/userlib/js/pacientescripts.js"></script>
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
     <style>
         #dataMensaje {
@@ -119,15 +119,20 @@
         .btn-estilo {
             background-color: rgba(42, 62, 84, 1);
             color: #FFFFFF;
-            transition: background-color 0.5s linear;
-            width: 40%;
+            transition: background-color 0.2s linear;
+            width: 30%;
             font-weight: bold;
             font-size: 1.1em;
         }
 
         .btn-estilo:hover {
-            background-color: rgba(42, 62, 84, 0.8);
+            background-color: #062043;
             color: #FFFFFF;
+        }
+
+        .control-label {
+            font-weight: bold;
+            color: #04294F;
         }
     </style>
 }

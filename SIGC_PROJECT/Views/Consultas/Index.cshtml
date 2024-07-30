@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SIGC_PROJECT.Models.Consulta>
+﻿@model IEnumerable<SIGC_PROJECT.Models.ViewModel.ConsultaGeneralVM>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,28 +13,31 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FechaConsulta)
+                Fecha
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MotivoConsulta)
+                Motivo de la consulta
             </th>
+            @if (User.IsInRole("Doctor"))
+            {
+                <th>
+                    Paciente
+                </th>
+            }
             <th>
                 @Html.DisplayNameFor(model => model.Diagnostico)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Tratamiento)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Observaciones)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Doctor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Paciente)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Receta)
+            @if (User.IsInRole("Paciente"))
+            {
+                <th>
+                    Nombre Doctor
+                </th>
+                <th>
+                    Especialidad
+                </th>
+            }
+            <th hidden>
+                @Html.DisplayNameFor(model => model.RecetaId)
             </th>
             <th></th>
         </tr>
@@ -43,28 +46,32 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.FechaConsulta)
+                @item.FechaConsulta.ToString("dd/MM/yyyy")
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.MotivoConsulta)
             </td>
+            @if (User.IsInRole("Doctor"))
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.NombrePaciente)
+                </td>
+            }
             <td>
                 @Html.DisplayFor(modelItem => item.Diagnostico)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tratamiento)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Observaciones)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Doctor.DoctorId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Paciente.PacienteId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Receta.RecetaId)
+            @if (User.IsInRole("Paciente"))
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.NombreDoctor)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.EspecialidadDoctor)
+                </td>
+            }
+            <td hidden>
+                @Html.DisplayFor(modelItem => item.RecetaId)
             </td>
             <td>
                     <a asp-action="Edit" class=" btn btn-warning" asp-route-id="@item.ConsultaId">Edit</a> |

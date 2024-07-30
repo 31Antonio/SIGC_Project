@@ -136,7 +136,7 @@ public partial class SigcProjectContext : DbContext
                 .HasColumnName("diagnostico");
             entity.Property(e => e.DoctorId).HasColumnName("doctor_id");
             entity.Property(e => e.FechaConsulta)
-                .HasColumnType("datetime")
+                .HasColumnType("date")
                 .HasColumnName("fecha_consulta");
             entity.Property(e => e.MotivoConsulta)
                 .HasMaxLength(255)
