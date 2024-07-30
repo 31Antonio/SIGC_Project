@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SIGC_PROJECT.Helper;
 using SIGC_PROJECT.Models;
+using X.PagedList.Extensions;
 
 namespace SIGC_PROJECT.Controllers
 {
@@ -23,10 +25,21 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Pacientes
-        [Authorize(Roles = "Administrador")]
-        public async Task<IActionResult> Index()
+        [Authorize(Roles = "Secretaria,Administrador")]
+        public async Task<IActionResult> Index(int? pagina, int cantidadP = 10)
         {
-            return View(await _context.Pacientes.ToListAsync());
+            int numeroP = (pagina ?? 1);
+            var pacientes = _context.Pacientes.OrderBy(p => p.PacienteId).ToPagedList(numeroP, cantidadP);
+            return View(pacientes);
+            //return View(await _context.Pacientes.ToListAsync());
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> buscarPacientesCedula(string cedula, int pagina = 1)
+        {
+            var pacientes = _context.Pacientes.Where(p => p.Cedula.Contains(cedula)).ToPagedList(pagina, 10);
+
+            return View("Index", pacientes);
         }
 
         #region ===== Vistas de Configuracion =====

@@ -86,6 +86,34 @@
                                 <li>
                                     <a><i class="fa fa-home"></i> Inicio</a>
                                 </li>
+                                @if (User.IsInRole("Secretaria"))
+                                {
+                                    @*FORMULARIO DE REGISTRO*@
+                                    <li>
+                                        <a><i class="fa fa-edit"></i> Registro de Pacientes <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li class="nav-item">
+                                                <a asp-controller="Secretariums" asp-action="RegistrosPendientes">Solicitudes Pendientes <span class="badge bg-danger" id="solicitud_conteo"></span></a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a asp-controller="Pacientes" asp-action="Index">Registrar Paciente</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    @*CITAS*@
+                                    <li>
+                                        <a><i class="fa fa-calendar"></i>Citas <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li class="nav-item">
+                                                <a asp-controller="DisponibilidadDoctors" asp-action="VerDisponibilidad">Disponibilidad Doctor</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a asp-controller="Citas" asp-action="CalendarioCitas">Calendario de Citas</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                }
                                 <li>
                                     <a><i class="fa fa-edit"></i> Formularios <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
@@ -109,7 +137,7 @@
                                             <li><a asp-controller="Citas" asp-action="CitaPaciente">Historial de Citas</a></li>
                                         }
                                         
-                                        @if (User.IsInRole("Secretaria") || User.IsInRole("Doctor"))
+                                        @if (User.IsInRole("Doctor"))
                                         {
                                             <li><a asp-controller="Citas" asp-action="CalendarioCitas">Calendario de Citas</a></li>
                                         }
@@ -131,14 +159,7 @@
                                         {
                                             <li><a asp-controller="DisponibilidadDoctors" asp-action="Index">Horario del Doctor</a></li>
                                         }
-                                        
-                                        @if (User.IsInRole("Secretaria"))
-                                        {
-                                            <li><a asp-controller="DisponibilidadDoctors" asp-action="VerDisponibilidad">Disponibilidad Doctor</a></li>
-                                            <li class="nav-item">
-                                                <a asp-controller="Secretariums" asp-action="RegistrosPendientes">Registros Pendientes <span class="badge bg-danger" id="solicitud_conteo"></span></a>
-                                            </li>
-                                        }
+                                       
 
                                     </ul>
                                 </li>
