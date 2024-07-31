@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging.Signing;
+using SIGC_PROJECT.Helper;
 using SIGC_PROJECT.Models;
 using SIGC_PROJECT.Models.ViewModel;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -24,8 +25,10 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Citas
+        [Authorize]
         public async Task<IActionResult> Index()
         {
+
             var sigcProjectContext = _context.Citas.Include(c => c.Doctor).Include(c => c.Paciente).Include(c => c.Secretaria);
             return View(await sigcProjectContext.ToListAsync());
         }
@@ -52,6 +55,7 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Citas/Create
+        [FiltroRegistro]
         [Authorize(Roles = "Paciente, Secretaria")]
         public IActionResult Create(int idDoctor)
         {
@@ -164,6 +168,7 @@ namespace SIGC_PROJECT.Controllers
         }
 
         [Authorize(Roles = "Paciente")]
+        [FiltroRegistro]
         public async Task<IActionResult> CitaPaciente()
         {
             //Obtener el id del usuario
@@ -358,6 +363,7 @@ namespace SIGC_PROJECT.Controllers
         //======================
 
         // GET: Citas/Edit/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -413,6 +419,7 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Citas/Delete/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

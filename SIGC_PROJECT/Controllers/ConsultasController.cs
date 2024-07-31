@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SIGC_PROJECT.Helper;
 using SIGC_PROJECT.Models;
 using SIGC_PROJECT.Models.ViewModel;
+using X.PagedList.Extensions;
 
 namespace SIGC_PROJECT.Controllers
 {
@@ -22,32 +24,113 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Consultas
-        [Authorize(Roles = "Doctor,Secretaria,Paciente")]
-        public async Task<IActionResult> Index()
+        [Authorize]
+        [FiltroRegistro]
+        public async Task<IActionResult> Index(int? pagina, int cantidadP = 10)
         {
-            var consultas = _context.Consultas.Select(c => new ConsultaGeneralVM
+            // Numero de pagina actual
+            int numeroP = (pagina ?? 1);
+
+            // Obtener el id del Usuario
+            var idUser = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            IQueryable<ConsultaGeneralVM> consultasQuery;
+
+            if (User.IsInRole("Doctor"))
             {
-                ConsultaId = c.ConsultaId,
-                PacienteId = c.PacienteId,
-                NombrePaciente = c.Paciente.Nombre + ' ' + c.Paciente.Apellido,
-                EdadPaciente = c.Paciente.Edad,
-                DoctorId = c.DoctorId,
-                NombreDoctor = c.Doctor.Nombre + ' ' + c.Doctor.Apellido,
-                EspecialidadDoctor = c.Doctor.Especialidad,
-                FechaConsulta = c.FechaConsulta,
-                MotivoConsulta = c.MotivoConsulta,
-                Diagnostico = c.Diagnostico,
-                Tratamiento = c.Tratamiento,
-                RecetaId = c.RecetaId,
-                Observaciones = c.Observaciones
-            }).ToList();
+                var idDoctor = await _context.Doctors.Where(d => d.IdUsuario == int.Parse(idUser)).Select(d => d.DoctorId).FirstOrDefaultAsync();
+
+                consultasQuery = _context.Consultas.Where(c => c.DoctorId == idDoctor)
+                                              .Select(c => new ConsultaGeneralVM
+                                              {
+                                                  ConsultaId = c.ConsultaId,
+                                                  PacienteId = c.PacienteId,
+                                                  NombrePaciente = c.Paciente.Nombre + ' ' + c.Paciente.Apellido,
+                                                  EdadPaciente = c.Paciente.Edad,
+                                                  DoctorId = c.DoctorId,
+                                                  NombreDoctor = c.Doctor.Nombre + ' ' + c.Doctor.Apellido,
+                                                  EspecialidadDoctor = c.Doctor.Especialidad,
+                                                  FechaConsulta = c.FechaConsulta,
+                                                  MotivoConsulta = c.MotivoConsulta,
+                                                  Diagnostico = c.Diagnostico,
+                                                  Tratamiento = c.Tratamiento,
+                                                  RecetaId = c.RecetaId,
+                                                  Observaciones = c.Observaciones
+                                              });
+            }
+            else if (User.IsInRole("Paciente"))
+            {
+                var idPaciente = await _context.Pacientes.Where(d => d.IdUsuario == int.Parse(idUser)).Select(d => d.PacienteId).FirstOrDefaultAsync();
+
+                consultasQuery = _context.Consultas.Where(c => c.PacienteId == idPaciente)
+                                              .Select(c => new ConsultaGeneralVM
+                                              {
+                                                  ConsultaId = c.ConsultaId,
+                                                  PacienteId = c.PacienteId,
+                                                  NombrePaciente = c.Paciente.Nombre + ' ' + c.Paciente.Apellido,
+                                                  EdadPaciente = c.Paciente.Edad,
+                                                  DoctorId = c.DoctorId,
+                                                  NombreDoctor = c.Doctor.Nombre + ' ' + c.Doctor.Apellido,
+                                                  EspecialidadDoctor = c.Doctor.Especialidad,
+                                                  FechaConsulta = c.FechaConsulta,
+                                                  MotivoConsulta = c.MotivoConsulta,
+                                                  Diagnostico = c.Diagnostico,
+                                                  Tratamiento = c.Tratamiento,
+                                                  RecetaId = c.RecetaId,
+                                                  Observaciones = c.Observaciones
+                                              });
+            }
+            else if (User.IsInRole("Secretaria"))
+            {
+                var idDoctor = await _context.Secretaria.Where(d => d.IdUsuario == int.Parse(idUser)).Select(d => d.IdDoctor).FirstOrDefaultAsync();
+
+                consultasQuery = _context.Consultas.Where(c => c.DoctorId == idDoctor)
+                                              .Select(c => new ConsultaGeneralVM
+                                              {
+                                                  ConsultaId = c.ConsultaId,
+                                                  PacienteId = c.PacienteId,
+                                                  NombrePaciente = c.Paciente.Nombre + ' ' + c.Paciente.Apellido,
+                                                  EdadPaciente = c.Paciente.Edad,
+                                                  DoctorId = c.DoctorId,
+                                                  NombreDoctor = c.Doctor.Nombre + ' ' + c.Doctor.Apellido,
+                                                  EspecialidadDoctor = c.Doctor.Especialidad,
+                                                  FechaConsulta = c.FechaConsulta,
+                                                  MotivoConsulta = c.MotivoConsulta,
+                                                  Diagnostico = c.Diagnostico,
+                                                  Tratamiento = c.Tratamiento,
+                                                  RecetaId = c.RecetaId,
+                                                  Observaciones = c.Observaciones
+                                              });
+            }
+            else
+            {
+                consultasQuery = _context.Consultas.Select(c => new ConsultaGeneralVM
+                {
+                    ConsultaId = c.ConsultaId,
+                    PacienteId = c.PacienteId,
+                    NombrePaciente = c.Paciente.Nombre + ' ' + c.Paciente.Apellido,
+                    EdadPaciente = c.Paciente.Edad,
+                    DoctorId = c.DoctorId,
+                    NombreDoctor = c.Doctor.Nombre + ' ' + c.Doctor.Apellido,
+                    EspecialidadDoctor = c.Doctor.Especialidad,
+                    FechaConsulta = c.FechaConsulta,
+                    MotivoConsulta = c.MotivoConsulta,
+                    Diagnostico = c.Diagnostico,
+                    Tratamiento = c.Tratamiento,
+                    RecetaId = c.RecetaId,
+                    Observaciones = c.Observaciones
+                });
+            }
+
+            var consultas = consultasQuery.ToPagedList(numeroP, cantidadP);
 
             return View(consultas);
-            //var sigcProjectContext = _context.Consultas.Include(c => c.Doctor).Include(c => c.Paciente).Include(c => c.Receta);
-            //return View(await sigcProjectContext.ToListAsync());
+
         }
 
         // GET: Consultas/Details/5
+        [Authorize]
+        [FiltroRegistro]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -132,6 +215,7 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Consultas/Edit/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -151,8 +235,6 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // POST: Consultas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ConsultaId,PacienteId,DoctorId,FechaConsulta,MotivoConsulta,Diagnostico,Tratamiento,RecetaId,Observaciones")] Consulta consulta)
@@ -189,6 +271,7 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Consultas/Delete/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

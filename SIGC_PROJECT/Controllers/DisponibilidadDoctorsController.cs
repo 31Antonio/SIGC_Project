@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
+using SIGC_PROJECT.Helper;
 using SIGC_PROJECT.Models;
 using SIGC_PROJECT.Models.ViewModel;
 using static System.Collections.Specialized.BitVector32;
@@ -25,6 +26,7 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: DisponibilidadDoctors
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> Index()
         {
             // Obtener el id del Usuario
@@ -43,6 +45,8 @@ namespace SIGC_PROJECT.Controllers
         }
 
         //GET: Ver las disponibilidades
+        [Authorize(Roles = "Paciente,Secretaria")]
+        [FiltroRegistro]
         [HttpGet]
         public IActionResult VerDisponibilidad()
         {
@@ -155,8 +159,6 @@ namespace SIGC_PROJECT.Controllers
         // GET: DisponibilidadDoctors/Create
         public async Task<IActionResult> Create()
         {
-            //ViewData["DoctorId"] = new SelectList(_context.Doctors, "DoctorId", "DoctorId");
-
             //Obtener el id del Usuario
             var idUser = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var idDoctor = await _context.Doctors.Where(d => d.IdUsuario == int.Parse(idUser)).Select(d => d.DoctorId).FirstOrDefaultAsync();

@@ -1,44 +1,36 @@
-﻿@model IEnumerable<SIGC_PROJECT.Models.ViewModel.ConsultaGeneralVM>
+﻿@model IPagedList<SIGC_PROJECT.Models.ViewModel.ConsultaGeneralVM>
+
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Consultas</h1>
+<h2 style="font-weight: bold; font-size: 1.7em; color: #04294F;" class="mt-5 mb-3">Historial de Consultas</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+@if (User.IsInRole("Doctor"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-estilo">Crear Registro</a>
+    </p>
+}
+
+<table class="table table-striped w-100">
     <thead>
-        <tr>
-            <th>
-                Fecha
-            </th>
-            <th>
-                Motivo de la consulta
-            </th>
+        <tr class="th_bg">
+            <th>Fecha</th>
+            <th>Motivo de la consulta</th>
             @if (User.IsInRole("Doctor"))
             {
-                <th>
-                    Paciente
-                </th>
+                <th>Paciente</th>
             }
-            <th>
-                @Html.DisplayNameFor(model => model.Diagnostico)
-            </th>
             @if (User.IsInRole("Paciente"))
             {
-                <th>
-                    Nombre Doctor
-                </th>
-                <th>
-                    Especialidad
-                </th>
+                <th>Nombre Doctor</th>
+                <th>Especialidad</th>
             }
-            <th hidden>
-                @Html.DisplayNameFor(model => model.RecetaId)
-            </th>
+            <th hidden>@Html.DisplayNameFor(model => model.First().RecetaId)</th>
             <th></th>
         </tr>
     </thead>
@@ -57,9 +49,6 @@
                     @Html.DisplayFor(modelItem => item.NombrePaciente)
                 </td>
             }
-            <td>
-                @Html.DisplayFor(modelItem => item.Diagnostico)
-            </td>
             @if (User.IsInRole("Paciente"))
             {
                 <td>
@@ -73,12 +62,92 @@
             <td hidden>
                 @Html.DisplayFor(modelItem => item.RecetaId)
             </td>
-            <td>
-                    <a asp-action="Edit" class=" btn btn-warning" asp-route-id="@item.ConsultaId">Edit</a> |
-                    <a asp-action="Details" class=" btn btn-primary" asp-route-id="@item.ConsultaId">Details</a> |
-                    <a asp-action="Delete" class=" btn btn-danger" asp-route-id="@item.ConsultaId">Delete</a>
+            <td class="text-center">
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <a asp-action="Edit" class=" btn btn-warning" asp-route-id="@item.ConsultaId">Edit</a>
+                        <a asp-action="Details" class=" btn btn-primary" asp-route-id="@item.ConsultaId">Details</a>
+                        <a asp-action="Delete" class=" btn btn-danger" asp-route-id="@item.ConsultaId">Delete</a>
+                    }
+
+                    @if (User.IsInRole("Doctor") || User.IsInRole("Secretaria") || User.IsInRole("Paciente"))
+                    {
+                        <a asp-action="Details" class=" btn btn-primary font-weight-bold" asp-route-id="@item.ConsultaId">Ver Detalles</a>
+                    }
+                    
+
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+<div class="contenedor-paginacion">
+    @Html.PagedListPager(Model, pagina => Url.Action("Index", new { pagina = pagina }), new PagedListRenderOptions
+{
+
+    DisplayPageCountAndCurrentLocation = false,
+    DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+    DisplayLinkToLastPage = PagedListDisplayMode.Always,
+    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+    DisplayLinkToNextPage = PagedListDisplayMode.Always,
+    DisplayLinkToIndividualPages = true,
+    MaximumPageNumbersToDisplay = 10,
+    DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+    Display = PagedListDisplayMode.Always,
+
+    UlElementClasses = new[] { "pagination", "justify-content-center" },
+    LiElementClasses = new[] { "page-item" },
+    PageClasses = new[] { "page-link" }
+})
+
+    <div class="paginacion_dabajo">
+        @string.Format("Página {0} de {1}", Model.PageNumber, Model.PageCount)
+    </div>
+</div>
+
+@section Scripts {
+
+    <!-- Agregar estilos CSS -->
+    <style>
+        .paginacion_dabajo {
+            margin-top: 10px;
+            text-align: center;
+            font-weight: bold;
+            color: #04294F;
+        }
+
+        .contenedor-paginacion {
+            text-align: center;
+        }
+
+        .active.page-item .page-link {
+            background-color: rgba(42, 62, 84, 1) !important;
+            font-weight: bold;
+            border: 2px solid rgba(42, 62, 84, 1) !important;
+        }
+
+        .th_bg {
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+        }
+
+        th {
+            border: 1px solid #FFFFFF;
+        }
+
+        .btn-estilo {
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+            transition: background-color 0.5s linear;
+            width: 20%;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .btn-estilo:hover {
+            background-color: rgba(42, 62, 84, 0.8);
+            color: #FFFFFF;
+        }
+    </style>
+}

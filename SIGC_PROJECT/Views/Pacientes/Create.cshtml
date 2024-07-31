@@ -10,7 +10,7 @@
         <div class="col-md-11">
             <div class="card mt-2">
                 <div class="card-header text-center">
-                    <h2 style="font-weight: bold; font-size: 1.7em;">Registre su Información</h2>
+                    <h2 style="font-weight: bold; font-size: 1.7em; color: #04294F;">Registre su Información</h2>
                 </div>
 
                 <div class="card-body">
@@ -19,7 +19,7 @@
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                             <div class="col-md-3 mb-3">
-                                <label asp-for="Cedula" class="control-label"></label>
+                                <label asp-for="Cedula" class="control-label">Cédula</label>
                                 <input asp-for="Cedula" class="form-control" />
                                 <span asp-validation-for="Cedula" class="text-danger"></span>
                             </div>
@@ -51,7 +51,7 @@
                             </div>
 
                             <div class="col-md-2 mb-3">
-                                <label asp-for="Genero" class="control-label"></label>
+                                <label asp-for="Genero" class="control-label">Género</label>
                                 <select asp-for="Genero" class="form-control">
                                     <option value="" hidden selected>Selec...</option>
                                     <option value="Femenino">Femenino</option>
@@ -61,19 +61,19 @@
                             </div>
 
                             <div class="col-md-2 mb-3">
-                                <label asp-for="Telefono" class="control-label"></label>
+                                <label asp-for="Telefono" class="control-label">Télefono</label>
                                 <input asp-for="Telefono" class="form-control" />
                                 <span asp-validation-for="Telefono" class="text-danger"></span>
                             </div>
 
                             <div class="col-md-4 mb-3">
-                                <label asp-for="Direccion" class="control-label"></label>
+                                <label asp-for="Direccion" class="control-label">Dirección</label>
                                 <input asp-for="Direccion" class="form-control" />
                                 <span asp-validation-for="Direccion" class="text-danger"></span>
                             </div>
 
                             <div class="col-md-4 mb-3">
-                                <label asp-for="CorreoElectronico" class="control-label"></label>
+                                <label asp-for="CorreoElectronico" class="control-label">Correo Electrónico</label>
                                 <input asp-for="CorreoElectronico" class="form-control" />
                                 <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
                             </div>
@@ -116,6 +116,11 @@
             font-weight: bold;
         }
 
+        .control-label {
+            font-weight: bold;
+            color: #04294F;
+        }
+
         .btn-estilo {
             background-color: rgba(42, 62, 84, 1);
             color: #FFFFFF;
@@ -126,7 +131,7 @@
         }
 
         .btn-estilo:hover {
-            background-color: rgba(42, 62, 84, 0.8);
+            background-color: #062043;
             color: #FFFFFF;
         }
     </style>

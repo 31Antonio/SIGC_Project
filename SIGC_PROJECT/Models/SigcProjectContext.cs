@@ -131,7 +131,7 @@ public partial class SigcProjectContext : DbContext
 
             entity.Property(e => e.ConsultaId).HasColumnName("consulta_id");
             entity.Property(e => e.Diagnostico)
-                .HasMaxLength(250)
+                .HasMaxLength(1000)
                 .IsUnicode(false)
                 .HasColumnName("diagnostico");
             entity.Property(e => e.DoctorId).HasColumnName("doctor_id");
@@ -139,17 +139,17 @@ public partial class SigcProjectContext : DbContext
                 .HasColumnType("date")
                 .HasColumnName("fecha_consulta");
             entity.Property(e => e.MotivoConsulta)
-                .HasMaxLength(255)
+                .HasMaxLength(1000)
                 .IsUnicode(false)
                 .HasColumnName("motivo_consulta");
             entity.Property(e => e.Observaciones)
-                .HasMaxLength(250)
+                .HasMaxLength(1000)
                 .IsUnicode(false)
                 .HasColumnName("observaciones");
             entity.Property(e => e.PacienteId).HasColumnName("paciente_id");
             entity.Property(e => e.RecetaId).HasColumnName("receta_id");
             entity.Property(e => e.Tratamiento)
-                .HasMaxLength(250)
+                .HasMaxLength(1000)
                 .IsUnicode(false)
                 .HasColumnName("tratamiento");
 

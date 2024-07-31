@@ -13,23 +13,26 @@
                             <input id="nombreUsu" value="@SessionHelper.GetName(User)" hidden />
 
                             <div class="col-md-12 mb-3">
-                                <label>Contraseña Actual</label>
+                                <label for="currentPassword" class="control-label">Contraseña Actual</label>
                                 <input type="password" id="currentPassword" class="form-control" />
                             </div>
 
                             <div class="col-md-12 mb-3">
-                                <label>Nueva Contraseña</label>
+                                <label for="newPassword" class="control-label">Nueva Contraseña</label>
                                 <input type="password" id="newPassword" class="form-control" />
                             </div>
 
                             <div class="col-md-12 mb-3">
-                                <label>Confirmar Contraseña</label>
+                                <label for="confirmPass" class="control-label">Confirmar Contraseña</label>
                                 <input type="password" id="confirmPass" class="form-control" />
                             </div>
 
-                            <div class="alert alert-danger" id="alertPass" style="display: none;"></div>
-
                         </div>
+
+                        <div class="text-center">
+                            <div class="alert alert-danger font-weight-bold" id="alertPass" style="display: none;"></div>
+                        </div>
+
                         <div class="text-center">
                             <button type="button" class="btn btn-estilo mt-5" id="btnCambiar">Cambiar Contraseña</button>
                         </div>
@@ -43,6 +46,11 @@
 </div>
 
 <style>
+    .control-label {
+        font-weight: bold;
+        color: #04294F;
+    }
+
     .btn-estilo {
         background-color: rgba(42, 62, 84, 1);
         color: #FFFFFF;
@@ -52,7 +60,7 @@
     }
 
     .btn-estilo:hover {
-        background-color: rgba(42, 62, 84, 0.8);
+        background-color: #062043;
         color: #FFFFFF;
     }
 </style>

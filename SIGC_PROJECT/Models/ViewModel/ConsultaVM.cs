@@ -9,7 +9,7 @@
         public string Diagnostico { get; set; }
         public string Tratamiento { get; set; }
         public int? RecetaId { get; set; }
-        public string Observaciones { get; set; }
+        public string? Observaciones { get; set; }
 
     }
 }

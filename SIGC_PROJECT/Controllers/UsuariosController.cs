@@ -171,7 +171,11 @@ namespace SIGC_PROJECT.Controllers
 
             if(user != null)
             {
-                if (nuevaPass.Length < 5)
+                if (nuevaPass == null)
+                {
+                    return Json(new { success = false, mensaje = "Si desea actualizar su contraseña, debe llenar el campo de nueva contraseña." });
+                }
+                else if (nuevaPass.Length < 5)
                 {
                     return Json(new { success = false, mensaje = "La contraseña debe tener más de 5 caracteres." });
                 }

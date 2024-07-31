@@ -4,63 +4,136 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-11">
+            <div class="card mt-2">
+                <div class="card-header text-center">
+                    <h2 style="font-weight: bold; font-size: 1.7em; color: #04294F;">Detalles de la Consulta</h2>
+                </div>
 
-<div>
-    <h4>Consulta</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaConsulta)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaConsulta)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MotivoConsulta)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MotivoConsulta)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Diagnostico)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Diagnostico)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Tratamiento)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Tratamiento)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Observaciones)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Observaciones)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Doctor)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Doctor.DoctorId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Paciente)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Paciente.PacienteId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Receta)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Receta.RecetaId)
-        </dd>
-    </dl>
+                <div class="card-body">
+
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Fecha de la Consulta:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            @Html.DisplayFor(model => model.FechaConsulta)
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Nombre del Paciente:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            @Html.DisplayFor(model => model.Paciente.Nombre) @Html.DisplayFor(model => model.Paciente.Apellido)
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Edad del Paciente:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            @Html.DisplayFor(model => model.Paciente.Edad) años
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Nombre del Doctor:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            @Html.DisplayFor(model => model.Doctor.Nombre) @Html.DisplayFor(model => model.Doctor.Apellido)
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Especialidad del Doctor:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            @Html.DisplayFor(model => model.Doctor.Especialidad)
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Motivo de la consulta:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            @Html.DisplayFor(model => model.MotivoConsulta)
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Diagnostico de la consulta:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            @Html.DisplayFor(model => model.Diagnostico)
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Tratamiento:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            @Html.DisplayFor(model => model.Tratamiento)
+                        </div>
+                    </div>
+
+                    @if(Model.Observaciones == "" || Model.Observaciones == null)
+                    {
+                        <div class="row mb-3">
+                            <div class="col-sm-4">
+                                <strong>Observaciones</strong>
+                            </div>
+                            <div class="col-sm-8">
+                                No se incluyeron observaciones.
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row mb-3">
+                            <div class="col-sm-4">
+                                <strong>Observaciones:</strong>
+                            </div>
+                            <div class="col-sm-8">
+                                @Html.DisplayFor(model => model.Observaciones)
+                            </div>
+                        </div>
+                    }
+
+                </div>
+
+                <div class="card-footer text-center">
+                    <a asp-action="Index" class="btn btn-secondary font-weight-bold" style="width: 35%;">Volver</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.ConsultaId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+@section Scripts
+{
+    @*=========== ESTILOS ==========*@
+    <style>
+
+        .col-sm-4 {
+            color: #04294F;
+            font-size: 1.2em;
+        }
+
+        .col-sm-8 {
+            font-weight: bold;
+            color: #000000;
+            font-size: 1.2em;
+        }
+    </style>
+    @*==============================*@
+}

@@ -27,6 +27,7 @@
 
     <!-- bootstrap-progressbar -->
     <link href="~/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- JQVMap -->
     <link href="~/jqvmap/dist/jqvmap.min.css" rel="stylesheet" />
     <!-- bootstrap-daterangepicker -->
@@ -66,11 +67,11 @@
                             <ul class="nav side-menu">
                                 
                                 <li class="opcionesMenu" style="border-top:3px solid #0A1F36;">
-                                    <a href="#" id="infoPaciente">Informacion General</a>
+                                    <a href="#" id="infoPaciente" class="font-weight-bold"><i class="fa fa-info-circle" aria-hidden="true"></i> Informacion General</a>
                                 </li>
 
                                 <li class="opcionesMenu">
-                                    <a href="#" id="passwordPaciente">Contraseña</a>
+                                    <a href="#" id="passwordPaciente" class="font-weight-bold"><i class="fa fa-unlock" aria-hidden="true"></i> Actualizar Contraseña</a>
                                 </li>
                             </ul>
                         </div>
@@ -182,6 +183,12 @@
     #ModalAlert { 
         text-align: center;
         font-weight: bold;
+    }
+
+    .dropdown-item:hover {
+        transition: background-color 0.3s linear;
+        background-color: #062043 !important;
+        color: white;
     }
 
 </style>

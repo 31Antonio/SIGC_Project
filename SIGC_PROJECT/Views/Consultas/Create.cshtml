@@ -4,110 +4,109 @@
     ViewData["Title"] = "Create";
 }
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label for="cedula" class="control-label">Cédula del Paciente:</label>
-        <input type="text" id="cedula" class="form-control" autocomplete="off" list="cedulasList" />
-    </div>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-11">
+            <div class="card mt-2">
+                <div class="card-header text-center">
+                    <h2 style="font-weight: bold; font-size: 1.7em; color: #04294F;">Registrar información de la consulta</h2>
+                </div>
 
-    <div class="form-group" id="pact_input1" style="display: none;">
-        <label for="nombrePaciente">Nombre del Paciente</label>
-        <input type="text" id="nombrePaciente" class="form-control" readonly />
-    </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div class="row">
 
-    <div class="form-group" id="pact_input2" style="display: none;">
-        <label for="edadPaciente">Edad del Paciente</label>
-        <input type="text" id="edadPaciente" class="form-control" readonly />
-    </div>
+                            <input asp-for="PacienteId" hidden />
+                            <input asp-for="DoctorId" value="@ViewBag.DoctorId" hidden />
 
-    <input asp-for="PacienteId" hidden/>
-    <input asp-for="DoctorId" value="@ViewBag.DoctorId" hidden />
+                            <div class="col-md-3 mb-3">
+                                <label for="cedula" class="control-label">Cédula del Paciente:</label>
+                                <input type="text" id="cedula" class="form-control" autocomplete="off" list="cedulasList" />
+                            </div>
 
-    <div class="form-group">
-        <label asp-for="FechaConsulta">Fecha de la Consulta</label>
-        <input asp-for="FechaConsulta" class="form-control" />
-    </div>
+                            <div class="col-md-7 mb-3" id="pact_input1" style="display: none;">
+                                <label for="nombrePaciente" class="control-label">Nombre del Paciente</label>
+                                <input type="text" id="nombrePaciente" class="form-control" readonly />
+                            </div>
 
-    <div class="form-group">
-        <label asp-for="MotivoConsulta">Motivo de la Consulta</label>
-        <input asp-for="MotivoConsulta" class="form-control" />
-    </div>
-    
-    <div class="form-group">
-        <label asp-for="Diagnostico">Diagnostico</label>
-        <input asp-for="Diagnostico" class="form-control" />
-    </div>
-    
-    <div class="form-group">
-        <label asp-for="Tratamiento">Tratamiento</label>
-        <input asp-for="Tratamiento" class="form-control" />
-    </div>
-    
-    <div class="form-group">
-        <label asp-for="Observaciones">Observaciones</label>
-        <input asp-for="Observaciones" class="form-control" />
-    </div>
+                            <div class="col-md-2 mb-3" id="pact_input2" style="display: none;">
+                                <label for="edadPaciente" class="control-label">Edad del Paciente</label>
+                                <input type="text" id="edadPaciente" class="form-control" readonly />
+                            </div>
 
-    <button type="submit" class="btn btn-primary">Guardar Consulta</button>
-</form>
+                            <div class="col-md-3 mb-3">
+                                <label asp-for="FechaConsulta" class="control-label">Fecha de la Consulta</label>
+                                <input type="date" asp-for="FechaConsulta" class="form-control" required />
+                                <span asp-validation-for="FechaConsulta" class="text-danger"></span>
+                            </div>
 
-@* <h1>Create</h1>
+                            <div class="col-md-9 mb-3">
+                                <label asp-for="MotivoConsulta" class="control-label">Motivo de la Consulta</label>
+                                <input asp-for="MotivoConsulta" class="form-control" required />
+                                <span asp-validation-for="MotivoConsulta" class="text-danger"></span>
+                            </div>
 
-<h4>Consulta</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="PacienteId" class="control-label"></label>
-                <select asp-for="PacienteId" class ="form-control" asp-items="ViewBag.PacienteId"></select>
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="Diagnostico" class="control-label">Diagnostico</label>
+                                <input asp-for="Diagnostico" class="form-control" required />
+                                <span asp-validation-for="Diagnostico" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="Tratamiento" class="control-label">Tratamiento</label>
+                                <textarea asp-for="Tratamiento" class="form-control"></textarea>
+                                <span asp-validation-for="Tratamiento" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="Observaciones" class="control-label">Observaciones (opcional) </label>
+                                <textarea asp-for="Observaciones" class="form-control"></textarea>
+                                <span asp-validation-for="Observaciones" class="text-danger"></span>
+                            </div>                            
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-estilo">Guardar</button>
+                            <a asp-action="Index" class="btn btn-danger font-weight-bold" style="width: 30%;">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+
             </div>
-            <div class="form-group">
-                <label asp-for="DoctorId" class="control-label"></label>
-                <select asp-for="DoctorId" class ="form-control" asp-items="ViewBag.DoctorId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="FechaConsulta" class="control-label"></label>
-                <input asp-for="FechaConsulta" class="form-control" />
-                <span asp-validation-for="FechaConsulta" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MotivoConsulta" class="control-label"></label>
-                <input asp-for="MotivoConsulta" class="form-control" />
-                <span asp-validation-for="MotivoConsulta" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Diagnostico" class="control-label"></label>
-                <input asp-for="Diagnostico" class="form-control" />
-                <span asp-validation-for="Diagnostico" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Tratamiento" class="control-label"></label>
-                <input asp-for="Tratamiento" class="form-control" />
-                <span asp-validation-for="Tratamiento" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RecetaId" class="control-label"></label>
-                <select asp-for="RecetaId" class ="form-control" asp-items="ViewBag.RecetaId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Observaciones" class="control-label"></label>
-                <input asp-for="Observaciones" class="form-control" />
-                <span asp-validation-for="Observaciones" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div> *@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="~/userlib/js/consultas.js"></script>
+
+    @*========= ESTILOS ==========*@
+        <style>
+
+        .btn-estilo {
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+            transition: background-color 0.5s linear;
+            width: 30%;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .btn-estilo:hover {
+            background-color: #062043;
+            color: #FFFFFF;
+        }
+
+        textarea { 
+            min-height: 40px;
+            max-height: 200px;
+        }
+
+        .control-label {
+            font-weight: bold;
+            color: #04294F;
+        }
+    </style>
+    @*============================*@
 }
