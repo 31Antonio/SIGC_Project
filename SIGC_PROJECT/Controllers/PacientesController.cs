@@ -25,20 +25,23 @@ namespace SIGC_PROJECT.Controllers
 
         // GET: Pacientes
         [Authorize(Roles = "Secretaria,Administrador")]
-        public async Task<IActionResult> Index(int? pagina, int cantidadP = 10)
+        public async Task<IActionResult> Index(string? cedula, int? pagina, int cantidadP = 10)
         {
             int numeroP = (pagina ?? 1);
-            var pacientes = _context.Pacientes.OrderBy(p => p.PacienteId).ToPagedList(numeroP, cantidadP);
+
+            IQueryable<Paciente> query = _context.Pacientes;
+
+            if (!string.IsNullOrEmpty(cedula))
+            {
+                query = query.Where(p => p.Cedula.Contains(cedula));
+            }
+
+            query = query.OrderBy(p => p.PacienteId);
+
+            var pacientes = query.ToPagedList(numeroP, cantidadP);
+            ViewBag.Cedula = cedula;
+
             return View(pacientes);
-            //return View(await _context.Pacientes.ToListAsync());
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> buscarPacientesCedula(string cedula, int pagina = 1)
-        {
-            var pacientes = _context.Pacientes.Where(p => p.Cedula.Contains(cedula)).ToPagedList(pagina, 10);
-
-            return View("Index", pacientes);
         }
 
         #region ===== Vistas de Configuracion =====

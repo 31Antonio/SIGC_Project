@@ -4,30 +4,55 @@
     ViewData["Title"] = "Registros Pendientes";
 }
 
-<h1 class="mt-5 mb-5" style="font-size: 2.3em;">Registros Pendientes</h1>
+<div style="margin-top: 7.8%;"></div>
+<h1 class="mt-5 mb-5" style="font-weight: bold; font-size: 1.7em; color: #04294F;">Solicitudes de Registro</h1>
 
-<table class="table w-100">
-    <thead>
-        <tr>
-            <th>Nombre Usuario</th>
-            <th>Fecha Solicitud</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-
-        @foreach (var solicitud in Model)
-        {
-            <tr>
-                <td>@solicitud.Nombre</td>
-                <td>@solicitud.FechaSolicitud</td>
-                <td class="text-center">
-                    <form method="post" asp-action="AprobarRegistro" asp-route-id="@solicitud.IdSolicitud">
-                        <button type="submit" class="btn btn-primary">Aprobar</button>
-                    </form>
-                </td>
+@if(!Model.Any()){
+    <div class="alert alert-info font-weight-bold text-center" role="alert" style="width: auto; font-size: 1.6em;">
+        No tiene solicitudes de registros por el momento.
+    </div>
+}
+else
+{
+    <table class="table table-striped w-100">
+        <thead>
+            <tr class="th_bg">
+                <th>Nombre Usuario</th>
+                <th>Fecha de la Solicitud</th>
+                <th></th>
             </tr>
+        </thead>
+        <tbody class="font-weight-bold">
+
+            @foreach (var solicitud in Model)
+            {
+                <tr>
+                    <td>@solicitud.Nombre</td>
+                    <td>@solicitud.FechaSolicitud</td>
+                    <td class="text-center">
+                        <form method="post" asp-action="AprobarRegistro" asp-route-id="@solicitud.IdSolicitud">
+                            <button type="submit" class="btn btn-primary font-weight-bold">Aprobar Solicitud</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+
+@section Scripts { 
+    
+    <!-- ESTILOS -->
+    <style>
+        .th_bg {
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
         }
 
-    </tbody>
-</table>
+        th {
+            border: 1px solid #FFFFFF;
+        }
+    </style>
+}

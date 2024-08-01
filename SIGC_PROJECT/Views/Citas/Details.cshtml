@@ -4,45 +4,98 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card mt-5">
+                <div class="card-header text-center">
+                    <h2 style="font-weight: bold; font-size: 1.7em; color: #04294F;">Detalles de la cita</h2>
+                </div>
 
-<div>
-    <h4>Cita</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Comentario)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Comentario)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Doctor)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Doctor.DoctorId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Paciente)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Paciente.PacienteId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Secretaria)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Secretaria.SecretariaId)
-        </dd>
-    </dl>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Fecha y Hora de la cita:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            @(Model.FechaCita.HasValue ? Model.FechaCita.Value.ToString("dd/MM/yyyy") : "No disponible") - @Model.HoraCita
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Paciente:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            @Html.DisplayFor(model => model.NombrePaciente) (@Html.DisplayFor(model => model.Paciente.Edad) años)
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Doctor:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            @Html.DisplayFor(model => model.NombreDoctor)
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Especialidad:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            @Html.DisplayFor(model => model.EspecialidadDoctor)
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Motivo de la cita:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            @Html.DisplayFor(model => model.Comentario)
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Estado de la cita:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            @Html.DisplayFor(model => model.Estado)
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-footer text-center">
+                    <a asp-action="Index" class="btn btn-secondary font-weight-bold" style="width: 35%;">Volver</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.CitaId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+@section Scripts { 
+    @*=========== ESTILOS ==========*@
+    <style>
+        .btn {
+            font-weight: bold;
+            width: 20%;
+        }
+
+        .col-sm-4 {
+            color: #04294F;
+            font-size: 1.2em;
+        }
+
+        .col-sm-8 {
+            font-weight: bold;
+            color: #000000;
+            font-size: 1.2em;
+        }
+    </style>
+    @*==============================*@
+}

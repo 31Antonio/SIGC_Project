@@ -105,10 +105,10 @@
                                                 <a asp-controller="Citas" asp-action="CalendarioCitas">Calendario de Citas</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a asp-controller="Citas" asp-action="Index">Historial de citas</a>
+                                                <a asp-controller="Citas" asp-action="Index">Registro de Citas</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a asp-controller="DisponibilidadDoctors" asp-action="Index">Horario del doctor</a>
+                                                <a asp-controller="DisponibilidadDoctors" asp-action="Index">Horario del Doctor</a>
                                             </li>
                                         </ul>
                                     </li>
@@ -133,13 +133,13 @@
                                         <a><i class="fa fa-calendar"></i>Citas <span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li class="nav-item">
-                                                <a asp-controller="DisponibilidadDoctors" asp-action="VerDisponibilidad">Disponibilidad Doctor</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a asp-controller="Citas" asp-action="Index">Historial de citas</a>
-                                            </li>
-                                            <li class="nav-item">
                                                 <a asp-controller="Citas" asp-action="CalendarioCitas">Calendario de Citas</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a asp-controller="Citas" asp-action="Index">Registros de Citas</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a asp-controller="DisponibilidadDoctors" asp-action="VerDisponibilidad">Disponibilidad Doctor</a>
                                             </li>
                                         </ul>
                                     </li>
@@ -223,6 +223,7 @@
                                 <li>
                                     <a><i class="fa fa-bug"></i>Reportes aun por decidir<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
+                                        <li><a asp-controller="Reportes" asp-action="CitasReporte">Reporte de las citas</a></li>
                                         <li><a href="e_commerce.html">E-commerce</a></li>
                                         <li><a href="projects.html">Projects</a></li>
                                         <li><a href="project_detail.html">Project Detail</a></li>

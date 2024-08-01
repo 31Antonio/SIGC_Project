@@ -1,59 +1,146 @@
-﻿@model IEnumerable<SIGC_PROJECT.Models.Cita>
+﻿@model IPagedList<SIGC_PROJECT.Models.Cita>
+
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Citas</h1>
+<div class="row mb-4" style="margin-top: 8%;">
+    <div class="col-md-6"></div>
+    <div class="col-md-6 d-flex justify-content-end align-items-center">
+        <label for="buscarEstado" class="control-label me-2 mb-0 mr-1" style="font-weight: bold; color: #04294F;">Buscar por estado:</label>
+        <input type="text" id="buscarEstado" class="form-control w-auto" />
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Estado)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Comentario)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Doctor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Paciente)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Secretaria)
-            </th>
+        <tr class="th_bg">
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Paciente</th>
+            <th>Motivo</th>
+            <th>Estado</th>
             <th></th>
         </tr>
     </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Estado)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Comentario)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Doctor.DoctorId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Paciente.PacienteId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Secretaria.SecretariaId)
-            </td>
-            <td>
-                    <a asp-action="Edit" class=" btn btn-warning" asp-route-id="@item.CitaId">Edit</a> |
-                    <a asp-action="Details" class=" btn btn-primary" asp-route-id="@item.CitaId">Details</a> |
-                    <a asp-action="Delete" class=" btn btn-danger" asp-route-id="@item.CitaId">Delete</a>
-            </td>
-        </tr>
-}
+    <tbody id="pacienteTableBody">
+        @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @(item.FechaCita.HasValue ? item.FechaCita.Value.ToString("dd/MM/yyyy") : "No disponible")
+                </td>
+                <td>@item.HoraCita</td>
+                <td>@item.NombrePaciente</td>
+                <td>@item.Comentario</td>
+                <td>@item.Estado</td>
+                <td class="text-center">
+                    <a asp-action="Details" class=" btn btn-primary font-weight-bold" asp-route-id="@item.CitaId">Ver Detalles</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<div class="contenedor-paginacion">
+    @Html.PagedListPager(Model, pagina => Url.Action("Index", new { pagina = pagina, estado = ViewBag.Estado }), new PagedListRenderOptions
+    {
+
+        DisplayPageCountAndCurrentLocation = false,
+        DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+        DisplayLinkToLastPage = PagedListDisplayMode.Always,
+        DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+        DisplayLinkToNextPage = PagedListDisplayMode.Always,
+        DisplayLinkToIndividualPages = true,
+        MaximumPageNumbersToDisplay = 10,
+        DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+        Display = PagedListDisplayMode.Always,
+
+        UlElementClasses = new[] { "pagination", "justify-content-center" },
+        LiElementClasses = new[] { "page-item" },
+        PageClasses = new[] { "page-link" }
+    })
+
+    <div class="paginacion_dabajo">
+        @string.Format("Página {0} de {1}", Model.PageNumber, Model.PageCount)
+    </div>
+</div>
+
+@section Scripts {
+
+    <!-- Funcionalidades script-->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            var searchInput = document.getElementById('buscarEstado');
+            
+            searchInput.addEventListener('input', function () {
+                var valor = searchInput.value;
+
+                var searchParams = new URLSearchParams(window.location.search);
+                searchParams.set('estado', valor);
+                searchParams.set('pagina', 1); // Resetear a la primera página
+
+                //Enviar Solicitud Ajax al controlador
+                fetch(window.location.pathname + '?' + searchParams.toString())
+                    .then(response => response.text())
+                    .then(html => {
+                        var parser = new DOMParser();
+                        var doc = parser.parseFromString(html, 'text/html');
+                        var nuevaTabla = doc.querySelector('tbody').innerHTML;
+                        document.querySelector('tbody').innerHTML = nuevaTabla;
+                        var newPagination = doc.querySelector('.contenedor-paginacion').innerHTML;
+                        document.querySelector('.contenedor-paginacion').innerHTML = newPagination;
+                    })
+                    .catch(error => console.error('Error al buscar citas:', error));
+
+            });
+
+        });
+    </script>
+
+    <!-- Agregar estilos CSS -->
+    <style>
+    .paginacion_dabajo {
+        margin-top: 10px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .contenedor-paginacion {
+        text-align: center;
+    }
+
+    .active.page-item .page-link { 
+        background-color: rgba(42, 62, 84, 1) !important;
+        font-weight: bold;
+        border: 2px solid rgba(42, 62, 84, 1) !important;
+    }
+
+    .th_bg {
+        background-color: rgba(42, 62, 84, 1);
+        color: #FFFFFF;
+    }
+
+    th { 
+        border: 1px solid #FFFFFF;
+    }
+
+    .btn-estilo {
+        background-color: rgba(42, 62, 84, 1);
+        color: #FFFFFF;
+        transition: background-color 0.5s linear;
+        width: 20%;
+        font-weight: bold;
+        font-size: 1.1em;
+    }
+
+    .btn-estilo:hover {
+        background-color: rgba(42, 62, 84, 0.8);
+        color: #FFFFFF;
+    }
+</style>
+}

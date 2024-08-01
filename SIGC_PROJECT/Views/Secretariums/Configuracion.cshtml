@@ -66,11 +66,11 @@
                             <ul class="nav side-menu">
 
                                 <li class="opcionesMenu" style="border-top:3px solid #0A1F36;">
-                                    <a href="#" id="infoSecretaria">Informacion General</a>
+                                    <a href="#" id="infoSecretaria" class="font-weight-bold"><i class="fa fa-info-circle" aria-hidden="true"></i>Informacion General</a>
                                 </li>
 
                                 <li class="opcionesMenu">
-                                    <a href="#" id="passwordSecretaria">Contraseña</a>
+                                    <a href="#" id="passwordSecretaria" class="font-weight-bold"><i class="fa fa-unlock" aria-hidden="true"></i>Contraseña</a>
                                 </li>
                             </ul>
                         </div>
@@ -181,6 +181,12 @@
     #ModalAlert {
         text-align: center;
         font-weight: bold;
+    }
+
+    .dropdown-item:hover {
+        transition: background-color 0.3s linear;
+        background-color: #062043 !important;
+        color: white;
     }
 
 </style>

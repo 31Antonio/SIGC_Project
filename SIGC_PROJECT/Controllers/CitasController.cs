@@ -11,7 +11,9 @@ using NuGet.Packaging.Signing;
 using SIGC_PROJECT.Helper;
 using SIGC_PROJECT.Models;
 using SIGC_PROJECT.Models.ViewModel;
+using X.PagedList.Extensions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SIGC_PROJECT.Controllers
 {
@@ -26,11 +28,42 @@ namespace SIGC_PROJECT.Controllers
 
         // GET: Citas
         [Authorize]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? estado, int? pagina, int cantidadP = 10)
         {
+            // Numero de pagina actual
+            int numeroP = (pagina ?? 1);
 
-            var sigcProjectContext = _context.Citas.Include(c => c.Doctor).Include(c => c.Paciente).Include(c => c.Secretaria);
-            return View(await sigcProjectContext.ToListAsync());
+            // Obtener el id del Usuario
+            var idUser = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;            
+
+            IQueryable<Cita> citasQuery = _context.Citas;
+
+            if (!string.IsNullOrEmpty(estado))
+            {
+                citasQuery = citasQuery.Where(p => p.Estado.Contains(estado));
+            }
+
+            if (User.IsInRole("Doctor"))
+            {
+                var idDoctor = await _context.Doctors.Where(d => d.IdUsuario == int.Parse(idUser)).Select(d => d.DoctorId).FirstOrDefaultAsync();
+                
+                if(idDoctor != null)
+                {
+                    citasQuery = citasQuery.Where(c => c.DoctorId == idDoctor);
+                }
+            }
+            else if (User.IsInRole("Secretaria"))
+            {
+                var idDoctor_S = await _context.Secretaria.Where(s => s.IdUsuario == int.Parse(idUser)).Select(d => d.IdDoctor).FirstOrDefaultAsync();
+                citasQuery = citasQuery.Where(c => c.DoctorId == idDoctor_S);
+            }
+
+            var citas = citasQuery.ToPagedList(numeroP, cantidadP);
+            ViewBag.Estado = estado;
+
+            return View(citas);
+            //var sigcProjectContext = _context.Citas.Include(c => c.Doctor).Include(c => c.Paciente).Include(c => c.Secretaria);
+            //return View(await sigcProjectContext.ToListAsync());
         }
 
         // GET: Citas/Details/5
