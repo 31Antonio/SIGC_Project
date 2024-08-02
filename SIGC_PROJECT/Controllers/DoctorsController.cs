@@ -25,12 +25,24 @@ namespace SIGC_PROJECT.Controllers
 
         [Authorize(Roles = "Administrador")]
         // GET: Doctors
-        public async Task<IActionResult> Index(int? pagina, int cantidadP = 10)
+        public async Task<IActionResult> Index(string? especialidad, int? pagina, int cantidadP = 10)
         {
+            //Establecer el numero de pagina
             int numeroP = (pagina ?? 1);
-            var doctores = _context.Doctors.OrderBy(e => e.DoctorId).ToPagedList(numeroP, cantidadP);
+
+            IQueryable<Doctor> query = _context.Doctors;
+
+            if (!string.IsNullOrEmpty(especialidad))
+            {
+                query = query.Where(d => d.Especialidad.Contains(especialidad));
+            }
+
+            query = query.OrderBy(d => d.DoctorId);
+
+            var doctores = query.ToPagedList(numeroP, cantidadP);
+            ViewBag.Especialidad = especialidad;
+
             return View(doctores);
-            //return View(await _context.Doctors.ToListAsync());
         }
 
         #region ===== VISTAS DE CONFIGURACION =====
@@ -178,6 +190,7 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Doctors/Edit/5
+        [Authorize(Roles = "Administrador,Doctor")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -238,6 +251,7 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Doctors/Delete/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -264,6 +278,23 @@ namespace SIGC_PROJECT.Controllers
             var doctor = await _context.Doctors.FindAsync(id);
             if (doctor != null)
             {
+                //Encontrar el usuario
+                var usuario = await _context.Usuarios.FindAsync(doctor.IdUsuario);
+
+                if (usuario != null)
+                {
+                    //Encontrar y eliminar el rol del usuario
+                    var userRol = await _context.UsuarioRols.Where(ur => ur.IdUsuario == usuario.IdUsuario).FirstOrDefaultAsync();
+
+                    if (userRol != null)
+                    {
+                        _context.UsuarioRols.Remove(userRol);
+                    }
+
+                    //Eliminar el Usuario
+                    _context.Usuarios.Remove(usuario);
+                }
+
                 _context.Doctors.Remove(doctor);
             }
 

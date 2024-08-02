@@ -4,66 +4,179 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-11">
+        
+            <div class="card mt-5">
+                <div class="card-header text-center">
+                    <h2 style="font-weight: bold; font-size: 1.7em; color: #04294F;">Actualizar Información</h2>
+                </div>
 
-<h4>Doctor</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="DoctorId" />
-            <div class="form-group">
-                <label asp-for="Cedula" class="control-label"></label>
-                <input asp-for="Cedula" class="form-control" />
-                <span asp-validation-for="Cedula" class="text-danger"></span>
+                <div class="card-body">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="row">
+                            <input type="hidden" asp-for="DoctorId" />
+                            <div class="col-md-3 mb-4">
+                                <label asp-for="Cedula" class="control-label">Cédula</label>
+                                <input asp-for="Cedula" class="form-control" readonly />
+                                <span asp-validation-for="Cedula" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-9"></div>
+
+                            <div class="col-md-3 mb-4">
+                                <label asp-for="Nombre" class="control-label"></label>
+                                <input asp-for="Nombre" class="form-control" readonly />
+                                <span asp-validation-for="Nombre" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-3 mb-4">
+                                <label asp-for="Apellido" class="control-label"></label>
+                                <input asp-for="Apellido" class="form-control" readonly />
+                                <span asp-validation-for="Apellido" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="Especialidad" class="control-label"></label>
+                                <select asp-for="Especialidad" class="form-control" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="Anestesiología">Anestesiología</option>
+                                    <option value="Cardiología">Cardiología</option>
+                                    <option value="Cirugía Bariátrica">Cirugía Bariátrica</option>
+                                    <option value="Cirugía General">Cirugía General</option>
+                                    <option value="Cirugía Maxilofacial">Cirugía Maxilofacial</option>
+                                    <option value="Cirugía Pediátrica">Cirugía Pediátrica</option>
+                                    <option value="Cirugía Plástica, Reconstructiva y Estética">Cirugía Plástica, Reconstructiva y Estética</option>
+                                    <option value="Dermatología y Cirugía de la Piel">Dermatología y Cirugía de la Piel</option>
+                                    <option value="Diabetología">Diabetología</option>
+                                    <option value="Endocrinología">Endocrinología</option>
+                                    <option value="Epidemiología">Epidemiología</option>
+                                    <option value="Gastroenterología">Gastroenterología</option>
+                                    <option value="Ginecología y Obstetricia">Ginecología y Obstetricia</option>
+                                    <option value="Hematología">Hematología</option>
+                                    <option value="Infectología">Infectología</option>
+                                    <option value="Intensivistas Pediatricos y de Adultos">Intensivistas Pediatricos y de Adultos</option>
+                                    <option value="Medicina General">Medicina General</option>
+                                    <option value="Medicina Interna">Medicina Interna</option>
+                                    <option value="Nefrología">Nefrología</option>
+                                    <option value="Neumología">Neumología</option>
+                                    <option value="Neumología pediátrica">Neumología pediátrica</option>
+                                    <option value="Neurocirugía">Neurocirugía</option>
+                                    <option value="Neurología">Neurología</option>
+                                    <option value="Oftalmología">Oftalmología</option>
+                                    <option value="Ortopedia y Traumatología">Ortopedia y Traumatología</option>
+                                    <option value="Otorrinolaringología">Otorrinolaringología</option>
+                                    <option value="Pediatría">Pediatría</option>
+                                    <option value="Radiología y Sonografía">Radiología y Sonografía</option>
+                                    <option value="Urología">Urología</option>
+                                </select>
+                                <span asp-validation-for="Especialidad" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-3 mb-4">
+                                <label asp-for="NumeroExequatur" class="control-label">Número Exequatur</label>
+                                <input asp-for="NumeroExequatur" class="form-control" readonly />
+                                <span asp-validation-for="NumeroExequatur" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-3 mb-4">
+                                <label asp-for="Telefono" class="control-label">Teléfono</label>
+                                <input asp-for="Telefono" class="form-control" />
+                                <span asp-validation-for="Telefono" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="CorreoElectronico" class="control-label">Correo Electrónico</label>
+                                <input asp-for="CorreoElectronico" class="form-control" />
+                                <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group text-center mt-5">
+                            <input type="submit" value="Guardar" class="btn btn-estilo" />
+                            <a asp-action="Index" class="btn btn-danger">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Apellido" class="control-label"></label>
-                <input asp-for="Apellido" class="form-control" />
-                <span asp-validation-for="Apellido" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Especialidad" class="control-label"></label>
-                <input asp-for="Especialidad" class="form-control" />
-                <span asp-validation-for="Especialidad" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NumeroExequatur" class="control-label"></label>
-                <input asp-for="NumeroExequatur" class="form-control" />
-                <span asp-validation-for="NumeroExequatur" class="text-danger"></span>
-            </div>
-            @* <div class="form-group">
-                <label asp-for="SecretariaId" class="control-label"></label>
-                <select asp-for="SecretariaId" class="form-control" asp-items="ViewBag.SecretariaId"></select>
-                <span asp-validation-for="SecretariaId" class="text-danger"></span>
-            </div> *@
-            <div class="form-group">
-                <label asp-for="Telefono" class="control-label"></label>
-                <input asp-for="Telefono" class="form-control" />
-                <span asp-validation-for="Telefono" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CorreoElectronico" class="control-label"></label>
-                <input asp-for="CorreoElectronico" class="form-control" />
-                <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    @*========== FUNCIONALIDADES ==========*@
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // ========== FUNCION PARA FORMATEAR EL CAMPO DE TELEFONO ========== //
+            //#region
+
+            function formatearTelefono(valor, cursorPos) {
+                var valorNumerico = valor.replace(/\D/g, '');
+                var valorFormateado = '';
+
+                if (valorNumerico.length > 0) {
+                    valorFormateado += valorNumerico.substr(0, 3);
+                }
+                if (valorNumerico.length >= 4) {
+                    valorFormateado += '-' + valorNumerico.substr(3, 3);
+                }
+                if (valorNumerico.length >= 7) {
+                    valorFormateado += '-' + valorNumerico.substr(6, 4);
+                }
+
+                return valorFormateado;
+            }
+
+            var telefonoInput = document.getElementById('Telefono');
+
+            telefonoInput.addEventListener('input', function () {
+                var valor = this.value;
+                var cursorPos = this.selectionStart; // Obtener la posición del cursor
+                var valorFormateado = formatearTelefono(valor, cursorPos);
+
+                // Actualizar el valor del campo
+                this.value = valorFormateado;
+
+                // Restaurar la posición del cursor
+                var newCursorPos = cursorPos;
+                if (valor.length < valorFormateado.length) {
+                    newCursorPos++;
+                }
+                this.setSelectionRange(newCursorPos, newCursorPos);
+            });
+
+            //#endregion
+            //==================================================================//
+        });
+    </script>
+    @*=====================================*@
+
+    @*========== ESTILOS ==========*@
+    <style>
+        .btn {
+            width: 25%;
+            font-weight: bold;
+        }
+
+        .btn-estilo {
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+            transition: background-color 0.5s linear;
+        }
+
+        .btn-estilo:hover {
+            background-color: #062043;
+            color: #FFFFFF;
+        }
+
+        .control-label {
+            font-weight: bold;
+            color: #04294F;
+        }
+    @*=============================*@
 }

@@ -391,8 +391,26 @@ namespace SIGC_PROJECT.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var secretarium = await _context.Secretaria.FindAsync(id);
+
             if (secretarium != null)
             {
+                //Encontrar el usuario
+                var usuario = await _context.Usuarios.FindAsync(secretarium.IdUsuario);
+
+                if (usuario != null)
+                {
+                    //Encontrar y eliminar el rol del usuario
+                    var userRol = await _context.UsuarioRols.Where(ur => ur.IdUsuario == usuario.IdUsuario).FirstOrDefaultAsync();
+
+                    if(userRol != null)
+                    {
+                        _context.UsuarioRols.Remove(userRol);
+                    }
+
+                    //Eliminar el Usuario
+                    _context.Usuarios.Remove(usuario);
+                }
+
                 _context.Secretaria.Remove(secretarium);
             }
 

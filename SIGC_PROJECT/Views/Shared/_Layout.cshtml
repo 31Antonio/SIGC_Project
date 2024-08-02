@@ -68,7 +68,14 @@
                                 <i class="bi bi-person-circle profile_img" aria-hidden="true" style="font-size: 4em; color: white;"></i>
                             </div>
                         }
-                        
+
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <div class="profile_pic text-center mt-4">
+                                <i class="bi bi-person-circle profile_img" aria-hidden="true" style="font-size: 4em; color: white;"></i>
+                            </div>
+                        }
+
                         <div class="profile_info">
                             <span>Bienvenido,</span>
                             <h2>@SessionHelper.GetName(User)</h2>
@@ -84,19 +91,20 @@
                             <h3>General</h3>
                             <ul class="nav side-menu">
                                 <li>
-                                    <a asp-controller="Home" asp-action="Index"><i class="fa fa-home"></i> Inicio</a>
+                                    <a asp-controller="Home" asp-action="Index"><i class="fa fa-home"></i>Inicio</a>
                                 </li>
                                 @if (User.IsInRole("Doctor"))
                                 {
                                     @*FORMULARIO DE REGISTRO*@
                                     <li>
-                                        <a><i class="fa fa-edit"></i> Registro de Secretarias <span class="fa fa-chevron-down"></span></a>
+                                        <a><i class="fa fa-edit"></i>Registro de Secretarias <span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li class="nav-item">
                                                 <a asp-controller="Secretariums" asp-action="Index">Registrar Secretarias</a>
                                             </li>
                                         </ul>
                                     </li>
+
                                     @*CITAS*@
                                     <li>
                                         <a><i class="fa fa-calendar"></i>Citas <span class="fa fa-chevron-down"></span></a>
@@ -112,12 +120,23 @@
                                             </li>
                                         </ul>
                                     </li>
+                                    
+                                    @*CONSULTAS*@
+                                    <li>
+                                        <a><i class="bi bi-card-heading mr-2" style="font-size: 1.2em;"></i>Consultas<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li class="nav-item">
+                                                <a asp-controller="Consultas" asp-action="Index">Registros de Consultas</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
                                 }
                                 @if (User.IsInRole("Secretaria"))
                                 {
                                     @*FORMULARIO DE REGISTRO*@
                                     <li>
-                                        <a><i class="fa fa-edit"></i> Registro de Pacientes <span class="fa fa-chevron-down"></span></a>
+                                        <a><i class="fa fa-edit"></i>Registro de Pacientes <span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li class="nav-item">
                                                 <a asp-controller="Secretariums" asp-action="RegistrosPendientes">Solicitudes Pendientes <span class="badge bg-danger" id="solicitud_conteo"></span></a>
@@ -146,7 +165,7 @@
 
                                     @*CONSULTAS*@
                                     <li>
-                                        <a><i class="bi bi-card-heading mr-2" style="font-size: 1.2em;"></i> Consultas<span class="fa fa-chevron-down"></span></a>
+                                        <a><i class="bi bi-card-heading mr-2" style="font-size: 1.2em;"></i>Consultas<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li class="nav-item">
                                                 <a asp-controller="Consultas" asp-action="Index">Historial de Consultas</a>
@@ -181,16 +200,15 @@
                                 }
                                 @if (User.IsInRole("Administrador"))
                                 {
-                                                                 <li>
-                                    <a><i class="fa fa-edit"></i> Formularios <span class="fa fa-chevron-down"></span></a>
+                                <li>
+                                    <a><i class="fa fa-edit"></i>Formularios de Registro<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        
-
                                         @if (User.IsInRole("Administrador"))
                                         {
-                                            <li><a asp-controller="Doctors" asp-action="Index">Doctores</a></li>
+                                            <li><a asp-controller="Doctors" asp-action="Index">Registros de Doctores</a></li>
+                                                <li><a asp-controller="Pacientes" asp-action="Index">Registros de Pacientes</a></li>
                                             <li><a asp-controller="Recetas" asp-action="Index">Recetas</a></li>
-                                            <li><a asp-controller="Pacientes" asp-action="Index">Pacientes</a></li>
+
                                             <li><a asp-controller="Consultas" asp-action="Index">Consulta</a></li>
                                         }
                                         
@@ -204,12 +222,6 @@
                                             <li><a asp-controller="RegistrosUsuario" asp-action="RegistroUsuario">Registrar Usuarios</a></li>
                                         }
                                         
-
-                                        @if (User.IsInRole("Administrador"))
-                                        {
-                                            <li><a asp-controller="DisponibilidadDoctors" asp-action="Index">Horario del Doctor</a></li>
-                                        }
-                                       
 
                                     </ul>
                                 </li>   
@@ -304,11 +316,11 @@
             </div>
             <!-- /page content -->
             <!-- footer content -->
-            <footer hidden>
+            <footer>
                 @* <div class="pull-right">
                     Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
                 </div> *@
-                <div class="clearfix"></div>
+                @* <div class="clearfix"></div> *@
             </footer>
             <!-- /footer content -->
         </div>

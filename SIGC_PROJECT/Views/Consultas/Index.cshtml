@@ -21,13 +21,13 @@
         <tr class="th_bg">
             <th>Fecha</th>
             <th>Motivo de la consulta</th>
-            @if (User.IsInRole("Doctor"))
+            @if (User.IsInRole("Doctor") || User.IsInRole("Secretaria"))
             {
-                <th>Paciente</th>
+                <th>Nombre del Paciente</th>
             }
             @if (User.IsInRole("Paciente"))
             {
-                <th>Nombre Doctor</th>
+                <th>Nombre del Doctor</th>
                 <th>Especialidad</th>
             }
             <th hidden>@Html.DisplayNameFor(model => model.First().RecetaId)</th>
@@ -43,7 +43,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.MotivoConsulta)
             </td>
-            @if (User.IsInRole("Doctor"))
+            @if (User.IsInRole("Doctor") || User.IsInRole("Secretaria") )
             {
                 <td>
                     @Html.DisplayFor(modelItem => item.NombrePaciente)

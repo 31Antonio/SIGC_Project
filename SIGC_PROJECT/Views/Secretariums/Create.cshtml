@@ -16,10 +16,10 @@
                         <!-- Tabs -->
                         <ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="user-tab" data-toggle="tab" href="#userForm" role="tab" aria-controls="userForm" aria-selected="true">Registrar Usuario</a>
+                                <a class="nav-link estilo-tab active" id="user-tab" data-toggle="tab" href="#userForm" role="tab" aria-controls="userForm" aria-selected="true">Registrar Usuario</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="secretaria-tab" data-toggle="tab" href="#secretariaForm" role="tab" aria-controls="secretariaForm" aria-selected="false">Registrar Información</a>
+                                <a class="nav-link estilo-tab" id="secretaria-tab" data-toggle="tab" href="#secretariaForm" role="tab" aria-controls="secretariaForm" aria-selected="false">Registrar Información</a>
                             </li>
                         </ul>
                         <!---------->
@@ -28,22 +28,22 @@
 
                             <!-- Contenido Form Usuario -->
                             <div class="tab-pane fade show active" id="userForm" role="tabpanel" aria-labelledby="user-tab">
-                                <div class="mt-3"></div>
+                                <div class="mt-4"></div>
 
-                                <div class="form-group">
-                                    <label for="nombre" class="col-form-label">Usuario</label>
+                                <div class="form-group mb-4">
+                                    <label for="nombre" class="control-label">Usuario</label>
                                     <input type="text" asp-for="Usuario.NombreUsuario" id="nombre" class="form-control" required />
                                     <span asp-validation-for="Usuario.NombreUsuario"></span>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="contrasena" class="col-form-label">Contraseña</label>
+                                <div class="form-group mb-4">
+                                    <label for="contrasena" class="control-label">Contraseña</label>
                                     <input type="password" asp-for="Usuario.Contrasena" id="contrasena" class="form-control" required />
                                     <span asp-validation-for="Usuario.Contrasena"></span>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="roles" class="col-form-label">Rol del Usuario</label>
+                                <div class="form-group mb-4">
+                                    <label for="roles" class="control-label">Rol del Usuario</label>
                                     <select id="roles" asp-for="Rol" class="form-control" required>
                                         <option value="3" selected>Secretaria</option>
                                     </select>
@@ -57,7 +57,7 @@
                                 <div class="mt-4"></div>
 
                                 <div class="row">
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-3 mb-4">
                                         <label asp-for="Secretaria.Cedula" class="control-label">Cédula</label>
                                         <input asp-for="Secretaria.Cedula" class="form-control" />
                                         <span asp-validation-for="Secretaria.Cedula" class="text-danger"></span>
@@ -65,13 +65,13 @@
 
                                     <div class="col-md-9"></div>
 
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-3 mb-4">
                                         <label asp-for="Secretaria.Nombre" class="control-label"></label>
                                         <input asp-for="Secretaria.Nombre" class="form-control" />
                                         <span asp-validation-for="Secretaria.Nombre" class="text-danger"></span>
                                     </div>
 
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-3 mb-4">
                                         <label asp-for="Secretaria.Apellido" class="control-label"></label>
                                         <input asp-for="Secretaria.Apellido" class="form-control" />
                                         <span asp-validation-for="Secretaria.Apellido" class="text-danger"></span>
@@ -81,12 +81,12 @@
                                         <label asp-for="Secretaria.HorarioTrabajo" class="control-label" hidden>Horario de Trabajo</label>
 
                                         <div class="row">
-                                            <div class="col-md-6 mb-3">
+                                            <div class="col-md-6 mb-4">
                                                 <label for="Desde" class="control-label">Hora de entrada: </label>
                                                 <input id="Desde" type="time" class="form-control" />
                                             </div>
 
-                                            <div class="col-md-6 mb-3">
+                                            <div class="col-md-6 mb-4">
                                                 <label for="Hasta" class="control-label">Hora de Salida: </label>
                                                 <input id="Hasta" type="time" class="form-control" />
                                             </div>
@@ -96,13 +96,13 @@
                                         <span asp-validation-for="Secretaria.HorarioTrabajo" class="text-danger"></span>
                                     </div>
 
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-6 mb-4">
                                         <label asp-for="Secretaria.CorreoElectronico" class="control-label">Correo Electrónico</label>
                                         <input asp-for="Secretaria.CorreoElectronico" class="form-control" />
                                         <span asp-validation-for="Secretaria.CorreoElectronico" class="text-danger"></span>
                                     </div>
 
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-3 mb-4">
                                         <label asp-for="Secretaria.Telefono" class="control-label">Teléfono</label>
                                         <input asp-for="Secretaria.Telefono" class="form-control" />
                                         <span asp-validation-for="Secretaria.Telefono" class="text-danger"></span>
@@ -153,8 +153,30 @@
         }
 
         .btn-estilo:hover {
-            background-color: rgba(42, 62, 84, 0.8);
+            background-color: #062043;
             color: #FFFFFF;
+        }
+
+        .estilo-tab {
+            background-color: rgba(42, 62, 84, 0.2);
+            color: rgba(42, 62, 84, 0.4);
+            font-weight: bold;
+        }
+
+        .estilo-tab:hover {
+            background-color: rgba(42, 62, 84, 0.8) !important;
+            color: white;
+            transition: background-color 0.3s linear;
+        }
+
+        .estilo-tab.active {
+            background-color: rgba(42, 62, 84, 1) !important;
+            color: white !important;
+        }
+
+        .control-label {
+            font-weight: bold;
+            color: #04294F;
         }
 
         #dataMensaje {

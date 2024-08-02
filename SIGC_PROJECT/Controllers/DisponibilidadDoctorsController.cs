@@ -38,7 +38,13 @@ namespace SIGC_PROJECT.Controllers
                 return NotFound();
             }
 
+            // Obtener la disponibilidad sin ordenar
             var disponibilidad = await _context.DisponibilidadDoctors.Where(d => d.DoctorId == idDoctor).ToListAsync();
+
+            // Ordenar los dias
+            disponibilidad = disponibilidad.OrderBy(d => (int)Enum.Parse(typeof(DiasSemana), d.Dia)).ToList();
+
+
             ViewBag.DoctorId = idDoctor;
 
             return View(disponibilidad);
@@ -77,6 +83,9 @@ namespace SIGC_PROJECT.Controllers
 
             var disponibilidades = query.ToList();
 
+            // Ordenar las disponibilidades por día
+            disponibilidades = disponibilidades.OrderBy(d => (int)Enum.Parse(typeof(DiasSemana), d.Dia)).ToList();
+
             var model = disponibilidades.GroupBy(d => d.Doctor).Select(dp => new Doctor_DisponibilidadVM
             {
                 idDoctor = dp.Key.DoctorId,
@@ -105,6 +114,9 @@ namespace SIGC_PROJECT.Controllers
                     .Include(d => d.Doctor)
                     .Where(d => d.Doctor.Especialidad.Contains(especialidad))
                     .ToList();
+
+            // Ordenar las disponibilidades por día
+            disponibilidades = disponibilidades.OrderBy(d => (int)Enum.Parse(typeof(DiasSemana), d.Dia)).ToList();
 
             var model = disponibilidades
                 .GroupBy(d => d.Doctor)
@@ -331,3 +343,14 @@ namespace SIGC_PROJECT.Controllers
     }
 }
 
+//Para organizar los dias de la semana
+public enum DiasSemana
+{
+    Lunes = 1,
+    Martes = 2,
+    Miercoles = 3,
+    Jueves = 4,
+    Viernes = 5,
+    Sabado = 6,
+    Domingo = 7
+}

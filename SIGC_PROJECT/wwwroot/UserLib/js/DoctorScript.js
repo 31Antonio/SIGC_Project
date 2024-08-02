@@ -1,5 +1,86 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
 
+    // ========== FUNCION PARA FORMATEAR EL CAMPO DE CEDULA ========== //
+    //#region
+    function formatearCedula(valor, cursorPos) {
+        var valorNumerico = valor.replace(/\D/g, '');
+        var valorFormateado = '';
+
+        if (valorNumerico.length > 0) {
+            valorFormateado += valorNumerico.substr(0, 3);
+        }
+        if (valorNumerico.length >= 4) {
+            valorFormateado += '-' + valorNumerico.substr(3, 7);
+        }
+        if (valorNumerico.length >= 11) {
+            valorFormateado += '-' + valorNumerico.substr(10, 1);
+        }
+
+        return valorFormateado;
+    }
+
+    var cedulaInput = document.getElementById('Doctor_Cedula');
+
+    cedulaInput.addEventListener('input', function () {
+        var valor = this.value;
+        var cursorPos = this.selectionStart; // Obtener la posición del cursor
+        var valorFormateado = formatearCedula(valor, cursorPos);
+
+        // Actualizar el valor del campo
+        this.value = valorFormateado;
+
+        // Restaurar la posición del cursor
+        var newCursorPos = cursorPos;
+        if (valor.length < valorFormateado.length) {
+            newCursorPos++;
+        }
+        this.setSelectionRange(newCursorPos, newCursorPos);
+    });
+
+    //#endregion
+    //=================================================================//
+
+    // ========== FUNCION PARA FORMATEAR EL CAMPO DE TELEFONO ========== //
+    //#region
+
+    function formatearTelefono(valor, cursorPos) {
+        var valorNumerico = valor.replace(/\D/g, '');
+        var valorFormateado = '';
+
+        if (valorNumerico.length > 0) {
+            valorFormateado += valorNumerico.substr(0, 3);
+        }
+        if (valorNumerico.length >= 4) {
+            valorFormateado += '-' + valorNumerico.substr(3, 3);
+        }
+        if (valorNumerico.length >= 7) {
+            valorFormateado += '-' + valorNumerico.substr(6, 4);
+        }
+
+        return valorFormateado;
+    }
+
+    var telefonoInput = document.getElementById('Doctor_Telefono');
+
+    telefonoInput.addEventListener('input', function () {
+        var valor = this.value;
+        var cursorPos = this.selectionStart; // Obtener la posición del cursor
+        var valorFormateado = formatearTelefono(valor, cursorPos);
+
+        // Actualizar el valor del campo
+        this.value = valorFormateado;
+
+        // Restaurar la posición del cursor
+        var newCursorPos = cursorPos;
+        if (valor.length < valorFormateado.length) {
+            newCursorPos++;
+        }
+        this.setSelectionRange(newCursorPos, newCursorPos);
+    });
+
+    //#endregion
+    //==================================================================//
+
     //EVENTO CLICK PARA EL BOTON DE CREAR
     document.getElementById("btnCrear").addEventListener('submit', function (e) {
 

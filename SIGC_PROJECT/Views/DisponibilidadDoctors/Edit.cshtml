@@ -24,7 +24,7 @@
                         <div class="form-group row mb-3 dias_grupo">
                             <div class="col-auto form-check">
                                 <input type="checkbox" class="form-check-input day-checkbox" name="Dias[@dia]" value="true" id="@dia" @(Model.Dias[dia] ? "checked" : "") />
-                                <label class="form-check-label" for="@dia">@dia</label>
+                                <label class="form-check-label day-label" for="@dia">@dia</label>
                             </div>
 
                             <div class="col-auto ml-5">
@@ -102,6 +102,11 @@
             font-weight: bold;
             padding: 10px;
             margin-left: 2px;
+        }
+
+        .day-label {
+            width: 100px;
+            display: inline-block;
         }
 
         .select_todo {

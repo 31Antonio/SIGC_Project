@@ -10,7 +10,7 @@
         <div class="col-md-11">
             <div class="card mt-2">
                 <div class="card-header text-center">
-                    <h2 style="font-weight: bold; font-size: 1.7em;">Editar Datos</h2>
+                    <h2 style="font-weight: bold; font-size: 1.7em; color: #04294F;">Actualizar Información</h2>
                 </div>
                 <div class="card-body">
 
@@ -19,7 +19,7 @@
                         <div class="row">
                             <input type="hidden" asp-for="SecretariaId" />
                             
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-4 mb-4">
                                 <label asp-for="Cedula" class="control-label">Cédula</label>
                                 <input asp-for="Cedula" class="form-control" />
                                 <span asp-validation-for="Cedula" class="text-danger"></span>
@@ -27,31 +27,31 @@
 
                             <div class="col-md-9"></div>
 
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-4 mb-4">
                                 <label asp-for="Nombre" class="control-label"></label>
                                 <input asp-for="Nombre" class="form-control" />
                                 <span asp-validation-for="Nombre" class="text-danger"></span>
                             </div>
 
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-4 mb-4">
                                 <label asp-for="Apellido" class="control-label"></label>
                                 <input asp-for="Apellido" class="form-control" />
                                 <span asp-validation-for="Apellido" class="text-danger"></span>
                             </div>
 
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-4 mb-4">
                                 <label asp-for="HorarioTrabajo" class="control-label">Horario de Trabajo</label>
                                 <input asp-for="HorarioTrabajo" class="form-control" />
                                 <span asp-validation-for="HorarioTrabajo" class="text-danger"></span>
                             </div>
 
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-4 mb-4">
                                 <label asp-for="Telefono" class="control-label">Teléfono</label>
                                 <input asp-for="Telefono" class="form-control" />
                                 <span asp-validation-for="Telefono" class="text-danger"></span>
                             </div>
 
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-4 mb-4">
                                 <label asp-for="CorreoElectronico" class="control-label">Correo Electrónico</label>
                                 <input asp-for="CorreoElectronico" class="form-control" />
                                 <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
@@ -71,7 +71,7 @@
 
                         <div class="text-center mt-5">
                             <input type="submit" value="Guardar" class="btn btn-estilo" />
-                            <a asp-action="Index" class="btn btn-danger">Volver</a>
+                            <a asp-action="Index" class="btn btn-danger">Cancelar</a>
                         </div>
                     </form>
 
@@ -84,6 +84,91 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // ========== FUNCION PARA FORMATEAR EL CAMPO DE CEDULA ========== //
+            //#region
+            function formatearCedula(valor, cursorPos) {
+                var valorNumerico = valor.replace(/\D/g, '');
+                var valorFormateado = '';
+
+                if (valorNumerico.length > 0) {
+                    valorFormateado += valorNumerico.substr(0, 3);
+                }
+                if (valorNumerico.length >= 4) {
+                    valorFormateado += '-' + valorNumerico.substr(3, 7);
+                }
+                if (valorNumerico.length >= 11) {
+                    valorFormateado += '-' + valorNumerico.substr(10, 1);
+                }
+
+                return valorFormateado;
+            }
+
+            var cedulaInput = document.getElementById('Cedula');
+
+            cedulaInput.addEventListener('input', function () {
+                var valor = this.value;
+                var cursorPos = this.selectionStart; // Obtener la posición del cursor
+                var valorFormateado = formatearCedula(valor, cursorPos);
+
+                // Actualizar el valor del campo
+                this.value = valorFormateado;
+
+                // Restaurar la posición del cursor
+                var newCursorPos = cursorPos;
+                if (valor.length < valorFormateado.length) {
+                    newCursorPos++;
+                }
+                this.setSelectionRange(newCursorPos, newCursorPos);
+            });
+
+            //#endregion
+            //=================================================================//
+
+            // ========== FUNCION PARA FORMATEAR EL CAMPO DE TELEFONO ========== //
+            //#region
+
+            function formatearTelefono(valor, cursorPos) {
+                var valorNumerico = valor.replace(/\D/g, '');
+                var valorFormateado = '';
+
+                if (valorNumerico.length > 0) {
+                    valorFormateado += valorNumerico.substr(0, 3);
+                }
+                if (valorNumerico.length >= 4) {
+                    valorFormateado += '-' + valorNumerico.substr(3, 3);
+                }
+                if (valorNumerico.length >= 7) {
+                    valorFormateado += '-' + valorNumerico.substr(6, 4);
+                }
+
+                return valorFormateado;
+            }
+
+            var telefonoInput = document.getElementById('Telefono');
+
+            telefonoInput.addEventListener('input', function () {
+                var valor = this.value;
+                var cursorPos = this.selectionStart; // Obtener la posición del cursor
+                var valorFormateado = formatearTelefono(valor, cursorPos);
+
+                // Actualizar el valor del campo
+                this.value = valorFormateado;
+
+                // Restaurar la posición del cursor
+                var newCursorPos = cursorPos;
+                if (valor.length < valorFormateado.length) {
+                    newCursorPos++;
+                }
+                this.setSelectionRange(newCursorPos, newCursorPos);
+            });
+
+            //#endregion
+            //==================================================================//
+        });
+    </script>
 
     <style>
         .btn {
@@ -98,8 +183,13 @@
         }
 
         .btn-estilo:hover {
-            background-color: rgba(42, 62, 84, 0.8);
+            background-color: #062043;
             color: #FFFFFF;
+        }
+
+        .control-label {
+            font-weight: bold;
+            color: #04294F;
         }
     </style>
 }

@@ -27,7 +27,7 @@
                         <div class="form-group row mb-3 day-group">
                             <div class="col-auto form-check">
                                 <input type="checkbox" class="form-check-input day-checkbox" name="selectedDays" value="@dia" id="@dia" />
-                                <label class="form-check-label" for="@dia">@dia</label>
+                                <label class="form-check-label day-label" for="@dia">@dia</label>
                             </div>
 
                             <div class="col-auto time-fields ml-5" style="display: none;">
@@ -105,6 +105,11 @@
             font-weight: bold;
             padding: 10px;
             margin-left: 2px;
+        }
+
+        .day-label {
+            width: 100px;
+            display: inline-block;
         }
 
         .select_todo {
