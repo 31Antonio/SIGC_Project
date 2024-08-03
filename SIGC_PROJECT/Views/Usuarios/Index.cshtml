@@ -1,50 +1,160 @@
-﻿@model IEnumerable<SIGC_PROJECT.Models.Usuario>
+﻿@model IPagedList<SIGC_PROJECT.Models.Usuario>
+
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div style="margin-top: 8%;"></div>
+<div class="row mt-4 mb-4">
+    <div class="col-md-6 d-flex align-items-center">
+        <a asp-controller="RegistrosUsuario" asp-action="RegistroUsuario" class="btn btn-estilo">Registrar Usuario</a>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+    <div class="col-md-6 d-flex justify-content-end align-items-center">
+        <label for="buscarRol" class="control-label me-2 mb-0 mr-1" style="font-weight: bold; color: #04294F;">Buscar por Rol:</label>
+        <select id="buscarRol" class="form-control w-auto">
+            <option value="" selected>Todos los roles</option>
+            <option value="Administrador">Administrador</option>
+            <option value="Doctor">Doctor</option>
+            <option value="Secretaria">Secretaria</option>
+            <option value="Paciente">Paciente</option>
+        </select>
+    </div>
+</div>
+
+<table class="table table-striped w-100">
     <thead>
-        <tr>
+        <tr class="th_bg text-center">
             <th>
-                @Html.DisplayNameFor(model => model.NombreUsuario)
+                Nombre de Usuario
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Contrasena)
+                Último Acesso
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FechaUltimoAcceso)
+                Rol del Usuario
             </th>
-@*             <th>
-                @Html.DisplayNameFor(model => model.IdRolNavigation)
-            </th> *@
-            <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+        <tr class="font-weight-bold">
             <td>
                 @Html.DisplayFor(modelItem => item.NombreUsuario)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Contrasena)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FechaUltimoAcceso)
             </td>
             <td>
-                    <a asp-action="Edit" class=" btn btn-warning" asp-route-id="@item.IdUsuario">Edit</a> |
-                    <a asp-action="Details" class=" btn btn-primary" asp-route-id="@item.IdUsuario">Details</a> |
-                    <a asp-action="Delete" class=" btn btn-danger" asp-route-id="@item.IdUsuario">Delete</a>
+                    @foreach(var ur in item.UsuarioRoles)
+                    {
+                        @ur.Rol.Nombre
+                    }
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+<div class="contenedor-paginacion">
+    @Html.PagedListPager(Model, pagina => Url.Action("Index", new { pagina = pagina, rol = ViewBag.Rol }), new PagedListRenderOptions
+    {
+        DisplayPageCountAndCurrentLocation = false,
+        DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+        DisplayLinkToLastPage = PagedListDisplayMode.Always,
+        DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+        DisplayLinkToNextPage = PagedListDisplayMode.Always,
+        DisplayLinkToIndividualPages = true,
+        MaximumPageNumbersToDisplay = 10,
+        DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+        Display = PagedListDisplayMode.Always,
+
+        UlElementClasses = new[] { "pagination", "justify-content-center" },
+        LiElementClasses = new[] { "page-item" },
+        PageClasses = new[] { "page-link" }
+    })
+
+    <div class="paginacion_dabajo">
+        @string.Format("Página {0} de {1}", Model.PageNumber, Model.PageCount)
+    </div>
+</div>
+
+@section Scripts { 
+
+    @*========== FUNCIONALIDADES ==========*@
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var searchInput = document.getElementById('buscarRol');
+
+            //Evento input del campo
+            searchInput.addEventListener('change', function (e) {
+                var valor = searchInput.value;
+
+                var searchParams = new URLSearchParams(window.location.search);
+                searchParams.set('rol', valor);
+                searchParams.set('pagina', 1); // Resetear a la primera página
+
+                //Enviar Solicitud Ajax al controlador
+                fetch(window.location.pathname + '?' + searchParams.toString())
+                    .then(response => response.text())
+                    .then(html => {
+                        var parser = new DOMParser();
+                        var doc = parser.parseFromString(html, 'text/html');
+                        var nuevaTabla = doc.querySelector('tbody').innerHTML;
+                        document.querySelector('tbody').innerHTML = nuevaTabla;
+                        var newPagination = doc.querySelector('.contenedor-paginacion').innerHTML;
+                        document.querySelector('.contenedor-paginacion').innerHTML = newPagination;
+                    })
+                    .catch(error => console.error('Error al buscar pacientes:', error));
+            });
+
+        });
+    </script>
+    @*=====================================*@
+
+    @*========== ESTILOS ==========*@
+    <style>
+        .paginacion_dabajo {
+            margin-top: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .contenedor-paginacion {
+            text-align: center;
+        }
+
+        .active.page-item .page-link {
+            background-color: rgba(42, 62, 84, 1) !important;
+            font-weight: bold;
+            border: 2px solid rgba(42, 62, 84, 1) !important;
+        }
+
+        .th_bg {
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+        }
+
+        th {
+            border: 1px solid #FFFFFF;
+        }
+
+        .btn-estilo {
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+            transition: background-color 0.5s linear;
+            width: 40%;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .btn-estilo:hover {
+            background-color: #062043;
+            color: #FFFFFF;
+        }
+    </style>
+    @*=============================*@
+}

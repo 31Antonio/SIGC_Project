@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SIGC_PROJECT.Helper;
 using SIGC_PROJECT.Models;
+using X.PagedList.Extensions;
 
 namespace SIGC_PROJECT.Controllers
 {
@@ -20,15 +22,30 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Usuarios
-        public async Task<IActionResult> Index()
+        [Authorize(Roles = "Administrador")]
+        public async Task<IActionResult> Index(string? rol, int? pagina, int cantidadP = 10)
         {
-            //var sigcProjectContext = _context.Usuarios.Include(u => u.IdRolNavigation);
+            int numeroP = (pagina ?? 1);
+
+            IQueryable<Usuario> query = _context.Usuarios.Include(u => u.UsuarioRoles).ThenInclude(ur => ur.Rol);
+            
+            if (!string.IsNullOrEmpty(rol))
+            {
+                query = query.Where(u => u.UsuarioRoles.Any(ur => ur.Rol.Nombre == rol));
+            }
+
+            var usuarios = query.ToPagedList(numeroP, cantidadP);
+            ViewBag.Rol = rol;
+
+            return View(usuarios);
+
+            //var sigcProjectContext = _context.Usuarios.Include(u => u.UsuarioRoles);
             //return View(await sigcProjectContext.ToListAsync());
 
-            return View();
         }
 
         // GET: Usuarios/Details/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -48,6 +65,7 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Usuarios/Create
+        [Authorize(Roles = "Administrador")]
         public IActionResult Create()
         {
             ViewData["IdRol"] = new SelectList(_context.Rols, "IdRol", "IdRol");
@@ -55,8 +73,6 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // POST: Usuarios/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdUsuario,IdRol,NombreUsuario,Contrasena,FechaUltimoAcceso")] Usuario usuario)
@@ -72,6 +88,7 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Usuarios/Edit/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -89,8 +106,6 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // POST: Usuarios/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdUsuario,IdRol,NombreUsuario,Contrasena,FechaUltimoAcceso")] Usuario usuario)
@@ -125,6 +140,7 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Usuarios/Delete/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

@@ -16,6 +16,7 @@ using iText.Layout.Element;
 using iText.Layout.Properties;
 using iText.Kernel.Colors;
 using Microsoft.AspNetCore.Authorization;
+using SIGC_PROJECT.Models.ViewModel;
 
 namespace SIGC_PROJECT.Controllers
 {
@@ -176,7 +177,54 @@ namespace SIGC_PROJECT.Controllers
             return htmlContent;
         }
 
+        #endregion
 
+        #region ESTADISTICAS DE LAS CITAS
+        public async Task<IActionResult> EstadisticasCitas()
+        {
+            var citas = await _context.Citas.ToListAsync();
+
+            var totalCitas = citas.Count;
+            var completados = citas.Count(c => c.Estado == "COMPLETADO");
+            var cancelados = citas.Count(c => c.Estado == "CANCELADO");
+            var pendientes = citas.Count(c => c.Estado == "PENDIENTE");
+
+            // Agrupar citas por especialidad
+            var citasPorEspecialidad = citas.GroupBy(c => c.EspecialidadDoctor)
+                                            .Select(e => new CitasPorEspecialidadVM
+                                            {
+                                                Especialidad = e.Key,
+                                                Total = e.Count()
+                                            }).ToList();
+
+            // Agrupar citas por doctor
+            var citasPorDoctor = citas.GroupBy(c => c.NombreDoctor)
+                                      .Select(d => new CitasPorDoctorVM 
+                                      { 
+                                          Doctor = d.Key, Total = d.Count()
+                                      }).ToList();
+
+            // Agrupar citas por mes
+            var citasPorMes = citas.GroupBy(c => c.FechaCita.Value.ToString("MMMM yyyy"))
+                                   .Select(g => new CitasPorMesVM
+                                   {
+                                       Mes = g.Key,
+                                       Total = g.Count()
+                                   }).ToList();
+
+            var model = new EstadisticasCitasVM
+            {
+                TotalCitas = totalCitas,
+                Completados = completados,
+                Cancelados = cancelados,
+                Pendientes = pendientes,
+                CitasPorEspecialidad = citasPorEspecialidad,
+                CitasPorDoctor = citasPorDoctor,
+                CitasPorMes = citasPorMes
+            };
+
+            return View(model);
+        }
         #endregion
     }
 }

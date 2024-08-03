@@ -7,72 +7,77 @@
     var estado = ViewContext.HttpContext.Request.Query["estado"];
 
     // Construir las opciones para el select
-    var estados = new[] { "", "COMPLETADO", "PENDIENTE", "CANCELADO" };
+    var estados = new[] { "COMPLETADO", "PENDIENTE", "CANCELADO" };
 }
 
+<div style="margin-top: 7%;"></div>
 <div class="container mt-4">
-    <h1 class="mb-4">Reporte de Citas</h1>
+    <h2 style="font-weight: bold; font-size: 1.7em; color: #04294F;">Reporte de Citas</h2>
 
+    <div style="margin-top: 5%;"></div>
     <!-- Formulario de búsqueda y filtro de estado -->
-    <form asp-action="CitasReporte" method="get" class="mb-4">
-        <div class="form-group">
+    <form asp-action="CitasReporte" method="get" class="mb-4 mt-4">
+        
+        <div class="col-md-4 d-flex justify-content-end align-items-center">
             <input type="text" name="searchString" value="@searchString" class="form-control" placeholder="Buscar paciente..." />
         </div>
-        <div class="form-group">
+        
+        <div class="col-md-4 d-flex justify-content-end align-items-center">
             <select name="estado" class="form-control">
-                <option value="">Todos los estados</option>
+                <option value="">TODOS LOS ESTADOS</option>
                 @foreach (var est in estados)
                 {
                     <option value="@est" selected="@(est == estado ? "selected" : null)">@est</option>
                 }
             </select>
         </div>
-        <button type="submit" class="btn btn-primary">Buscar</button>
+
+        <div class="col-md-2 d-flex justify-content-end align-items-center">
+            <button type="submit" class="btn btn-estilo">Buscar</button>
+        </div>
+        
+        <div class="col-md-2 d-flex justify-content-end align-items-center">
+            <a href="@Url.Action("DescargarCitasPDF", "Reportes", new { searchString, estado })" class="btn btn-secondary font-weight-bold">Descargar PDF</a>
+        </div>
+       
     </form>
 
     <!-- Tabla de Citas -->
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
+    <table class="table table-striped w-100">
+        <thead>
+            <tr class="th_bg">
+                <th>Fecha y Hora</th>
+                <th>Paciente</th>
+                <th>Motivo</th>
+                <th>Estado</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cita in Model)
+            {
                 <tr>
-                    <th>Paciente</th>
-                    <th>Estado</th>
-                    <th>Motivo</th>
-                    <th>Fecha y Hora</th>
-                    <th></th>
+                    <td>@(cita.FechaCita.HasValue ? cita.FechaCita.Value.ToString("dd/MM/yyyy") : "No disponible") - @cita.HoraCita</td>
+                    <td>@cita.NombrePaciente</td>
+                    <td>@cita.Comentario</td>
+                    <td>@cita.Estado</td>
+                    <td>
+                        <button type="button" class="btn btn-primary font-weight-bold" onclick="toggleDetails('@cita.CitaId')">Más Detalles</button>
+                        @*<a href="@Url.Action("DescargarCitasPDF", "Reportes", new { searchString, estado })" class="btn btn-secondary">Descargar PDF</a> *@
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var cita in Model)
-                {
-                    <tr>
-                        <td>@cita.NombrePaciente</td>
-                        <td>@cita.Estado</td>
-                        <td>@cita.Comentario</td>
-                        <td>@(cita.FechaCita.HasValue ? cita.FechaCita.Value.ToString("dd/MM/yyyy") : "No disponible") - @cita.HoraCita</td>
-                        <td>
-                            <button type="button" class="btn btn-primary" onclick="toggleDetails('@cita.CitaId')">Más Detalles</button>
-                            <a href="@Url.Action("DescargarCitasPDF", "Reportes", new { searchString, estado })" class="btn btn-secondary">Descargar PDF</a>
-                        </td>
-                    </tr>
-                    <!-- Fila de detalles de la cita -->
-                    <tr id="details-@cita.CitaId" class="details" style="display: none;">
-                        <td colspan="6">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Detalles de la Cita</h5>
-                                    <p><strong>Estado:</strong> @cita.Estado</p>
-                                    <p><strong>Comentario:</strong> @cita.Comentario</p>
-                                    <p><strong>Paciente:</strong> @cita.NombrePaciente</p>
-                                    <p><strong>Fecha y Hora:</strong> @(cita.FechaCita.HasValue ? cita.FechaCita.Value.ToString("dd/MM/yyyy") : "No disponible") - @cita.HoraCita</p>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+                <!-- Fila de detalles de la cita -->
+                <tr id="details-@cita.CitaId" class="details" style="display: none;">
+                    <td colspan="6">
+                        <div style="background-color: rgba(42, 62, 84, 0.2); width: 100%;">
+                            <p><strong>Doctor: </strong> @cita.NombreDoctor</p>
+                            <p><strong>Especialidad:</strong> @cita.EspecialidadDoctor</p>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
 </div>
 
@@ -81,11 +86,46 @@
     <script>
         function toggleDetails(citaId) {
             var detailsRow = document.getElementById('details-' + citaId);
-            if (detailsRow.style.display === 'none') {
+            if (detailsRow.style.display === 'none' || detailsRow.style.display === '') {
                 detailsRow.style.display = 'table-row';
             } else {
                 detailsRow.style.display = 'none';
             }
         }
     </script>
+
+    <!-- Estilos -->
+    <style>
+
+        .th_bg {
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+        }
+
+        th {
+            border: 1px solid #FFFFFF;
+        }
+
+        .details td {
+            padding: 0;
+        }
+
+        .details div {
+            margin: 0;
+            padding: 10px;
+        }
+
+        .btn-estilo {
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+            transition: background-color 0.5s linear;
+            width: 98%;
+            font-weight: bold;
+        }
+
+        .btn-estilo:hover {
+            background-color: #062043;
+            color: #FFFFFF;
+        }
+    </style>
 }

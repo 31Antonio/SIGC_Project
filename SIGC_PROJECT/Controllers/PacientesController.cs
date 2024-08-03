@@ -80,6 +80,7 @@ namespace SIGC_PROJECT.Controllers
         #endregion
 
         // GET: Pacientes/Details/5
+        [Authorize(Roles = "Secretaria,Administrador")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -240,8 +241,26 @@ namespace SIGC_PROJECT.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var paciente = await _context.Pacientes.FindAsync(id);
+
             if (paciente != null)
             {
+                //Encontrar el usuario
+                var usuario = await _context.Usuarios.FindAsync(paciente.IdUsuario);
+
+                if(usuario != null)
+                {
+                    //Encontrar y eliminar el rol del usuario
+                    var userRol = await _context.UsuarioRols.Where(ur => ur.IdUsuario == usuario.IdUsuario).FirstOrDefaultAsync();
+
+                    if (userRol != null)
+                    {
+                        _context.UsuarioRols.Remove(userRol);
+                    }
+
+                    //Eliminar el Usuario
+                    _context.Usuarios.Remove(usuario);
+                }
+
                 _context.Pacientes.Remove(paciente);
             }
 

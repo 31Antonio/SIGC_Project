@@ -200,31 +200,29 @@
                                 }
                                 @if (User.IsInRole("Administrador"))
                                 {
-                                <li>
-                                    <a><i class="fa fa-edit"></i>Formularios de Registro<span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        @if (User.IsInRole("Administrador"))
-                                        {
+                                    @*FORMULARIOS*@
+                                    <li>
+                                        <a><i class="fa fa-edit"></i>Formularios de Registro<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+
                                             <li><a asp-controller="Doctors" asp-action="Index">Registros de Doctores</a></li>
-                                                <li><a asp-controller="Pacientes" asp-action="Index">Registros de Pacientes</a></li>
-                                            <li><a asp-controller="Recetas" asp-action="Index">Recetas</a></li>
-
-                                            <li><a asp-controller="Consultas" asp-action="Index">Consulta</a></li>
-                                        }
+                                            <li><a asp-controller="Pacientes" asp-action="Index">Registros de Pacientes</a></li>
+                                            <li><a asp-controller="Usuarios" asp-action="Index">Registros de Usuarios</a></li>
                                         
-                                        @if (User.IsInRole("Administrador"))
-                                        {
-                                            <li><a asp-controller="Citas" asp-action="Index">Citas</a></li>
-                                        }
+                                            @* <li><a asp-controller="Recetas" asp-action="Index">Recetas</a></li>
+                                            <li><a asp-controller="Consultas" asp-action="Index">Consulta</a></li> *@
+                                        </ul>
+                                    </li>
 
-                                        @if (User.IsInRole("Administrador"))
-                                        {
-                                            <li><a asp-controller="RegistrosUsuario" asp-action="RegistroUsuario">Registrar Usuarios</a></li>
-                                        }
-                                        
-
-                                    </ul>
-                                </li>   
+                                    @*CITAS*@
+                                    @* <li>
+                                        <a><i class="fa fa-calendar"></i>Citas <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li class="nav-item">
+                                                <a asp-controller="Citas" asp-action="Index">Registro de Citas</a>
+                                            </li>
+                                        </ul>
+                                    </li> *@
                                 }
                                 
                             </ul>
@@ -233,14 +231,13 @@
                             <h3>Reportes Clinicos</h3>
                             <ul class="nav side-menu">
                                 <li>
-                                    <a><i class="fa fa-bug"></i>Reportes aun por decidir<span class="fa fa-chevron-down"></span></a>
+                                    <a><i class="bi bi-list-columns-reverse"></i> Reportes de Citas<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a asp-controller="Reportes" asp-action="CitasReporte">Reporte de las citas</a></li>
-                                        <li><a href="e_commerce.html">E-commerce</a></li>
-                                        <li><a href="projects.html">Projects</a></li>
-                                        <li><a href="project_detail.html">Project Detail</a></li>
-                                        <li><a href="contacts.html">Contacts</a></li>
-                                        <li><a href="profile.html">Profile</a></li>
+                                        <li><a asp-controller="Reportes" asp-action="CitasReporte">Reporte de citas</a></li>
+                                        @if (User.IsInRole("Administrador"))
+                                        {
+                                            <li><a asp-controller="Reportes" asp-action="EstadisticasCitas">Estadisticas de las citas</a></li>
+                                        } 
                                     </ul>
                                 </li>
 @*                                 <li>
