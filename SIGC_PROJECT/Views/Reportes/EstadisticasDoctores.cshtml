@@ -1,0 +1,82 @@
+﻿@model SIGC_PROJECT.Models.ViewModel.EstadisticasDoctoresVM
+
+@{
+    ViewData["Title"] = "Estadisticas de Doctores";
+}
+
+<div class="container">
+    <div style="margin-top: 8%;">
+        <h2 style="font-weight: bold; font-size: 2.3em; color: #04294F;" class="mt-5 mb-3">Total de Doctores Registrados: @Model.TotalDoctores</h2>
+    </div>
+
+    <!-- Contenedor de Doctores por Especialidad -->
+    <div id="especialidadDoctoresChartContainer" class="chart-container">
+        <canvas id="especialidadDoctoresChart"></canvas>
+    </div>
+</div>
+
+@section Scripts { 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+
+        //Definir colores
+        var colores = ['#07195b', '#072389', '#0d33be', '#0938e3', '#007bf7']
+        var backgroundColorsE = [];
+
+        for (var i = 0; i < @Model.DoctoresPorEspecialidad.Count(); i++) {
+            backgroundColorsE.push(colores[i % colores.length]);
+        }
+
+        //Especialidad de los doctores
+        const especialidadDoctoresData = {
+            labels: @Html.Raw(Json.Serialize(Model.DoctoresPorEspecialidad.Select(c => c.Especialidad))),
+            datasets: [{
+                label: 'Doctores por Especialidad',
+                data: @Html.Raw(Json.Serialize(Model.DoctoresPorEspecialidad.Select(c => c.TotalDoctores))),
+                backgroundColor: backgroundColorsE
+            }]
+        };
+
+        //Grafico de las especialidades
+        const especialidadDoctoresChart = new Chart(document.getElementById('especialidadDoctoresChart'), {
+            type: 'bar',
+            data: especialidadDoctoresData,
+            options: {
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 18,
+                                weight: 'bold'
+                            },
+                            color: '#333',
+                        }
+                    },
+                    tooltip: {
+                        bodyFont: {
+                            size: 14
+                        },
+                        titleFont: {
+                            size: 16,
+                            weight: 'bold'
+                        },
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff'
+                    }
+                }
+            }
+        });
+        
+    </script>
+
+    <style>
+        .chart-container {
+            width: 90%;
+            margin: auto;
+            margin-top: 5%;
+            margin-bottom: 10%;
+        }
+    </style>
+}

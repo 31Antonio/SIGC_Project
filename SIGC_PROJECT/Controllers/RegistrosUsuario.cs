@@ -205,7 +205,7 @@ namespace SIGC_PROJECT.Controllers
             {
                 return Json(new { success = false, message = "El Nombre de Usuario debe tener más de 5 caracteres" });
             } 
-            else if (pacienteVM.contrasena.Length < 5)
+            else if (pacienteVM.contrasena == null || pacienteVM.contrasena.Length < 5)
             {
                 return Json(new { success = false, message = "La contraseña debe tener más de 5 caracteres." });
             }

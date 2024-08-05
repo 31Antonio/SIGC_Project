@@ -21,8 +21,10 @@
         <div id="container-agendadas" class="row">
             @if (Model.CitasPendientes == null || !Model.CitasPendientes.Any())
             {
-                <div class="alert alert-info" role="alert" style="width: auto;">
-                    No tienes citas pendientes en este momento.
+                <div class="container col-md-12 mt-2 text-center">
+                    <div class="alert alert-info font-weight-bold" role="alert" style="width: auto; font-size: 1.7em;">
+                        No tienes citas agendadas en este momento.
+                    </div>
                 </div>
             }
             else

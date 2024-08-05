@@ -131,7 +131,7 @@ namespace SIGC_PROJECT.Controllers
                 {
                     if (ModelState.IsValid)
                     {
-                        if (Usuario.Contrasena.Length < 5)
+                        if (Usuario.Contrasena == null || Usuario.Contrasena.Length < 5)
                         {
                             TempData["MensajeError"] = "La contraseña debe tener 5 o más caracteres.";
                         }

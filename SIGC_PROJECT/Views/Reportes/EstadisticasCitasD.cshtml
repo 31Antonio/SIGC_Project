@@ -1,35 +1,53 @@
-﻿@model SIGC_PROJECT.Models.ViewModel.EstadisticasCitasVM
+﻿@model SIGC_PROJECT.Models.ViewModel.EstadisticasCitasDocVM
 
 @{
     ViewData["Title"] = "Estadisticas de Citas";
 }
 
 <div class="container">
-    
     <div style="margin-top: 8%;">
         <h2 style="font-weight: bold; font-size: 2.3em; color: #04294F;" class="mt-5 mb-3">Total de Citas Registradas: @Model.TotalCitas</h2>
     </div>
 
     <div class="btn btn-group mt-4" role="group" aria-label="Estadísticas">
         <button type="button" class="btn btn-group-estilo" onclick="mostrarChart('estadoCitas')">Citas por Estado</button>
-        <button type="button" class="btn btn-group-estilo" onclick="mostrarChart('especialidadCitas')">Citas por Especialidad</button>
-        <button type="button" class="btn btn-group-estilo" onclick="mostrarChart('doctorCitas')">Citas por Doctor</button>
+        <button type="button" class="btn btn-group-estilo" onclick="mostrarChart('generoCitas')">Citas por Genero</button>
+        <button type="button" class="btn btn-group-estilo" onclick="mostrarChart('pacienteCitas')">Citas por Paciente</button>
         <button type="button" class="btn btn-group-estilo" onclick="mostrarChart('mesCitas')">Citas por Mes</button>
     </div>
 
     <!-- Contenedor de Citas por Estado -->
-    <div id="estadoCitasChartContainer" class="chart-container" >
+    <div id="estadoCitasChartContainer" class="chart-container">
         <canvas id="estadoCitasChart"></canvas>
     </div>
 
-    <!-- Contenedor de Citas por Especialidad -->
-    <div id="especialidadCitasChartContainer" class="chart-container" style="display:none;">
-        <canvas id="especialidadCitasChart"></canvas>
+    <!-- Contenedor de Citas por Genero-->
+    <div id="generoCitasChartContainer" class="chart-container" style="display:none;">
+        <canvas id="generoCitasChart"></canvas>
     </div>
 
-    <!-- Contenedor de Citas por Doctor-->
-    <div id="doctorCitasChartContainer" class="chart-container" style="display:none;">
-        <canvas id="doctorCitasChart"></canvas>
+    <!-- Contenedor de Citas por Paciente -->
+    <div id="pacienteCitasContainer" style="display:none;">
+        <div class="row justify-content-center">
+            <div class="col-md-12 mt-5">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header text-white" style="background-color: rgba(5, 12, 67, 0.8);">
+                        <h3 class="card-title m-0 text-center font-weight-bold">Citas por Paciente</h3>
+                    </div>
+
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            @foreach (var paciente in Model.citasPorPaciente)
+                            {
+                                <li class="list-group-item">
+                                    <span class="font-weight-bold" style="color: black; font-size: 1.6em;">@paciente.NombrePaciente: </span> <p style="color: black; font-size: 1.6em;">@paciente.CantidadCitas citas realizadas</p>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Contenedor de Citas por Mes-->
@@ -39,10 +57,12 @@
 </div>
 
 @section Scripts {
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    @*==== MOSTRAR LOS GRAFICOS DE REPORTE ====*@
     <script>
-
+        
         //Estados de las citas
         const estadoCitasData = {
             labels: ['Completados', 'Cancelados', 'Pendientes'],
@@ -52,44 +72,24 @@
                 backgroundColor: ['#477c5c', '#f0554e', '#3e4787']
             }]
         };
+        
+        //Genero de los pacientes por citas
+        const generoCitasData = {
+            labels: ['Femenino', 'Masculino'],
+            datasets: [{
+                label: 'Citas por Genero',
+                data: [@Model.PacientesFemeninos, @Model.PacientesMasculinos],
+                backgroundColor: ['#660606', '#061166']
+            }]
+        };
 
         //Definir colores
         var colores = ['#07195b', '#072389', '#0d33be', '#0938e3', '#007bf7']
-        var backgroundColorsE = [];
-        var backgroundColorsD = [];
         var backgroundColorsM = [];
 
-        for (var i = 0; i < @Model.CitasPorEspecialidad.Count(); i++) {
-            backgroundColorsE.push(colores[i % colores.length]);
-        }
-
-        for (var i = 0; i < @Model.CitasPorDoctor.Count(); i++) {
-            backgroundColorsD.push(colores[i % colores.length]);
-        }
-        
         for (var i = 0; i < @Model.CitasPorMes.Count(); i++) {
             backgroundColorsM.push(colores[i % colores.length]);
         }
-
-        //Especialidad de las citas
-        const especialidadCitasData = {
-            labels: @Html.Raw(Json.Serialize(Model.CitasPorEspecialidad.Select(c => c.Especialidad))),
-            datasets: [{
-                label: 'Citas por Especialidad',
-                data: @Html.Raw(Json.Serialize(Model.CitasPorEspecialidad.Select(c => c.Total))),
-                backgroundColor: backgroundColorsE
-            }]
-        };
-
-        //Doctores de las citas
-        const doctorCitasData = {
-            labels: @Html.Raw(Json.Serialize(Model.CitasPorDoctor.Select(c => c.Doctor))),
-            datasets: [{
-                label: 'Citas por Doctor',
-                data: @Html.Raw(Json.Serialize(Model.CitasPorDoctor.Select(c => c.Total))),
-                backgroundColor: backgroundColorsD
-            }]
-        };
 
         //Citas por Mes
         const mesCitasData = {
@@ -130,13 +130,13 @@
                     }
                 }
             }
-            
+
         });
 
-        //Grafico de las especialidades
-        const especialidadCitasChart = new Chart(document.getElementById('especialidadCitasChart'), {
+        //Grafico de los estados
+        const generoCitasChart = new Chart(document.getElementById('generoCitasChart'), {
             type: 'bar',
-            data: especialidadCitasData,
+            data: generoCitasData,
             options: {
                 plugins: {
                     legend: {
@@ -153,7 +153,7 @@
                             size: 14
                         },
                         titleFont: {
-                            size: 16,
+                            size: 18,
                             weight: 'bold'
                         },
                         backgroundColor: 'rgba(0, 0, 0, 0.7)',
@@ -162,37 +162,7 @@
                     }
                 }
             }
-        });
 
-        //Grafico de los doctores
-        const doctorCitasChart = new Chart(document.getElementById('doctorCitasChart'), {
-            type: 'bar',
-            data: doctorCitasData,
-            options: {
-                plugins: {
-                    legend: {
-                        labels: {
-                            font: {
-                                size: 18,
-                                weight: 'bold'
-                            },
-                            color: '#333',
-                        }
-                    },
-                    tooltip: {
-                        bodyFont: {
-                            size: 14
-                        },
-                        titleFont: {
-                            size: 16,
-                            weight: 'bold'
-                        },
-                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                        titleColor: '#fff',
-                        bodyColor: '#fff'
-                    }
-                }
-            }
         });
 
         //Graficos del mes
@@ -229,24 +199,25 @@
         function mostrarChart(chartId) {
             // Ocultar todos los contenedores
             document.getElementById('estadoCitasChartContainer').style.display = 'none';
-            document.getElementById('especialidadCitasChartContainer').style.display = 'none';
-            document.getElementById('doctorCitasChartContainer').style.display = 'none';
+            document.getElementById('generoCitasChartContainer').style.display = 'none';
             document.getElementById('mesCitasChartContainer').style.display = 'none';
+            document.getElementById('pacienteCitasContainer').style.display = 'none';
 
             // Mostrar el contenedor seleccionado
             if (chartId === 'estadoCitas') {
                 document.getElementById('estadoCitasChartContainer').style.display = 'block';
-            } else if (chartId === 'especialidadCitas') {
-                document.getElementById('especialidadCitasChartContainer').style.display = 'block';
-            } else if (chartId === 'doctorCitas') {
-                document.getElementById('doctorCitasChartContainer').style.display = 'block';
+            } else if (chartId === 'generoCitas') {
+                document.getElementById('generoCitasChartContainer').style.display = 'block';
             } else if (chartId === 'mesCitas') {
                 document.getElementById('mesCitasChartContainer').style.display = 'block';
+            }else if (chartId === 'pacienteCitas') {
+                document.getElementById('pacienteCitasContainer').style.display = 'block';
             }
         }
 
         // Mostrar el gráfico de estado de citas por defecto
         mostrarChart('estadoCitas');
+
     </script>
 
     <!-- ESTILOS -->
@@ -279,4 +250,5 @@
         }
        
     </style>
+
 }
