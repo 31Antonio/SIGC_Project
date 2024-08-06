@@ -1,0 +1,174 @@
+﻿@model IPagedList<SIGC_PROJECT.Models.ViewModel.ConsultaGeneralVM>
+
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+
+@{
+    ViewData["Title"] = "Historial de Consultas";
+}
+
+<div style="margin-top: 7%;"></div>
+<h2 style="font-weight: bold; font-size: 1.7em; color: #04294F;" class="mt-5 mb-5">Historial de Consultas</h2>
+
+
+<div class="row mt-4 mb-4">
+
+    <div class="col-md-4 d-flex align-items-center">
+    </div>
+
+    <div class="col-md-8 d-flex justify-content-end align-items-center">
+        <label for="buscarEspecialidad" class="control-label me-2 mb-0 mr-1" style="font-weight: bold; color: #04294F;">Buscar por Especialidad:</label>
+        <select id="buscarEspecialidad" class="form-control w-auto">
+            <option value="" selected>Seleccionar...</option>
+            <option value="Anestesiología">Anestesiología</option>
+            <option value="Cardiología">Cardiología</option>
+            <option value="Cirugía Bariátrica">Cirugía Bariátrica</option>
+            <option value="Cirugía General">Cirugía General</option>
+            <option value="Cirugía Maxilofacial">Cirugía Maxilofacial</option>
+            <option value="Cirugía Pediátrica">Cirugía Pediátrica</option>
+            <option value="Cirugía Plástica, Reconstructiva y Estética">Cirugía Plástica, Reconstructiva y Estética</option>
+            <option value="Dermatología y Cirugía de la Piel">Dermatología y Cirugía de la Piel</option>
+            <option value="Diabetología">Diabetología</option>
+            <option value="Endocrinología">Endocrinología</option>
+            <option value="Epidemiología">Epidemiología</option>
+            <option value="Gastroenterología">Gastroenterología</option>
+            <option value="Ginecología y Obstetricia">Ginecología y Obstetricia</option>
+            <option value="Hematología">Hematología</option>
+            <option value="Infectología">Infectología</option>
+            <option value="Intensivistas Pediatricos y de Adultos">Intensivistas Pediatricos y de Adultos</option>
+            <option value="Medicina General">Medicina General</option>
+            <option value="Medicina Interna">Medicina Interna</option>
+            <option value="Nefrología">Nefrología</option>
+            <option value="Neumología">Neumología</option>
+            <option value="Neumología pediátrica">Neumología pediátrica</option>
+            <option value="Neurocirugía">Neurocirugía</option>
+            <option value="Neurología">Neurología</option>
+            <option value="Oftalmología">Oftalmología</option>
+            <option value="Ortopedia y Traumatología">Ortopedia y Traumatología</option>
+            <option value="Otorrinolaringología">Otorrinolaringología</option>
+            <option value="Pediatría">Pediatría</option>
+            <option value="Radiología y Sonografía">Radiología y Sonografía</option>
+            <option value="Urología">Urología</option>
+        </select>
+
+    </div>
+</div>
+
+<table class="table table-striped w-100">
+    <thead>
+        <tr class="th_bg">
+            <th>Fecha</th>
+            <th>Motivo de la consulta</th>
+            <th>Nombre del Doctor </th>
+            <th>Especialidad del Doctor </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.FechaConsulta.ToString("dd/MM/yyyy")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MotivoConsulta)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NombreDoctor)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EspecialidadDoctor)
+                </td>
+                <td class="text-center">
+                    <a asp-action="Details" class=" btn btn-primary font-weight-bold" asp-route-id="@item.ConsultaId">Ver Detalles</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="contenedor-paginacion">
+    @Html.PagedListPager(Model, pagina => Url.Action("Index", new { pagina = pagina, especialidadDoctor = ViewBag.EspecialidadDoctor }), new PagedListRenderOptions
+    {
+
+        DisplayPageCountAndCurrentLocation = false,
+        DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+        DisplayLinkToLastPage = PagedListDisplayMode.Always,
+        DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+        DisplayLinkToNextPage = PagedListDisplayMode.Always,
+        DisplayLinkToIndividualPages = true,
+        MaximumPageNumbersToDisplay = 10,
+        DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+        Display = PagedListDisplayMode.Always,
+
+        UlElementClasses = new[] { "pagination", "justify-content-center" },
+        LiElementClasses = new[] { "page-item" },
+        PageClasses = new[] { "page-link" }
+    })
+
+    <div class="paginacion_dabajo">
+        @string.Format("Página {0} de {1}", Model.PageNumber, Model.PageCount)
+    </div>
+</div>
+
+@section Scripts {
+
+    @*========== FUNCIONES ==========*@
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var searchInput = document.getElementById('buscarEspecialidad');
+
+            searchInput.addEventListener("input", function () {
+                var valor = searchInput.value;
+
+                var searchParams = new URLSearchParams(window.location.search);
+                searchParams.set('especialidadDoctor', valor);
+                searchParams.set('pagina', 1); // Resetear a la primera página
+
+                //Enviar Solicitud Ajax al controlador
+                fetch(window.location.pathname + '?' + searchParams.toString())
+                    .then(response => response.text())
+                    .then(html => {
+                        var parser = new DOMParser();
+                        var doc = parser.parseFromString(html, 'text/html');
+                        var nuevaTabla = doc.querySelector('tbody').innerHTML;
+                        document.querySelector('tbody').innerHTML = nuevaTabla;
+                        var newPagination = doc.querySelector('.contenedor-paginacion').innerHTML;
+                        document.querySelector('.contenedor-paginacion').innerHTML = newPagination;
+                    })
+                    .catch(error => console.error('Error al buscar pacientes:', error));
+            });
+        });
+    </script>
+
+    <!-- Agregar estilos CSS -->
+    <style>
+        .paginacion_dabajo {
+            margin-top: 10px;
+            text-align: center;
+            font-weight: bold;
+            color: #04294F;
+        }
+
+        .contenedor-paginacion {
+            text-align: center;
+        }
+
+        .active.page-item .page-link {
+            background-color: rgba(42, 62, 84, 1) !important;
+            font-weight: bold;
+            border: 2px solid rgba(42, 62, 84, 1) !important;
+        }
+
+        .th_bg {
+            background-color: rgba(42, 62, 84, 1);
+            color: #FFFFFF;
+        }
+
+        th {
+            border: 1px solid #FFFFFF;
+        }
+    </style>
+
+}

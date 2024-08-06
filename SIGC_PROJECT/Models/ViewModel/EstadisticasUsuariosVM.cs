@@ -19,8 +19,19 @@ public class UsuariosPorRolVM
 
 public class UsuariosAccesoVM
 {
-    public List<Usuario> UsuariosHoy { get; set; }
-    public List<Usuario> UsuariosEsteMes { get; set; }
+    public List<UsuarioConRolVM> UsuariosHoy { get; set; }
     public int CantidadUsuariosHoy { get; set; }
-    public int CantidadUsuariosEsteMes { get; set; }
+    public List<RolCantidadVM> RolesHoy { get; set; }
+}
+
+public class UsuarioConRolVM
+{
+    public Usuario Usuario { get; set; }
+    public string Rol { get; set; }
+}
+
+public class RolCantidadVM
+{
+    public string Rol { get; set; }
+    public int Cantidad { get; set; }
 }

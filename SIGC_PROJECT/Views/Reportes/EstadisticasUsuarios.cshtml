@@ -5,8 +5,204 @@
 }
 
 <div class="container">
-    <div style="margin-top: 8%;">
-        <h2 style="font-weight: bold; font-size: 2.3em; color: #04294F;" class="mt-5 mb-3">Total de Usuarios Registrados: @Model.TotalUsuarios</h2>
+
+    <div class="btn btn-group mt-4" role="group" aria-label="Estadísticas">
+        <button type="button" class="btn btn-group-estilo" onclick="mostrarChart('rolesUsuarios')">Usuarios por Rol</button>
+        <button type="button" class="btn btn-group-estilo" onclick="mostrarChart('accesoUsuarios')">Accesos del Día</button>
+    </div>
+
+    <!-- Contenedor de Citas por Estado -->
+    <div id="rolesUsuarioChartContainer" class="chart-container">
+
+        <div class="d-flex justify-content-center" style="padding-bottom: 5%; align-content: center;">
+            <h2 style="font-weight: bold; font-size: 2em; color: #04294F;" class="mt-5 mb-3">Total de Usuarios Registrados: @Model.TotalUsuarios</h2>
+        </div>
+
+        <canvas id="rolesUsuarioChart"></canvas>
+    </div>
+
+    <!-- Contenedor de accesos del día-->
+    <div id="usuariosAccesoContainer" style="display:none;">
+
+        <div class="d-flex justify-content-center" style="padding-bottom: 5%; align-content: center;">
+            <h2 style="font-weight: bold; font-size: 2em; color: #04294F;" class="mt-5 mb-3">Usuarios que han iniciado sesión: @Model.UsuariosAcceso.CantidadUsuariosHoy</h2>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="table-responsive">
+                    <table class="table table-striped w-100">
+                        <thead>
+                            <tr class="th_bg">
+                                <th>Nombre de Usuario</th>
+                                <th>Inicio de Sesión</th>
+                                <th>Rol del Usuario</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var usuarios in Model.UsuariosAcceso.UsuariosHoy)
+                            {
+                                <tr>
+                                    <td>@usuarios.Usuario.NombreUsuario</td>
+                                    <td>@usuarios.Usuario.FechaUltimoAcceso</td>
+                                    <td>@usuarios.Rol</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-6 d-flex justify-content-center align-items-center">
+                <canvas id="rolesUsuarioHoyChart" width="400" height="400"></canvas>
+            </div>
+        </div>
     </div>
 
 </div>
+@section Scripts {
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+
+    <script>
+
+        //Usuarios por Roles
+        const usuarioRolesData = {
+            labels: @Html.Raw(Json.Serialize(Model.UsuariosPorRol.Select(c => c.Rol))),
+            datasets: [{
+                label: 'Cantidad de Usuarios',
+                data: @Html.Raw(Json.Serialize(Model.UsuariosPorRol.Select(c => c.CantidadUsuarios))),
+                backgroundColor: ['#07195b', '#072389', '#0d33be', '#0938e3']
+            }]
+        };
+
+        //Usuarios Por Roles Hoy
+        const usuarioRolesHoyData = {
+            labels: @Html.Raw(Json.Serialize(Model.UsuariosAcceso.RolesHoy.Select(c => c.Rol))),
+            datasets: [{
+                label: 'Cantidad de Roles',
+                data: @Html.Raw(Json.Serialize(Model.UsuariosAcceso.RolesHoy.Select(c => c.Cantidad))),
+                backgroundColor: ['#07195b', '#072389', '#0d33be', '#0938e3']
+            }]
+        };
+
+        //Graficos de los roles general
+        const usuariosRoleChart = new Chart(document.getElementById('rolesUsuarioChart'), {
+            type: 'doughnut',
+            data: usuarioRolesData,
+            options: {
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 18,
+                                weight: 'bold'
+                            },
+                            color: '#333',
+                        }
+                    },
+                    tooltip: {
+                        bodyFont: {
+                            size: 14
+                        },
+                        titleFont: {
+                            size: 16,
+                            weight: 'bold'
+                        },
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff'
+                    }
+                }
+            }
+        });
+        
+        //Graficos de los roles general
+        const usuariosRoleaHoyChart = new Chart(document.getElementById('rolesUsuarioHoyChart'), {
+            type: 'bar',
+            data: usuarioRolesHoyData,
+            options: {
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 18,
+                                weight: 'bold'
+                            },
+                            color: '#333',
+                        }
+                    },
+                    tooltip: {
+                        bodyFont: {
+                            size: 14
+                        },
+                        titleFont: {
+                            size: 16,
+                            weight: 'bold'
+                        },
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff'
+                    }
+                }
+            }
+        });
+
+        function mostrarChart(chartId) {
+            // Ocultar todos los contenedores
+            document.getElementById('rolesUsuarioChartContainer').style.display = 'none';
+            document.getElementById('usuariosAccesoContainer').style.display = 'none';
+
+            // Mostrar el contenedor seleccionado
+            if (chartId === 'rolesUsuarios') {
+                document.getElementById('rolesUsuarioChartContainer').style.display = 'block';
+            }
+            else if (chartId === 'accesoUsuarios') {
+                document.getElementById('usuariosAccesoContainer').style.display = 'block';
+            } 
+        }
+
+        // Mostrar el gráfico de los roles por defecto
+        mostrarChart('rolesUsuarios');
+
+    </script>
+
+    <!-- ESTILOS -->
+
+    <style>
+
+        .btn-group { 
+            width: 100%;
+            gap: 15px;
+        }
+
+        .btn-group-estilo {
+            background-color: rgba(5, 12, 67, 1);
+            font-weight: bold;
+            color: white;
+            border: 2px solid white; 
+        }
+        
+        .btn-group-estilo:hover {
+            background-color: rgba(5, 12, 67, 0.8);
+            font-weight: bold;
+            color: white;
+            border: 2px solid white; 
+        }
+
+        .chart-container {
+            width: 70%; 
+            margin: auto;
+        }
+
+        .th_bg {
+            background-color: rgba(5, 12, 67, 0.8);
+            color: #FFFFFF;
+        }
+
+        th {
+            border: 1px solid #FFFFFF;
+        }
+       
+    </style>
+
+}

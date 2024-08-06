@@ -24,9 +24,8 @@ namespace SIGC_PROJECT.Controllers
         }
 
         // GET: Consultas
-        [Authorize]
-        [FiltroRegistro]
-        public async Task<IActionResult> Index(int? pagina, int cantidadP = 10)
+        [Authorize(Roles = "Doctor,Secretaria")]
+        public async Task<IActionResult> Index(string? nombrePaciente, int? pagina, int cantidadP = 10)
         {
             // Numero de pagina actual
             int numeroP = (pagina ?? 1);
@@ -41,28 +40,6 @@ namespace SIGC_PROJECT.Controllers
                 var idDoctor = await _context.Doctors.Where(d => d.IdUsuario == int.Parse(idUser)).Select(d => d.DoctorId).FirstOrDefaultAsync();
 
                 consultasQuery = _context.Consultas.Where(c => c.DoctorId == idDoctor)
-                                              .Select(c => new ConsultaGeneralVM
-                                              {
-                                                  ConsultaId = c.ConsultaId,
-                                                  PacienteId = c.PacienteId,
-                                                  NombrePaciente = c.Paciente.Nombre + ' ' + c.Paciente.Apellido,
-                                                  EdadPaciente = c.Paciente.Edad,
-                                                  DoctorId = c.DoctorId,
-                                                  NombreDoctor = c.Doctor.Nombre + ' ' + c.Doctor.Apellido,
-                                                  EspecialidadDoctor = c.Doctor.Especialidad,
-                                                  FechaConsulta = c.FechaConsulta,
-                                                  MotivoConsulta = c.MotivoConsulta,
-                                                  Diagnostico = c.Diagnostico,
-                                                  Tratamiento = c.Tratamiento,
-                                                  RecetaId = c.RecetaId,
-                                                  Observaciones = c.Observaciones
-                                              });
-            }
-            else if (User.IsInRole("Paciente"))
-            {
-                var idPaciente = await _context.Pacientes.Where(d => d.IdUsuario == int.Parse(idUser)).Select(d => d.PacienteId).FirstOrDefaultAsync();
-
-                consultasQuery = _context.Consultas.Where(c => c.PacienteId == idPaciente)
                                               .Select(c => new ConsultaGeneralVM
                                               {
                                                   ConsultaId = c.ConsultaId,
@@ -122,10 +99,61 @@ namespace SIGC_PROJECT.Controllers
                 });
             }
 
+            if (!string.IsNullOrEmpty(nombrePaciente))
+            {
+                consultasQuery = consultasQuery.Where(c => c.NombrePaciente.Contains(nombrePaciente));
+            }
+
             var consultas = consultasQuery.ToPagedList(numeroP, cantidadP);
+
+            ViewBag.NombrePaciente = nombrePaciente;
 
             return View(consultas);
 
+        }
+
+        [Authorize(Roles = "Paciente")]
+        [FiltroRegistro]
+        public async Task<IActionResult> RegistroConsultas(string? especialidadDoctor, int? pagina, int cantidadP = 10)
+        {
+            // Numero de pagina actual
+            int numeroP = (pagina ?? 1);
+
+            // Obtener el id del Usuario
+            var idUser = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            IQueryable<ConsultaGeneralVM> consultasQuery;
+
+            var idPaciente = await _context.Pacientes.Where(d => d.IdUsuario == int.Parse(idUser)).Select(d => d.PacienteId).FirstOrDefaultAsync();
+
+            consultasQuery = _context.Consultas.Where(c => c.PacienteId == idPaciente)
+                                            .Select(c => new ConsultaGeneralVM
+                                            {
+                                                ConsultaId = c.ConsultaId,
+                                                PacienteId = c.PacienteId,
+                                                NombrePaciente = c.Paciente.Nombre + ' ' + c.Paciente.Apellido,
+                                                EdadPaciente = c.Paciente.Edad,
+                                                DoctorId = c.DoctorId,
+                                                NombreDoctor = c.Doctor.Nombre + ' ' + c.Doctor.Apellido,
+                                                EspecialidadDoctor = c.Doctor.Especialidad,
+                                                FechaConsulta = c.FechaConsulta,
+                                                MotivoConsulta = c.MotivoConsulta,
+                                                Diagnostico = c.Diagnostico,
+                                                Tratamiento = c.Tratamiento,
+                                                RecetaId = c.RecetaId,
+                                                Observaciones = c.Observaciones
+                                            });
+
+            if (!string.IsNullOrEmpty(especialidadDoctor))
+            {
+                consultasQuery = consultasQuery.Where(c => c.EspecialidadDoctor.Contains(especialidadDoctor));
+            }
+
+            var consultas = consultasQuery.ToPagedList(numeroP, cantidadP);
+
+            ViewBag.EspecialidadDoctor = especialidadDoctor;
+
+            return View(consultas);
         }
 
         // GET: Consultas/Details/5

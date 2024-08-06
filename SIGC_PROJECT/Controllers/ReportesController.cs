@@ -335,21 +335,27 @@ namespace SIGC_PROJECT.Controllers
 
             //Agrupar por ultimo acceso
             var hoy = DateTime.Today;
-            var primerDiaMes = new DateTime(hoy.Year, hoy.Month, 1);
 
-            var usuariosHoy = await _context.Usuarios.Where(u => u.FechaUltimoAcceso.HasValue && 
-                                                           u.FechaUltimoAcceso.Value.Date == hoy).ToListAsync();
+            var usuariosHoy = await _context.UsuarioRols.Include(ur => ur.Usuario).Include(ur => ur.Rol)
+                                                        .Where(ur => ur.Usuario.FechaUltimoAcceso.HasValue &&
+                                                               ur.Usuario.FechaUltimoAcceso.Value.Date == hoy)
+                                                        .Select(ur => new UsuarioConRolVM
+                                                        {
+                                                            Usuario = ur.Usuario,
+                                                            Rol = ur.Rol.Nombre
+                                                        }).ToListAsync();
 
-            var usuariosMes = await _context.Usuarios.Where(u => u.FechaUltimoAcceso.HasValue &&
-                                                                 u.FechaUltimoAcceso.Value.Date >= primerDiaMes &&
-                                                                 u.FechaUltimoAcceso.Value.Date <= hoy).ToListAsync();
+            var rolesHoy = usuariosHoy.GroupBy(u => u.Rol).Select(r => new RolCantidadVM
+                                                          {
+                                                            Rol = r.Key,
+                                                            Cantidad = r.Count()
+                                                          }).ToList();
 
             var usuariosAcceso = new UsuariosAccesoVM
             {
                 UsuariosHoy = usuariosHoy,
-                UsuariosEsteMes = usuariosMes,
                 CantidadUsuariosHoy = usuariosHoy.Count(),
-                CantidadUsuariosEsteMes = usuariosMes.Count()
+                RolesHoy = rolesHoy
             };
 
             var model = new EstadisticasUsuariosVM
