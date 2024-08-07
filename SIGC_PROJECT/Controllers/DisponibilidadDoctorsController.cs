@@ -208,8 +208,6 @@ namespace SIGC_PROJECT.Controllers
                         };
 
                         _context.DisponibilidadDoctors.Add(disponibilidad);
-                        _context.SaveChanges();
-                        return RedirectToAction(nameof(Index));
                     }
                     else
                     {
@@ -217,6 +215,9 @@ namespace SIGC_PROJECT.Controllers
                     }
 
                 }
+
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
 
             }
 

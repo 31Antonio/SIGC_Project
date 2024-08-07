@@ -155,7 +155,7 @@ namespace SIGC_PROJECT.Controllers
                 }
                 else if(roles == "Secretaria")
                 {
-                    cita.PacienteId = null;
+                    cita.PacienteId = model.PacienteId;
                     cita.SecretariaId = idSecretaria;
                     cita.NombrePaciente = model.NombrePaciente;
                 }
@@ -175,6 +175,27 @@ namespace SIGC_PROJECT.Controllers
             }
 
             return View(model);
+        }
+
+        //Buscar las pacientes
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult buscarPacientePorCedula([FromBody] CedulaRequest request)
+        {
+            string cedula = request.Cedula;
+            var paciente = _context.Pacientes.Where(p => p.Cedula == cedula)
+                                             .Select(p => new
+                                             {
+                                                 NombreCompleto = p.Nombre + " " + p.Apellido,
+                                                 p.PacienteId
+                                             }).FirstOrDefault();
+
+            if (paciente == null)
+            {
+                return Json(null);
+            }
+
+            return Json(paciente);
         }
 
         //Obtener la disponibilidad del doctor

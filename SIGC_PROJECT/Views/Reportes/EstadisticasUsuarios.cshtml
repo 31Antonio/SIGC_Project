@@ -79,7 +79,7 @@
         const usuarioRolesHoyData = {
             labels: @Html.Raw(Json.Serialize(Model.UsuariosAcceso.RolesHoy.Select(c => c.Rol))),
             datasets: [{
-                label: 'Cantidad de Roles',
+                label: 'Roles',
                 data: @Html.Raw(Json.Serialize(Model.UsuariosAcceso.RolesHoy.Select(c => c.Cantidad))),
                 backgroundColor: ['#07195b', '#072389', '#0d33be', '#0938e3']
             }]

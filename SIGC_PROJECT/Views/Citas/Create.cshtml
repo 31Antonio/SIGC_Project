@@ -26,14 +26,25 @@
 
                         @if (User.IsInRole("Secretaria"))
                         {
-                            <div class="form-group  mt-3">
+                            @* <div class="form-group  mt-3">
                                 <label asp-for="NombrePaciente" class="control-label">Nombre del Paciente</label>
                                 <input asp-for="NombrePaciente" class="form-control" />
                                 <span asp-validation-for="NombrePaciente" class="text-danger"></span>
+                            </div> *@
+
+                            <div class="form-group mt-4">
+                                <label for="cedula" class="control-label">Cédula del Paciente:</label>
+                                <input type="text" id="cedula" class="form-control" autocomplete="off" />
                             </div>
+
+                            <div class="form-group mt-4" id="pact_input1" style="display: none;">
+                                    <label for="nombrePaciente" class="control-label">Nombre del Paciente</label>
+                                    <input type="text" asp-for="NombrePaciente" id="nombrePaciente" class="form-control" readonly />
+                            </div>
+                            <input asp-for="PacienteId" id="PacienteId" hidden/>
                         }
 
-                        <div class="form-group  mt-4">
+                        <div class="form-group mt-4">
                             <label asp-for="FechaCita" class="control-label">Seleccione una fecha:</label>
                             <input asp-for="FechaCita" id="fechaCita" class="form-control" type="date" required />
                             <span asp-validation-for="FechaCita" class="text-danger"></span>
@@ -57,6 +68,10 @@
                         
                         <div id="mensajeAlertHoras" class="alert alert-danger text-center font-weight-bold mt-4 mb-4" style="font-size: 1.2em; display:none;">
                             Todas las horas se encuentran ocupadas, por favor seleccionar otra fecha. 
+                        </div>
+                        
+                        <div id="mensajeAlertHoy" class="alert alert-danger text-center font-weight-bold mt-4 mb-4" style="font-size: 1.2em; display:none;">
+                            No se pueden realizar citas en el día actual, debió agendar su cita el día anterior. 
                         </div>
 
                         <div class="text-center mt-4">
@@ -119,6 +134,20 @@
             fechaInput.addEventListener('change', function () {
                 var fecha = this.value;
                 var doctorId = document.getElementById('DoctorId').value;
+
+                var fechaHoy = new Date().toISOString().split("T")[0];
+
+                // Verificar si la fecha seleccionada es la fecha actual
+                if (fecha === fechaHoy) {
+                    document.getElementById('mensajeAlertHoy').style.display = 'block';
+                    setInterval(function () {
+                        document.getElementById('mensajeAlertHoy').style.display = 'none';
+                    }, 3000);
+                    this.value = '';
+                    document.getElementById('lbHora').style.display = 'none';
+                    document.getElementById('horaCitasContainer').innerHTML = '';
+                    return;
+                }
 
                 var diasSemana = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
 
@@ -219,6 +248,68 @@
                     }
                 });
 
+            });
+
+            //OBTENER DATOS DEL PACIENTE
+            function formatearCedula(valor, cursorPos) {
+                var valorNumerico = valor.replace(/\D/g, '');
+                var valorFormateado = '';
+
+                if (valorNumerico.length > 0) {
+                    valorFormateado += valorNumerico.substr(0, 3);
+                }
+                if (valorNumerico.length >= 4) {
+                    valorFormateado += '-' + valorNumerico.substr(3, 7);
+                }
+                if (valorNumerico.length >= 11) {
+                    valorFormateado += '-' + valorNumerico.substr(10, 1);
+                }
+
+                return valorFormateado;
+            }
+
+            var cedulaInput = document.getElementById('cedula');
+            var nombrePacienteInput = document.getElementById('nombrePaciente');
+            var idPacienteInput = document.getElementById('PacienteId');
+
+            cedulaInput.addEventListener('input', function () {
+                var valor = this.value.replace(/[^0-9]/g, '');
+                var cursorPos = this.selectionStart;
+                var valorFormateado = formatearCedula(valor, cursorPos);
+
+                this.value = valorFormateado;
+
+                var newCursorPos = cursorPos;
+                if (valor.length < valorFormateado.length) {
+                    newCursorPos++;
+                }
+                this.setSelectionRange(newCursorPos, newCursorPos);
+
+                if (valor.length > 0) {
+                    fetch('/Citas/buscarPacientePorCedula', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        },
+                        body: JSON.stringify({ cedula: valorFormateado }) // Enviar el valor formateado
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data) {
+                                console.log(data)
+                                document.getElementById('pact_input1').style.display = 'block';
+                                nombrePacienteInput.value = data.nombreCompleto;
+
+                                idPacienteInput.value = data.pacienteId;
+                            } else {
+                                document.getElementById('pact_input1').style.display = 'none';
+                                nombrePacienteInput.value = '';
+
+                                idPacienteInput.value = '';
+                            }
+                        });
+                }
             });
             //====================================================//
         });
