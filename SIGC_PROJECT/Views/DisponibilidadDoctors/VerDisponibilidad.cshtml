@@ -7,13 +7,47 @@
 
 @if(rol == "Paciente")
 {
-    <div class="form-group mb-4">
-        <label for="especialidad" class="mt-3" style="font-weight: bold; font-size: 1.7em; color: #04294F;">Filtrar por especialidad: </label>
-        <input type="text" name="especialidad" id="especialidad" class="form-control" oninput="filtrarDoctor()"/>
+    <div class="row">
+        <div class="col-md-12 justify-content-end align-items-center mb-4">
+            <label for="especialidad" class="mt-3" style="font-weight: bold; font-size: 1.7em; color: #04294F;">Filtrar por especialidad: </label>
+            <select id="especialidad" class="form-control" style="width: 100%;" onchange="filtrarDoctor()">
+            <option value="" selected>Todas las especialidades...</option>
+            <option value="Anestesiología">Anestesiología</option>
+            <option value="Cardiología">Cardiología</option>
+            <option value="Cirugía Bariátrica">Cirugía Bariátrica</option>
+            <option value="Cirugía General">Cirugía General</option>
+            <option value="Cirugía Maxilofacial">Cirugía Maxilofacial</option>
+            <option value="Cirugía Pediátrica">Cirugía Pediátrica</option>
+            <option value="Cirugía Plástica, Reconstructiva y Estética">Cirugía Plástica, Reconstructiva y Estética</option>
+            <option value="Dermatología y Cirugía de la Piel">Dermatología y Cirugía de la Piel</option>
+            <option value="Diabetología">Diabetología</option>
+            <option value="Endocrinología">Endocrinología</option>
+            <option value="Epidemiología">Epidemiología</option>
+            <option value="Gastroenterología">Gastroenterología</option>
+            <option value="Ginecología y Obstetricia">Ginecología y Obstetricia</option>
+            <option value="Hematología">Hematología</option>
+            <option value="Infectología">Infectología</option>
+            <option value="Intensivistas Pediatricos y de Adultos">Intensivistas Pediatricos y de Adultos</option>
+            <option value="Medicina General">Medicina General</option>
+            <option value="Medicina Interna">Medicina Interna</option>
+            <option value="Nefrología">Nefrología</option>
+            <option value="Neumología">Neumología</option>
+            <option value="Neumología pediátrica">Neumología pediátrica</option>
+            <option value="Neurocirugía">Neurocirugía</option>
+            <option value="Neurología">Neurología</option>
+            <option value="Oftalmología">Oftalmología</option>
+            <option value="Ortopedia y Traumatología">Ortopedia y Traumatología</option>
+            <option value="Otorrinolaringología">Otorrinolaringología</option>
+            <option value="Pediatría">Pediatría</option>
+            <option value="Radiología y Sonografía">Radiología y Sonografía</option>
+            <option value="Urología">Urología</option>
+        </select>
+        @* <input type="text" name="especialidad" id="especialidad" class="form-control" oninput="filtrarDoctor()"/> *@
+        </div>
     </div>
 
     <div id="doctor-container" class="row">
-    @foreach(var doctorDisponibilidad in Model)
+        @foreach(var doctorDisponibilidad in Model)
     {
         <div class="col-md-4 doctor-card mb-4">
             <div class="card d-flex flex-column">
@@ -38,12 +72,12 @@
             </div>
         </div>
     }
-</div>
+    </div>
 }
 
 @if(rol == "Secretaria")
 {
-        <div id="doctor-container" class="row">
+    <div id="doctor-container" class="row">
     @foreach(var doctorDisponibilidad in Model)
     {
         <div class="col-md-12 doctor-card mb-4 mt-4">
