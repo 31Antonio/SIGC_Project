@@ -19,6 +19,7 @@
 
                         <div class="row">
                             <input type="hidden" asp-for="DoctorId" />
+                            <input type="hidden" asp-for="IdUsuario" value="@ViewBag.UserDoctorId" />
                             <div class="col-md-3 mb-4">
                                 <label asp-for="Cedula" class="control-label">Cédula</label>
                                 <input asp-for="Cedula" class="form-control" readonly />

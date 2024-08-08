@@ -203,6 +203,8 @@ namespace SIGC_PROJECT.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.UserDoctorId = doctor.IdUsuario;
             //ViewData["SecretariaId"] = new SelectList(_context.Secretaria, "SecretariaId", "Nombre", doctor.SecretariaId);
             return View(doctor);
         }
