@@ -317,6 +317,9 @@ namespace SIGC_PROJECT.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.IdUserSec = secretarium.IdUsuario;
+
             return View(secretarium);
         }
 
