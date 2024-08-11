@@ -59,7 +59,7 @@
         <tbody>
             @foreach (var cita in Model)
             {
-                <tr>
+                <tr class="font-weight-bold">
                     <td>@(cita.FechaCita.HasValue ? cita.FechaCita.Value.ToString("dd/MM/yyyy") : "No disponible") - @cita.HoraCita</td>
                     <td>@cita.NombrePaciente</td>
                     <td>@cita.Comentario</td>
@@ -136,14 +136,17 @@
         }
 
         .active.page-item .page-link {
-            background-color: rgba(42, 62, 84, 1) !important;
+            background-color: #4a7cba !important;
             font-weight: bold;
-            border: 2px solid rgba(42, 62, 84, 1) !important;
+            border: 2px solid #4a7cba !important;
+            text-shadow: 1px 1px 2px #3e536d;
         }
 
         .th_bg {
-            background-color: rgba(42, 62, 84, 1);
+            background-color: #4a7cba;
             color: #FFFFFF;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px #3e536d;
         }
 
         th {
@@ -160,7 +163,7 @@
         }
 
         .btn-estilo {
-            background-color: rgba(42, 62, 84, 1);
+            background-color: #4a7cba;
             color: #FFFFFF;
             transition: background-color 0.5s linear;
             width: 98%;
@@ -168,8 +171,9 @@
         }
 
         .btn-estilo:hover {
-            background-color: #062043;
+            background-color: #82a9da;
             color: #FFFFFF;
+            text-shadow: 1px 1px 2px #3e536d;
         }
     </style>
 }

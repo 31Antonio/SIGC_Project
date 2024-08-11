@@ -1,0 +1,22 @@
+﻿
+.opcionesMenu {
+    border-bottom: 1px solid #4a7cba;
+    transition: background-color 0.3s linear;
+    text-shadow: 1px 1px 3px #3e536d;
+}
+
+.opcionesMenu:hover {
+    background-color: #3B669A;
+}
+
+#ModalAlert {
+    text-align: center;
+    font-weight: bold;
+}
+
+.dropdown-item:hover {
+    transition: background-color 0.3s linear;
+    background-color: #3B669A !important;
+    color: white;
+}
+

@@ -34,7 +34,7 @@
 
     <!-- Custom Theme Style -->
     <link href="~/css/custom.min.css" rel="stylesheet">
-
+    <link href="~/css/layout/config.css" rel="stylesheet" />
 </head>
 
 <body class="nav-md">
@@ -45,7 +45,7 @@
                 <div class="left_col scroll-view">
 
                     <div class="navbar nav_title" style="border: 0;">
-                        <a asp-controller="Home" asp-action="Index" class="site_title"><i class="fa fa-cog"></i> <span>Configuración</span></a>
+                        <a asp-controller="Home" asp-action="Index" class="site_title" style="text-shadow: 1px 1px 2px #3e536d;"><i class="fa fa-cog"></i> <span>Configuración</span></a>
                     </div>
 
                     <br />
@@ -65,7 +65,7 @@
                         <div class="menu_section">
                             <ul class="nav side-menu">
 
-                                <li class="opcionesMenu" style="border-top:3px solid #0A1F36;">
+                                <li class="opcionesMenu" style="border-top:3px solid #4a7cba;">
                                     <a href="#" id="infoSecretaria" class="font-weight-bold"><i class="fa fa-info-circle" aria-hidden="true"></i>Informacion General</a>
                                 </li>
 
@@ -78,9 +78,6 @@
                     <!-------------------------->
                     <!-----Footer del Menu----->
                     <div class="sidebar-footer hidden-small" style="background-color: #172D44 !important;">
-                        <a data-toggle="tooltip" data-placement="top" title="Cerrar Sesión" asp-controller="Login" asp-action="Logout">
-                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-                        </a>
                     </div>
                     <!------------------------->
 
@@ -167,26 +164,3 @@
 <script src="~/userlib/js/configuracions.js"></script>
 
 </html>
-
-<style>
-    .opcionesMenu {
-        border-bottom: 3px solid #0A1F36;
-        transition: background-color 0.3s linear;
-    }
-
-    .opcionesMenu:hover {
-        background-color: #0A1F36;
-    }
-
-    #ModalAlert {
-        text-align: center;
-        font-weight: bold;
-    }
-
-    .dropdown-item:hover {
-        transition: background-color 0.3s linear;
-        background-color: #062043 !important;
-        color: white;
-    }
-
-</style>

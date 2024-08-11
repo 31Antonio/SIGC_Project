@@ -33,6 +33,8 @@
 
     <!-- Custom Theme Style -->
     <link href="~/css/custom.min.css" rel="stylesheet">
+
+    <link href="~/css/layout/layout.css" rel="stylesheet" />
 </head>
 
 <body class="nav-md">
@@ -41,7 +43,7 @@
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
                     <div class="navbar nav_title" style="border: 0;">
-                        <a asp-controller="Home" asp-action="Index" class="site_title" style="font-size: 1.5em !important;"><i class="bi bi-hospital"></i> <span>Policlínico Nacional</span></a>
+                        <a asp-controller="Home" asp-action="Index" class="site_title"><i class="bi bi-hospital"></i> <span>Policlínico Nacional</span></a>
                     </div>
 
                     <div class="clearfix"></div>
@@ -77,8 +79,8 @@
                         }
 
                         <div class="profile_info">
-                            <span>Bienvenido,</span>
-                            <h2>@SessionHelper.GetName(User)</h2>
+                            <span class="font-weight-bold" style="color: rgba(255, 255, 255, 0.8);">Bienvenido,</span>
+                            <h2 class="font-weight-bold" style="color: white;">@SessionHelper.GetName(User)</h2>
                         </div>
                     </div>
                     <!-- /menu profile quick info -->
@@ -88,45 +90,45 @@
                     <!-- sidebar menu -->
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                         <div class="menu_section">
-                            <h3>General</h3>
+                            <h3 class="nav_separadores">General</h3>
                             <ul class="nav side-menu">
                                 <li>
-                                    <a asp-controller="Home" asp-action="Index"><i class="fa fa-home"></i>Inicio</a>
+                                    <a asp-controller="Home" asp-action="Index" class="nav_li_a"><i class="fa fa-home"></i>Inicio</a>
                                 </li>
                                 @if (User.IsInRole("Doctor"))
                                 {
                                     @*FORMULARIO DE REGISTRO*@
                                     <li>
-                                        <a><i class="fa fa-edit"></i>Registro de Secretarias <span class="fa fa-chevron-down"></span></a>
+                                        <a class="nav_li_a"><i class="fa fa-edit"></i>Registros Secretarias <span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li class="nav-item">
-                                                <a asp-controller="Secretariums" asp-action="Index">Registrar Secretarias</a>
+                                                <a asp-controller="Secretariums" asp-action="Index" class="font-weight-bold">Registrar Secretarias</a>
                                             </li>
                                         </ul>
                                     </li>
 
                                     @*CITAS*@
                                     <li>
-                                        <a><i class="fa fa-calendar"></i>Citas <span class="fa fa-chevron-down"></span></a>
+                                        <a class="nav_li_a"><i class="fa fa-calendar"></i>Citas <span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li class="nav-item">
-                                                <a asp-controller="Citas" asp-action="CalendarioCitas">Calendario de Citas</a>
+                                                <a asp-controller="Citas" asp-action="CalendarioCitas" class="font-weight-bold">Calendario de Citas</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a asp-controller="Citas" asp-action="Index">Registro de Citas</a>
+                                                <a asp-controller="Citas" asp-action="Index" class="font-weight-bold">Registro de Citas</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a asp-controller="DisponibilidadDoctors" asp-action="Index">Horario del Doctor</a>
+                                                <a asp-controller="DisponibilidadDoctors" asp-action="Index" class="font-weight-bold">Horario del Doctor</a>
                                             </li>
                                         </ul>
                                     </li>
                                     
                                     @*CONSULTAS*@
                                     <li>
-                                        <a><i class="bi bi-card-heading mr-2" style="font-size: 1.2em;"></i>Consultas<span class="fa fa-chevron-down"></span></a>
+                                        <a class="nav_li_a"><i class="bi bi-card-heading mr-2" style="font-size: 1.2em;"></i>Consultas<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li class="nav-item">
-                                                <a asp-controller="Consultas" asp-action="Index">Registros de Consultas</a>
+                                                <a asp-controller="Consultas" asp-action="Index" class="font-weight-bold">Registros de Consultas</a>
                                             </li>
                                         </ul>
                                     </li>
@@ -136,39 +138,39 @@
                                 {
                                     @*FORMULARIO DE REGISTRO*@
                                     <li>
-                                        <a><i class="fa fa-edit"></i>Registro de Pacientes <span class="fa fa-chevron-down"></span></a>
+                                        <a class="nav_li_a"><i class="fa fa-edit"></i>Registro de Pacientes <span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li class="nav-item">
-                                                <a asp-controller="Secretariums" asp-action="RegistrosPendientes">Solicitudes Pendientes <span class="badge bg-danger" id="solicitud_conteo"></span></a>
+                                                <a asp-controller="Secretariums" asp-action="RegistrosPendientes" class="font-weight-bold">Solicitudes Pendientes <span class="badge bg-danger" id="solicitud_conteo"></span></a>
                                             </li>
                                             <li class="nav-item">
-                                                <a asp-controller="Pacientes" asp-action="Index">Registro de Pacientes</a>
+                                                <a asp-controller="Pacientes" asp-action="Index" class="font-weight-bold">Registro de Pacientes</a>
                                             </li>
                                         </ul>
                                     </li>
 
                                     @*CITAS*@
                                     <li>
-                                        <a><i class="fa fa-calendar"></i>Citas <span class="fa fa-chevron-down"></span></a>
+                                        <a class="nav_li_a"><i class="fa fa-calendar"></i>Citas <span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li class="nav-item">
-                                                <a asp-controller="Citas" asp-action="CalendarioCitas">Calendario de Citas</a>
+                                                <a asp-controller="Citas" asp-action="CalendarioCitas" class="font-weight-bold">Calendario de Citas</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a asp-controller="Citas" asp-action="Index">Registros de Citas</a>
+                                                <a asp-controller="Citas" asp-action="Index" class="font-weight-bold">Registros de Citas</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a asp-controller="DisponibilidadDoctors" asp-action="VerDisponibilidad">Disponibilidad Doctor</a>
+                                                <a asp-controller="DisponibilidadDoctors" asp-action="VerDisponibilidad" class="font-weight-bold">Disponibilidad Doctor</a>
                                             </li>
                                         </ul>
                                     </li>
 
                                     @*CONSULTAS*@
                                     <li>
-                                        <a><i class="bi bi-card-heading mr-2" style="font-size: 1.2em;"></i>Consultas<span class="fa fa-chevron-down"></span></a>
+                                        <a class="nav_li_a"><i class="bi bi-card-heading mr-2" style="font-size: 1.2em;"></i>Consultas<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li class="nav-item">
-                                                <a asp-controller="Consultas" asp-action="Index">Historial de Consultas</a>
+                                                <a asp-controller="Consultas" asp-action="Index" class="font-weight-bold">Historial de Consultas</a>
                                             </li>
                                         </ul>
                                     </li>
@@ -177,23 +179,23 @@
                                 {
                                     @*CITAS*@
                                     <li>
-                                        <a><i class="fa fa-calendar"></i>Citas <span class="fa fa-chevron-down"></span></a>
+                                        <a class="nav_li_a"><i class="fa fa-calendar"></i>Citas <span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li class="nav-item">
-                                                <a asp-controller="DisponibilidadDoctors" asp-action="VerDisponibilidad">Disponibilidad Doctor</a>
+                                                <a asp-controller="DisponibilidadDoctors" asp-action="VerDisponibilidad" class="font-weight-bold">Disponibilidad Doctor</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a asp-controller="Citas" asp-action="CitaPaciente">Historial de Citas</a>
+                                                <a asp-controller="Citas" asp-action="CitaPaciente" class="font-weight-bold">Historial de Citas</a>
                                             </li>
                                         </ul>
                                     </li>
                                     
                                     @*CONSULTAS*@
                                     <li>
-                                        <a><i class="bi bi-card-heading mr-2" style="font-size: 1.2em;"></i> Consultas<span class="fa fa-chevron-down"></span></a>
+                                        <a class="nav_li_a"><i class="bi bi-card-heading mr-2" style="font-size: 1.2em;"></i>Consultas<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li class="nav-item">
-                                                <a asp-controller="Consultas" asp-action="RegistroConsultas">Historial de Consultas</a>
+                                                <a asp-controller="Consultas" asp-action="RegistroConsultas" class="font-weight-bold">Historial de Consultas</a>
                                             </li>
                                         </ul>
                                     </li>
@@ -202,12 +204,12 @@
                                 {
                                     @*FORMULARIOS*@
                                     <li>
-                                        <a><i class="fa fa-edit"></i>Formularios de Registro<span class="fa fa-chevron-down"></span></a>
+                                        <a class="nav_li_a"><i class="fa fa-edit"></i>Formularios<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
 
-                                            <li><a asp-controller="Doctors" asp-action="Index">Registros de Doctores</a></li>
-                                            <li><a asp-controller="Pacientes" asp-action="Index">Registros de Pacientes</a></li>
-                                            <li><a asp-controller="Usuarios" asp-action="Index">Registros de Usuarios</a></li>
+                                            <li><a asp-controller="Doctors" asp-action="Index" class="font-weight-bold">Registros de Doctores</a></li>
+                                            <li><a asp-controller="Pacientes" asp-action="Index" class="font-weight-bold">Registros de Pacientes</a></li>
+                                            <li><a asp-controller="Usuarios" asp-action="Index" class="font-weight-bold">Registros de Usuarios</a></li>
                                         
                                             @* <li><a asp-controller="Recetas" asp-action="Index">Recetas</a></li>
                                             <li><a asp-controller="Consultas" asp-action="Index">Consulta</a></li> *@
@@ -228,36 +230,36 @@
                             </ul>
                         </div>
                         <div class="menu_section">
-                            <h3>Reportes Clinicos</h3>
+                            <h3 class="nav_separadores">Reportes Clinicos</h3>
                             <ul class="nav side-menu">
 
                                 <li>
                                     @if (User.IsInRole("Paciente"))
                                     {
-                                        <li><a asp-controller="Reportes" asp-action="EstadisticasCitasP"><i class="bi bi-list-columns-reverse"></i> Estadisticas de las citas</a></li>
+                                        <li><a asp-controller="Reportes" asp-action="EstadisticasCitasP" class="font-weight-bold"><i class="bi bi-list-columns-reverse"></i> Estadisticas de las citas</a></li>
                                     }
 
                                     @if (User.IsInRole("Administrador") || User.IsInRole("Doctor") || User.IsInRole("Secretaria"))
                                     {
-                                    <a><i class="bi bi-list-columns-reverse"></i> Reportes de Citas<span class="fa fa-chevron-down"></span></a>
+                                    <a class="nav_li_a"><i class="bi bi-list-columns-reverse"></i> Reportes de Citas<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                             @if (User.IsInRole("Administrador"))
                                             {
-                                            <li><a asp-controller="Reportes" asp-action="CitasReporte">Reporte de citas</a></li>
-                                            <li><a asp-controller="Reportes" asp-action="EstadisticasCitas">Estadisticas de las citas</a></li>
+                                            <li><a asp-controller="Reportes" asp-action="CitasReporte" class="font-weight-bold">Reporte de citas</a></li>
+                                            <li><a asp-controller="Reportes" asp-action="EstadisticasCitas" class="font-weight-bold">Estadisticas de las citas</a></li>
                                             }
                                             @if (User.IsInRole("Doctor") || User.IsInRole("Secretaria"))
                                             {
-                                            <li><a asp-controller="Reportes" asp-action="CitasReporte">Reporte de citas</a></li>
-                                            <li><a asp-controller="Reportes" asp-action="EstadisticasCitasD">Estadisticas de las citas</a></li>
+                                            <li><a asp-controller="Reportes" asp-action="CitasReporte" class="font-weight-bold">Reporte de citas</a></li>
+                                            <li><a asp-controller="Reportes" asp-action="EstadisticasCitasD" class="font-weight-bold">Estadisticas de las citas</a></li>
                                             }
                                     </ul>
                                     }
 
                                     @if (User.IsInRole("Administrador"))
                                     {
-                                    <li><a asp-controller="Reportes" asp-action="EstadisticasDoctores"><i class="bi bi-body-text"></i> Estadisticas de los Doctores</a></li>
-                                    <li><a asp-controller="Reportes" asp-action="EstadisticasUsuarios"><i class="bi bi-bar-chart-steps"></i> Estadisticas de los Usuarios</a></li>
+                                    <li><a asp-controller="Reportes" asp-action="EstadisticasDoctores" class="nav_li_a"><i class="bi bi-body-text"></i> Estadisticas de los Doctores</a></li>
+                                    <li><a asp-controller="Reportes" asp-action="EstadisticasUsuarios" class="nav_li_a"><i class="bi bi-bar-chart-steps"></i> Estadisticas de los Usuarios</a></li>
                                     }
                                 </li>
 @*                                 <li>
@@ -279,13 +281,13 @@
                     </div>
                     <!-- /sidebar menu -->
                     <!-- /menu footer buttons -->
-                    <div class="sidebar-footer hidden-small" style="background-color: #172D44 !important;">
-                        <a data-toggle="tooltip" data-placement="top" title="Settings">
+                    <div class="sidebar-footer hidden-small" style="background-color: #3B669A !important;">
+                        @* <a data-toggle="tooltip" data-placement="top" title="Settings" class="a_footer">
                             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                         </a>
-                        <a data-toggle="tooltip" data-placement="top" title="Cerrar Sesión" asp-controller="Login" asp-action="Logout">
+                        <a data-toggle="tooltip" data-placement="top" title="Cerrar Sesión" class="a_footer" asp-controller="Login" asp-action="Logout">
                             <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-                        </a>
+                        </a> *@
                     </div>
                     <!-- /menu footer buttons -->
                 </div>
@@ -295,7 +297,7 @@
             <div class="top_nav">
                 <div class="nav_menu">
                     <div class="nav toggle">
-                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                        <a id="menu_toggle"><i class="fa fa-bars" style="color: #3B669A !important;"></i></a>
                     </div>
                     <nav class="nav navbar-nav">
                         <ul class=" navbar-right">
@@ -403,13 +405,3 @@
     });
 
 </script>
-
-
-<style>
-    .dropdown-item:hover { 
-        transition: background-color 0.3s linear;
-        background-color: #062043 !important;
-        color: white;
-    }
-</style>
-

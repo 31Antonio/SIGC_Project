@@ -29,7 +29,7 @@
     </thead>
     <tbody id="pacienteTableBody">
         @foreach (var item in Model) {
-            <tr>
+            <tr class="font-weight-bold">
                 <td>
                     @(item.FechaCita.HasValue ? item.FechaCita.Value.ToString("dd/MM/yyyy") : "No disponible")
                 </td>
@@ -114,15 +114,18 @@
         text-align: center;
     }
 
-    .active.page-item .page-link { 
-        background-color: rgba(42, 62, 84, 1) !important;
+    .active.page-item .page-link {
+        background-color: #4a7cba !important;
         font-weight: bold;
-        border: 2px solid rgba(42, 62, 84, 1) !important;
+        border: 2px solid #4a7cba !important;
+        text-shadow: 1px 1px 2px #3e536d;
     }
 
     .th_bg {
-        background-color: rgba(42, 62, 84, 1);
+        background-color: #4a7cba;
         color: #FFFFFF;
+        font-weight: bold;
+        text-shadow: 1px 1px 2px #3e536d;
     }
 
     th { 

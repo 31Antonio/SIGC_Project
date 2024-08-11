@@ -46,7 +46,7 @@
 
                     <div class="form-group mt-5 text-center">
                         <input type="submit" value="Guardar" class="btn btn-estilo" />
-                        <a asp-action="Index" class="btn btn-danger font-weight-bold">Cancelar</a>
+                        <a asp-action="Index" class="btn btn-danger font-weight-bold" style="width: 25%;">Cancelar</a>
                     </div>
                 </form>
             </div>
@@ -117,15 +117,17 @@
         }
 
         .btn-estilo {
-            background-color: rgba(42, 62, 84, 1);
+            background-color: #17a71d;
             color: #FFFFFF;
             font-weight: bold;
             transition: background-color 0.3s linear;
+            width: 25%;
         }
 
         .btn-estilo:hover {
-            background-color: rgba(42, 62, 84, 0.8);
+            background-color: #61c13d;
             color: #FFFFFF;
+            text-shadow: 1px 1px 2px #3e536d;
         }
     </style>
     @*=========================*@

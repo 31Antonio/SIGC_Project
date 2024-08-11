@@ -1,0 +1,24 @@
+﻿/*@*COLORES
+VERDE: #96c585
+AZUL: #82a9da #4a7cba 
+*@*/
+
+.site_title {
+    text-shadow: 1px 1px 2px #3e536d;
+}
+
+.nav_separadores {
+    text-shadow: 1px 1px 2px #3e536d !important;
+    padding: 3px;
+}
+
+.nav_li_a {
+    font-weight: bold !important;
+    text-shadow: 1px 1px 3px #3e536d;
+}
+
+.dropdown-item:hover {
+    transition: background-color 0.2s linear;
+    background-color: #3B669A !important;
+    color: white;
+}
