@@ -49,11 +49,11 @@
     <div id="doctor-container" class="row">
         @foreach(var doctorDisponibilidad in Model)
     {
-        <div class="col-md-4 doctor-card mb-4">
+        <div class="col-md-6 doctor-card mb-4">
             <div class="card d-flex flex-column">
                 <div class="card-body">
                     <h5 class="card-title text-center" style="font-weight: bold; color: #04294F;">@doctorDisponibilidad.Nombre @doctorDisponibilidad.Apellido</h5>
-                    <h6 class="card-title mb-2 text-center" style="font-weight: bold; color: #000000;">@doctorDisponibilidad.Especialidad</h6>
+                    <h6 class="card-title mb-2 text-center" style="font-weight: bold; color: #000000;">@doctorDisponibilidad.Especialidad - @doctorDisponibilidad.Consultorio </h6>
                     <ul class="list-group list-group-flush">
                         @foreach(var disponibilidad in doctorDisponibilidad.Disponibilidades)
                         {
@@ -84,7 +84,7 @@
             <div class="card d-flex flex-column">
                 <div class="card-body">
                     <h5 class="card-title text-center" style="font-weight: bold; color: #04294F;">@doctorDisponibilidad.Nombre @doctorDisponibilidad.Apellido</h5>
-                    <h6 class="card-title mb-2 text-center" style="font-weight: bold; color: #000000;">@doctorDisponibilidad.Especialidad</h6>
+                        <h6 class="card-title mb-2 text-center" style="font-weight: bold; color: #000000;">@doctorDisponibilidad.Especialidad - @doctorDisponibilidad.Consultorio</h6>
                     <ul class="list-group list-group-flush">
                         @foreach(var disponibilidad in doctorDisponibilidad.Disponibilidades)
                         {
@@ -104,6 +104,73 @@
         </div>
     }
 </div>
+}
+
+@if(rol == "Administrador")
+{
+    <div class="row">
+        <div class="col-md-12 justify-content-end align-items-center mb-4">
+            <label for="consultorio" class="mt-3" style="font-weight: bold; font-size: 1.7em; color: #04294F;">Filtrar por consultorio: </label>
+            <select id="consultorio" class="form-control" onchange="filtrarDoctorConsultorio()">
+                <option value="" selected>Todos los consultorios...</option>
+                <option value="Consultorio 201">Consultorio 201</option>
+                <option value="Consultorio 202">Consultorio 202</option>
+                <option value="Consultorio 203">Consultorio 203</option>
+                <option value="Consultorio 204">Consultorio 204</option>
+                <option value="Consultorio 205">Consultorio 205</option>
+                <option value="Consultorio 206">Consultorio 206</option>
+                <option value="Consultorio 207">Consultorio 207</option>
+                <option value="Consultorio 208">Consultorio 208</option>
+                <option value="Consultorio 209">Consultorio 209</option>
+                <option value="Consultorio 210">Consultorio 210</option>
+                <option value="Consultorio 301">Consultorio 301</option>
+                <option value="Consultorio 302">Consultorio 302</option>
+                <option value="Consultorio 303">Consultorio 303</option>
+                <option value="Consultorio 304">Consultorio 304</option>
+                <option value="Consultorio 305">Consultorio 305</option>
+                <option value="Consultorio 306">Consultorio 306</option>
+                <option value="Consultorio 307">Consultorio 307</option>
+                <option value="Consultorio 308">Consultorio 308</option>
+                <option value="Consultorio 309">Consultorio 309</option>
+                <option value="Consultorio 310">Consultorio 310</option>
+                <option value="Consultorio 401">Consultorio 401</option>
+                <option value="Consultorio 402">Consultorio 402</option>
+                <option value="Consultorio 403">Consultorio 403</option>
+                <option value="Consultorio 404">Consultorio 404</option>
+                <option value="Consultorio 405">Consultorio 405</option>
+                <option value="Consultorio 406">Consultorio 406</option>
+                <option value="Consultorio 407">Consultorio 407</option>
+                <option value="Consultorio 408">Consultorio 408</option>
+                <option value="Consultorio 409">Consultorio 409</option>
+                <option value="Consultorio 410">Consultorio 410</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="doctor-container" class="row">
+        @foreach (var doctorDisponibilidad in Model)
+        {
+            <div class="col-md-6 doctor-card mb-4">
+                <div class="card d-flex flex-column">
+                    <div class="card-body">
+                        <h5 class="card-title text-center" style="font-weight: bold; color: #04294F;">@doctorDisponibilidad.Nombre @doctorDisponibilidad.Apellido</h5>
+                        <h6 class="card-title mb-2 text-center" style="font-weight: bold; color: #000000;">@doctorDisponibilidad.Especialidad </h6>
+                        <ul class="list-group list-group-flush">
+                            @foreach (var disponibilidad in doctorDisponibilidad.Disponibilidades)
+                            {
+                                <li class="list-group-item" style="font-size: 1.2em; color: #04294F;">
+                                    <strong>@disponibilidad.Dia:</strong> @disponibilidad.HoraInicio - @disponibilidad.HoraFin
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="card-footer text-center">
+                        <h5 style="font-weight: bold; color: #000000;">@doctorDisponibilidad.Consultorio</h5>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 }
 
 @section Scripts{

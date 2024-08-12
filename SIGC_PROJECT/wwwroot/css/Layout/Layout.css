@@ -10,6 +10,7 @@ AZUL: #82a9da #4a7cba
 .nav_separadores {
     text-shadow: 1px 1px 2px #3e536d !important;
     padding: 3px;
+    background-color: rgba(74, 124, 186, 0.3);
 }
 
 .nav_li_a {

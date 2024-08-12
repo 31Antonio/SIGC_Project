@@ -35,7 +35,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h6 class="card-text"><strong>Doctor: </strong>@cita.NombreDoctor</h6>
-                                <h6 class="card-text mt-1"><strong>Especialidad: </strong>@cita.EspecialidadDoctor</h6>
+                                <h6 class="card-text mt-1"><strong>Especialidad: </strong>@cita.EspecialidadDoctor - @cita.Doctor.Consultorio</h6>
                                 <h6 class="card-text mt-1">
                                     <strong>Fecha: </strong> @(cita.FechaCita.HasValue ? cita.FechaCita.Value.ToString("dd/MM/yyyy") : "No disponible")
                                 </h6>

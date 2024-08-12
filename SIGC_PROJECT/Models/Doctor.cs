@@ -23,6 +23,8 @@ public partial class Doctor
 
     public int? IdUsuario { get; set; }
 
+    public string? Consultorio { get; set; }
+
     public virtual ICollection<Analisi> Analisis { get; set; } = new List<Analisi>();
 
     public virtual ICollection<Cita> Cita { get; set; } = new List<Cita>();

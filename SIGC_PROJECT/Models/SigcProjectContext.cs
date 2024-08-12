@@ -233,6 +233,10 @@ public partial class SigcProjectContext : DbContext
                 .HasMaxLength(15)
                 .IsUnicode(false)
                 .HasColumnName("telefono");
+            entity.Property(e => e.Consultorio)
+                  .HasMaxLength(50)
+                  .IsUnicode(false)
+                  .HasColumnName("consultorio");
 
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Doctors)
                 .HasForeignKey(d => d.IdUsuario)

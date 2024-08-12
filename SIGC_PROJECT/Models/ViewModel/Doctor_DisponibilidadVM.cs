@@ -6,6 +6,8 @@
         public string Nombre { get; set; }
         public string Apellido { get; set; }
         public string Especialidad { get; set; }
+        public string Consultorio { get; set; }
+
         public List<DisponibilidadDoctor> Disponibilidades { get; set; }
 
         public Doctor_DisponibilidadVM() 

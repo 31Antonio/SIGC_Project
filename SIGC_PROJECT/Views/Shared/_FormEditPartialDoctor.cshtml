@@ -43,6 +43,12 @@
                                 <input asp-for="Especialidad" class="form-control" readonly />
                                 <span asp-validation-for="Especialidad" class="text-danger"></span>
                             </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Consultorio" class="control-label"></label>
+                                <input asp-for="Consultorio" class="form-control" readonly />
+                                <span asp-validation-for="Consultorio" class="text-danger"></span>
+                            </div>
 
                             <div class="col-md-3 mb-3">
                                 <label asp-for="NumeroExequatur" class="control-label">Número Exequatur</label>
@@ -56,7 +62,7 @@
                                 <span asp-validation-for="Telefono" class="text-danger"></span>
                             </div>
 
-                            <div class="col-md-3 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <label asp-for="CorreoElectronico" class="control-label">Correo Electrónico</label>
                                 <input asp-for="CorreoElectronico" class="form-control" />
                                 <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
@@ -89,6 +95,11 @@
         background-color: #82a9da;
         color: #FFFFFF;
         text-shadow: 1px 1px 2px #3e536d;
+    }
+
+    .control-label { 
+        color: #04294F;
+        font-weight: bold;
     }
 </style>
 

@@ -51,7 +51,7 @@ namespace SIGC_PROJECT.Controllers
         }
 
         //GET: Ver las disponibilidades
-        [Authorize(Roles = "Paciente,Secretaria")]
+        [Authorize(Roles = "Administrador,Paciente,Secretaria")]
         [FiltroRegistro]
         [HttpGet]
         public IActionResult VerDisponibilidad()
@@ -92,6 +92,7 @@ namespace SIGC_PROJECT.Controllers
                 Nombre = dp.Key.Nombre,
                 Apellido = dp.Key.Apellido,
                 Especialidad = dp.Key.Especialidad,
+                Consultorio = dp.Key.Consultorio,
                 Disponibilidades = dp.Select(d => new DisponibilidadDoctor
                 {
                     Dia = d.Dia,
@@ -126,6 +127,42 @@ namespace SIGC_PROJECT.Controllers
                     Nombre = g.Key.Nombre,
                     Apellido = g.Key.Apellido,
                     Especialidad = g.Key.Especialidad,
+                    Consultorio = g.Key.Consultorio,
+                    Disponibilidades = g.Select(d => new DisponibilidadDoctor
+                    {
+                        Dia = d.Dia,
+                        HoraInicio = d.HoraInicio,
+                        HoraFin = d.HoraFin
+                    }).ToList()
+                })
+                .ToList();
+
+            return Json(model);
+        }
+        
+        [HttpGet]
+        public IActionResult BuscarPorConsultorio(string consultorio)
+        {
+            // Verificar si la especialidad está vacía o nula
+            var disponibilidades = string.IsNullOrWhiteSpace(consultorio)
+                ? _context.DisponibilidadDoctors.Include(d => d.Doctor).ToList()
+                : _context.DisponibilidadDoctors
+                    .Include(d => d.Doctor)
+                    .Where(d => d.Doctor.Consultorio.Contains(consultorio))
+                    .ToList();
+
+            // Ordenar las disponibilidades por día
+            disponibilidades = disponibilidades.OrderBy(d => (int)Enum.Parse(typeof(DiasSemana), d.Dia)).ToList();
+
+            var model = disponibilidades
+                .GroupBy(d => d.Doctor)
+                .Select(g => new Doctor_DisponibilidadVM
+                {
+                    idDoctor = g.Key.DoctorId,
+                    Nombre = g.Key.Nombre,
+                    Apellido = g.Key.Apellido,
+                    Especialidad = g.Key.Especialidad,
+                    Consultorio = g.Key.Consultorio,
                     Disponibilidades = g.Select(d => new DisponibilidadDoctor
                     {
                         Dia = d.Dia,

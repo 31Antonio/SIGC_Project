@@ -174,7 +174,8 @@ namespace SIGC_PROJECT.Controllers
                                     NumeroExequatur = Doctor.NumeroExequatur,
                                     Telefono = Doctor.Telefono,
                                     CorreoElectronico = Doctor.CorreoElectronico,
-                                    IdUsuario = nuevoUsuario.IdUsuario
+                                    IdUsuario = nuevoUsuario.IdUsuario,
+                                    Consultorio = Doctor.Consultorio
                                 };
 
                                 _context.Doctors.Add(nuevoDoctor);
@@ -212,7 +213,7 @@ namespace SIGC_PROJECT.Controllers
         // POST: Doctors/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DoctorId,Cedula,Nombre,Apellido,Especialidad,NumeroExequatur,Telefono,CorreoElectronico,IdUsuario")] Doctor doctor)
+        public async Task<IActionResult> Edit(int id, [Bind("DoctorId,Cedula,Nombre,Apellido,Especialidad,NumeroExequatur,Telefono,CorreoElectronico,IdUsuario,Consultorio")] Doctor doctor)
         {
             if (id != doctor.DoctorId)
             {
